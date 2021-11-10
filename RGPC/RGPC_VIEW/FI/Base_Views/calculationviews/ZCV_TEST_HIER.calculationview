@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:DataFoundation="http://www.sap.com/ndb/BiModelDataFoundation.ecore" xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="2.3" id="ZCV_TEST_HIER" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_TEST_HIER"/>
+  <metadata activatedAt="2020-11-10 15:23:45.0" changedAt="2020-11-10 17:40:20.859"/>
+  <localVariables>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="52"/>
+  <dataSources>
+    <DataSource id="ZAN_GL_BS_HIER" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.FI.Base_Views/calculationviews/ZAN_GL_BS_HIER</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_FAGLFLEXT" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.FI.Base_Views/calculationviews/ZAN_FAGLFLEXT</resourceUri>
+    </DataSource>
+    <DataSource id="Previous_Year$$$$ZAN_FAGLFLEXT$$" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.FI.Base_Views/calculationviews/ZAN_FAGLFLEXT</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Chart_of_Accounts" transparentFilter="false"/>
+        <viewAttribute id="GL_Account_Formated" transparentFilter="false"/>
+        <viewAttribute id="GL_Short_Text" transparentFilter="false"/>
+        <viewAttribute id="GL_Account" transparentFilter="false"/>
+        <viewAttribute id="PARENT_NODE" transparentFilter="false">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value="Non BS Account"/>
+        </viewAttribute>
+        <viewAttribute id="GL_Parents_Key"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_GL_BS_HIER">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Chart_of_Accounts" source="Chart_of_Accounts"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account_Formated" source="GL_Account_Formated"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Short_Text" source="GL_Short_Text"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account" source="GL_Account"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_NODE" source="PARENT_NODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Parents_Key" source="GL_Parents_Key"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Current_Year" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="RYEAR"/>
+        <viewAttribute id="RACCT"/>
+        <viewAttribute id="HSLVT"/>
+        <viewAttribute id="HSL01"/>
+        <viewAttribute id="HSL02"/>
+        <viewAttribute id="HSL03"/>
+        <viewAttribute id="HSL04"/>
+        <viewAttribute id="HSL05"/>
+        <viewAttribute id="HSL06"/>
+        <viewAttribute id="HSL07"/>
+        <viewAttribute id="HSL08"/>
+        <viewAttribute id="HSL09"/>
+        <viewAttribute id="HSL10"/>
+        <viewAttribute id="HSL11"/>
+        <viewAttribute id="HSL12"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Current_Year_Amount" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;HSLVT&quot;+&#xD;
+if(&quot;Month&quot;='01',&quot;HSL01&quot;,&#xD;
+if(&quot;Month&quot;='02',&quot;HSL01&quot;+&quot;HSL02&quot;,&#xD;
+if(&quot;Month&quot;='03',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;,&#xD;
+if(&quot;Month&quot;='04',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;,&#xD;
+if(&quot;Month&quot;='05',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;,&#xD;
+if(&quot;Month&quot;='06',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;,&#xD;
+if(&quot;Month&quot;='07',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;,&#xD;
+if(&quot;Month&quot;='08',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;,&#xD;
+if(&quot;Month&quot;='09',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;+&quot;HSL09&quot;,&#xD;
+if(&quot;Month&quot;='10',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;+&quot;HSL09&quot;+&quot;HSL10&quot;,&#xD;
+if(&quot;Month&quot;='11',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;+&quot;HSL09&quot;+&quot;HSL10&quot;+&quot;HSL11&quot;,&#xD;
+if(&quot;Month&quot;='12',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;+&quot;HSL09&quot;+&quot;HSL10&quot;+&quot;HSL11&quot;+&quot;HSL12&quot;,0))))))))))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Year" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(string('$$To_Date$$'),4)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Month" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(string('$$To_Date$$'),6,2)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_FAGLFLEXT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="RYEAR" source="RYEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSLVT" source="HSLVT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL01" source="HSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL02" source="HSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL03" source="HSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL04" source="HSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL05" source="HSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL06" source="HSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL07" source="HSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL08" source="HSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL09" source="HSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL10" source="HSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL11" source="HSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL12" source="HSL12"/>
+      </input>
+      <filter>(&quot;RYEAR&quot; =&quot;Year&quot;)</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Chart_of_Accounts" transparentFilter="false"/>
+        <viewAttribute id="GL_Account_Formated" transparentFilter="false"/>
+        <viewAttribute id="GL_Short_Text" transparentFilter="false"/>
+        <viewAttribute id="GL_Account" transparentFilter="false"/>
+        <viewAttribute id="PARENT_NODE" transparentFilter="false"/>
+        <viewAttribute id="Current_Year_Amount"/>
+        <viewAttribute id="GL_Parents_Key"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Chart_of_Accounts" source="Chart_of_Accounts"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account_Formated" source="GL_Account_Formated"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Short_Text" source="GL_Short_Text"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account" source="GL_Account"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_NODE" source="PARENT_NODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Parents_Key" source="GL_Parents_Key"/>
+      </input>
+      <input node="#Current_Year">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Current_Year_Amount" source="Current_Year_Amount"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account" source="RACCT"/>
+      </input>
+      <joinAttribute name="GL_Account"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Previous_Year" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="RYEAR"/>
+        <viewAttribute id="RACCT"/>
+        <viewAttribute id="HSLVT"/>
+        <viewAttribute id="HSL01"/>
+        <viewAttribute id="HSL02"/>
+        <viewAttribute id="HSL03"/>
+        <viewAttribute id="HSL04"/>
+        <viewAttribute id="HSL05"/>
+        <viewAttribute id="HSL06"/>
+        <viewAttribute id="HSL07"/>
+        <viewAttribute id="HSL08"/>
+        <viewAttribute id="HSL09"/>
+        <viewAttribute id="HSL10"/>
+        <viewAttribute id="HSL11"/>
+        <viewAttribute id="HSL12"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Previous_Year_Amount" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;HSLVT&quot;+&#xD;
+if(&quot;Month&quot;='01',&quot;HSL01&quot;,&#xD;
+if(&quot;Month&quot;='02',&quot;HSL01&quot;+&quot;HSL02&quot;,&#xD;
+if(&quot;Month&quot;='03',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;,&#xD;
+if(&quot;Month&quot;='04',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;,&#xD;
+if(&quot;Month&quot;='05',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;,&#xD;
+if(&quot;Month&quot;='06',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;,&#xD;
+if(&quot;Month&quot;='07',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;,&#xD;
+if(&quot;Month&quot;='08',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;,&#xD;
+if(&quot;Month&quot;='09',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;+&quot;HSL09&quot;,&#xD;
+if(&quot;Month&quot;='10',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;+&quot;HSL09&quot;+&quot;HSL10&quot;,&#xD;
+if(&quot;Month&quot;='11',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;+&quot;HSL09&quot;+&quot;HSL10&quot;+&quot;HSL11&quot;,&#xD;
+if(&quot;Month&quot;='12',&quot;HSL01&quot;+&quot;HSL02&quot;+&quot;HSL03&quot;+&quot;HSL04&quot;+&quot;HSL05&quot;+&quot;HSL06&quot;+&quot;HSL07&quot;+&quot;HSL08&quot;+&quot;HSL09&quot;+&quot;HSL10&quot;+&quot;HSL11&quot;+&quot;HSL12&quot;,0))))))))))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Year" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(string('$$To_Date$$'),4)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Month" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(string('$$To_Date$$'),6,2)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Previous_Year" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>int(&quot;Year&quot;)-1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Previous_Year$$$$ZAN_FAGLFLEXT$$">
+        <mapping xsi:type="Calculation:AttributeMapping" target="RYEAR" source="RYEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSLVT" source="HSLVT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL01" source="HSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL02" source="HSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL03" source="HSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL04" source="HSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL05" source="HSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL06" source="HSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL07" source="HSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL08" source="HSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL09" source="HSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL10" source="HSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL11" source="HSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL12" source="HSL12"/>
+      </input>
+      <filter>(&quot;RYEAR&quot; =&quot;Previous_Year&quot;)</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Chart_of_Accounts" transparentFilter="false"/>
+        <viewAttribute id="GL_Account_Formated" transparentFilter="false"/>
+        <viewAttribute id="GL_Short_Text" transparentFilter="false"/>
+        <viewAttribute id="GL_Account" transparentFilter="false"/>
+        <viewAttribute id="PARENT_NODE" transparentFilter="false"/>
+        <viewAttribute id="Current_Year_Amount"/>
+        <viewAttribute id="Previous_Year_Amount"/>
+        <viewAttribute id="GL_Parents_Key"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Chart_of_Accounts" source="Chart_of_Accounts"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account_Formated" source="GL_Account_Formated"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Short_Text" source="GL_Short_Text"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account" source="GL_Account"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_NODE" source="PARENT_NODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Current_Year_Amount" source="Current_Year_Amount"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Parents_Key" source="GL_Parents_Key"/>
+      </input>
+      <input node="#Previous_Year">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Previous_Year_Amount" source="Previous_Year_Amount"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account" source="RACCT"/>
+      </input>
+      <joinAttribute name="GL_Account"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_2">
+    <descriptions/>
+    <attributes>
+      <attribute id="Chart_of_Accounts" order="1" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Chart_of_Accounts"/>
+        <keyMapping columnObjectName="Join_2" columnName="Chart_of_Accounts"/>
+      </attribute>
+      <attribute id="GL_Account_Formated" order="2" attributeHierarchyActive="false" descriptionColumnName="GL_Parents_Key" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="GL_Account_Formated"/>
+        <keyMapping columnObjectName="Join_2" columnName="GL_Account_Formated"/>
+      </attribute>
+      <attribute id="GL_Short_Text" order="3" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="GL_Short_Text"/>
+        <keyMapping columnObjectName="Join_2" columnName="GL_Short_Text"/>
+      </attribute>
+      <attribute id="GL_Account" order="4" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="GL_Account"/>
+        <keyMapping columnObjectName="Join_2" columnName="GL_Account"/>
+      </attribute>
+      <attribute id="PARENT_NODE" order="5" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="PARENT_NODE"/>
+        <keyMapping columnObjectName="Join_2" columnName="PARENT_NODE"/>
+      </attribute>
+      <attribute id="GL_Parents_Key" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="GL_Parents_Key"/>
+        <keyMapping columnObjectName="Join_2" columnName="GL_Parents_Key"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Current_Year_Amount" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Current_Year_Amount"/>
+        <measureMapping columnObjectName="Join_2" columnName="Current_Year_Amount"/>
+      </measure>
+      <measure id="Previous_Year_Amount" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Previous_Year_Amount"/>
+        <measureMapping columnObjectName="Join_2" columnName="Previous_Year_Amount"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions>
+      <localDimension id="Balance_Sheet_Hierarchy">
+        <attributeRef xsi:type="DataFoundation:Attribute">#GL_Account_Formated</attributeRef>
+        <attributeRef xsi:type="DataFoundation:Attribute">#PARENT_NODE</attributeRef>
+        <hierarchies>
+          <hierarchy xsi:type="Dimension:ParentChildHierarchy" id="Balance_Sheet_Hierarchy" aggregateAllNodes="true" emptyValueIsNull="true" cycleHandling="BREAKUP" rootNodeVisibility="ADD_ROOT_NODE_IF_DEFINED">
+            <descriptions defaultDescription="Balance Sheet Hierarchy"/>
+            <attributeParentPair attribute="#GL_Account_Formated" parentAttribute="#PARENT_NODE">
+              <rootNode>
+                <value>Balance Sheet</value>
+              </rootNode>
+            </attributeParentPair>
+          </hierarchy>
+        </hierarchies>
+      </localDimension>
+    </localDimensions>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="176" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="357"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Current_Year" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="357"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Previous_Year" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_HR_ABSENT_DASHBOARD_V1" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_HR_ABSENT_DASHBOARD_V1"/>
+  <metadata activatedAt="2020-11-10 15:18:39.0" changedAt="2020-11-10 17:40:40.181" createdAt="2020-11-10 17:40:40.181"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>date(leftstr(string(now()),4)+'0101')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="41"/>
+  <dataSources>
+    <DataSource id="ZAN_ATTD_TIME" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR.Base_Views/calculationviews/ZAN_ATTD_TIME</resourceUri>
+    </DataSource>
+    <DataSource id="M_TIME_DIMENSION" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION"/>
+    </DataSource>
+    <DataSource id="ZCV_HR_SALARY_REPORT" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR/calculationviews/ZCV_HR_SALARY_REPORT</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Actual_Out_V1"/>
+        <viewAttribute id="Actual_In_V1"/>
+        <viewAttribute id="ZDATE"/>
+        <viewAttribute id="EMP_NUM"/>
+        <viewAttribute id="EMP_NAME"/>
+        <viewAttribute id="PRES_ABS">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="Absent"/>
+            <operands value="Present"/>
+            <operands value="Single Punch"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="Planned_In_V2"/>
+        <viewAttribute id="Planned_Out_V2"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="Filter_Date" expressionLanguage="COLUMN_ENGINE">
+          <filter xsi:type="AccessControl:RangeValueFilter" operator="BT" including="true" lowValue="$$From_Date$$" highValue="$$To_Date$$"/>
+          <formula>&quot;ZDATE&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Year_Month" length="6" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(&quot;ZDATE&quot;,4)+ midstr(&quot;ZDATE&quot;,5,2)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_ATTD_TIME">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DATE_SAP"/>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="QUARTER"/>
+        <viewAttribute id="MONTH"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="Filter_Date" expressionLanguage="COLUMN_ENGINE">
+          <filter xsi:type="AccessControl:RangeValueFilter" operator="BT" including="true" lowValue="$$From_Date$$" highValue="$$To_Date$$"/>
+          <formula>&quot;DATE_SAP&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Year_Month" length="6" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(&quot;DATE_SAP&quot;,6)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#M_TIME_DIMENSION">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATE_SAP" source="DATE_SAP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Actual_Out_V1"/>
+        <viewAttribute id="Actual_In_V1"/>
+        <viewAttribute id="ZDATE"/>
+        <viewAttribute id="EMP_NUM"/>
+        <viewAttribute id="EMP_NAME"/>
+        <viewAttribute id="PRES_ABS"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="QUARTER"/>
+        <viewAttribute id="Planned_In_V2"/>
+        <viewAttribute id="Planned_Out_V2"/>
+        <viewAttribute id="Year_Month"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+      </input>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+      </input>
+      <joinAttribute name="Year_Month"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Actual_Out_V1"/>
+        <viewAttribute id="Actual_In_V1"/>
+        <viewAttribute id="ZDATE"/>
+        <viewAttribute id="EMP_NUM"/>
+        <viewAttribute id="EMP_NAME"/>
+        <viewAttribute id="PRES_ABS"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="QUARTER"/>
+        <viewAttribute aggregationType="sum" id="Count"/>
+        <viewAttribute id="Planned_In_V2"/>
+        <viewAttribute id="Planned_Out_V2"/>
+        <viewAttribute id="Year_Month"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="STEXT_1"/>
+        <viewAttribute id="PERNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZCV_HR_SALARY_REPORT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STEXT_1" source="STEXT_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="QUARTER" keepFlag="true"/>
+        <viewAttribute id="YEAR" keepFlag="true"/>
+        <viewAttribute id="MONTH" keepFlag="true"/>
+        <viewAttribute id="PRES_ABS" keepFlag="true"/>
+        <viewAttribute id="EMP_NAME" keepFlag="true"/>
+        <viewAttribute id="EMP_NUM" keepFlag="true"/>
+        <viewAttribute id="ZDATE" keepFlag="true"/>
+        <viewAttribute id="Actual_In_V1" keepFlag="true"/>
+        <viewAttribute id="Actual_Out_V1" keepFlag="true"/>
+        <viewAttribute id="Planned_In_V2" keepFlag="true"/>
+        <viewAttribute id="Planned_Out_V2" keepFlag="true"/>
+        <viewAttribute id="STEXT_1"/>
+        <viewAttribute id="Year_Month"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Aggregation_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+      </input>
+      <input node="#Projection_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STEXT_1" source="STEXT_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="PERNR"/>
+      </input>
+      <joinAttribute name="EMP_NUM"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_5">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="QUARTER" keepFlag="true"/>
+        <viewAttribute id="YEAR" keepFlag="true"/>
+        <viewAttribute id="MONTH" keepFlag="true"/>
+        <viewAttribute id="PRES_ABS" keepFlag="true"/>
+        <viewAttribute id="Actual_In_V1" keepFlag="true"/>
+        <viewAttribute id="Actual_Out_V1" keepFlag="true"/>
+        <viewAttribute id="Planned_In_V2" keepFlag="true"/>
+        <viewAttribute id="Planned_Out_V2" keepFlag="true"/>
+        <viewAttribute id="Year_Month" keepFlag="true"/>
+        <viewAttribute id="ZDATE" keepFlag="true"/>
+        <viewAttribute id="EMP_NUM" keepFlag="true"/>
+        <viewAttribute id="EMP_NAME" keepFlag="true"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Status" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;PRES_ABS&quot;='Absent','Absent','')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_6">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="QUARTER" keepFlag="true"/>
+        <viewAttribute id="YEAR" keepFlag="true"/>
+        <viewAttribute id="MONTH" keepFlag="true"/>
+        <viewAttribute id="PRES_ABS" keepFlag="true"/>
+        <viewAttribute id="Actual_In_V1" keepFlag="true"/>
+        <viewAttribute id="Actual_Out_V1" keepFlag="true"/>
+        <viewAttribute id="Planned_In_V2" keepFlag="true"/>
+        <viewAttribute id="Planned_Out_V2" keepFlag="true"/>
+        <viewAttribute id="ZDATE" keepFlag="true"/>
+        <viewAttribute id="Year_Month" keepFlag="true"/>
+        <viewAttribute id="EMP_NUM" keepFlag="true"/>
+        <viewAttribute id="EMP_NAME" keepFlag="true"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Status" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((&quot;Actual_In_V1&quot;> &quot;Planned_In_V2&quot;) and in(&quot;PRES_ABS&quot;,'Present','Single Punch'),'Late Check In','')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_7">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="QUARTER" keepFlag="true"/>
+        <viewAttribute id="YEAR" keepFlag="true"/>
+        <viewAttribute id="MONTH" keepFlag="true"/>
+        <viewAttribute id="PRES_ABS" keepFlag="true"/>
+        <viewAttribute id="Actual_In_V1" keepFlag="true"/>
+        <viewAttribute id="Actual_Out_V1" keepFlag="true"/>
+        <viewAttribute id="Planned_In_V2" keepFlag="true"/>
+        <viewAttribute id="Planned_Out_V2" keepFlag="true"/>
+        <viewAttribute id="ZDATE" keepFlag="true"/>
+        <viewAttribute id="Year_Month" keepFlag="true"/>
+        <viewAttribute id="EMP_NAME" keepFlag="true"/>
+        <viewAttribute id="EMP_NUM" keepFlag="true"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Status" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((&quot;Actual_Out_V1&quot;&lt; &quot;Planned_Out_V2&quot;) and in(&quot;PRES_ABS&quot;,'Present','Single Punch'),'Early Check Out','')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Union_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="QUARTER" transparentFilter="false"/>
+        <viewAttribute id="YEAR" transparentFilter="false"/>
+        <viewAttribute id="MONTH" transparentFilter="false"/>
+        <viewAttribute id="Status" transparentFilter="false"/>
+        <viewAttribute id="PRES_ABS" transparentFilter="false"/>
+        <viewAttribute id="Actual_In_V1" transparentFilter="false"/>
+        <viewAttribute id="Actual_Out_V1" transparentFilter="false"/>
+        <viewAttribute id="Planned_In_V2" transparentFilter="false"/>
+        <viewAttribute id="Planned_Out_V2" transparentFilter="false"/>
+        <viewAttribute id="Year_Month" transparentFilter="false"/>
+        <viewAttribute id="ZDATE" transparentFilter="false"/>
+        <viewAttribute id="EMP_NUM" transparentFilter="false"/>
+        <viewAttribute id="EMP_NAME" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Projection_5">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status" source="Status"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Projection_6">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status" source="Status"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Projection_7">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status" source="Status"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_8">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="QUARTER" transparentFilter="false"/>
+        <viewAttribute id="YEAR" transparentFilter="false"/>
+        <viewAttribute id="MONTH" transparentFilter="false"/>
+        <viewAttribute id="Status" transparentFilter="false"/>
+        <viewAttribute id="PRES_ABS" transparentFilter="false"/>
+        <viewAttribute id="Actual_In_V1" transparentFilter="false"/>
+        <viewAttribute id="Actual_Out_V1" transparentFilter="false"/>
+        <viewAttribute id="Planned_In_V2" transparentFilter="false"/>
+        <viewAttribute id="Planned_Out_V2" transparentFilter="false"/>
+        <viewAttribute id="Year_Month" transparentFilter="false"/>
+        <viewAttribute id="ZDATE" transparentFilter="false"/>
+        <viewAttribute id="EMP_NUM" transparentFilter="false"/>
+        <viewAttribute id="EMP_NAME" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Status_Final" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(isnull(&quot;Status&quot;) or &quot;Status&quot;='','Others',&quot;Status&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Union_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status" source="Status"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="QUARTER" transparentFilter="false"/>
+        <viewAttribute id="YEAR" transparentFilter="false"/>
+        <viewAttribute id="MONTH" transparentFilter="false"/>
+        <viewAttribute id="Status" transparentFilter="false"/>
+        <viewAttribute id="PRES_ABS" transparentFilter="false"/>
+        <viewAttribute id="Actual_In_V1" transparentFilter="false"/>
+        <viewAttribute id="Actual_Out_V1" transparentFilter="false"/>
+        <viewAttribute id="Planned_In_V2" transparentFilter="false"/>
+        <viewAttribute id="Planned_Out_V2" transparentFilter="false"/>
+        <viewAttribute id="Year_Month" transparentFilter="false"/>
+        <viewAttribute id="ZDATE" transparentFilter="false"/>
+        <viewAttribute id="EMP_NUM" transparentFilter="false"/>
+        <viewAttribute id="EMP_NAME" transparentFilter="false"/>
+        <viewAttribute id="Status_Final">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value="Others"/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Late_Check_In" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((&quot;Actual_In_V1&quot;> &quot;Planned_In_V2&quot;) and in(&quot;PRES_ABS&quot;,'Present','Single Punch'),1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Early_Check_Out" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((&quot;Actual_Out_V1&quot;&lt; &quot;Planned_Out_V2&quot;) and in(&quot;PRES_ABS&quot;,'Present','Single Punch'),1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Absent" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;PRES_ABS&quot;='Absent',1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Final_Month" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='01','Jan',if(&quot;MONTH&quot;='02','Feb',if(&quot;MONTH&quot;='03','Mar',if(&quot;MONTH&quot;='04','Apr',if(&quot;MONTH&quot;='05','May',if(&quot;MONTH&quot;='06','Jun',if(&quot;MONTH&quot;='07','Jul',if(&quot;MONTH&quot;='08','Aug',if(&quot;MONTH&quot;='09','Sep',if(&quot;MONTH&quot;='10','Oct',if(&quot;MONTH&quot;='11','Nov','Dec')))))))))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_1" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Status_Key" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Status_Final&quot;='Late Check In','01',if(&quot;Status_Final&quot;='Early Check Out','02',if(&quot;Status_Final&quot;='Absent','03','04')))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Quarter_Final" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;QUARTER&quot;='01','Q1',if(&quot;QUARTER&quot;='02','Q2',if(&quot;QUARTER&quot;='03','Q3','Q4')))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_8">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NAME" source="EMP_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EMP_NUM" source="EMP_NUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZDATE" source="ZDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Month" source="Year_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_Out_V2" source="Planned_Out_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Planned_In_V2" source="Planned_In_V2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Out_V1" source="Actual_Out_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_In_V1" source="Actual_In_V1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRES_ABS" source="PRES_ABS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status" source="Status"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status_Final" source="Status_Final"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_3">
+    <descriptions/>
+    <attributes>
+      <attribute id="Final_Month" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Final_Month"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Final_Month"/>
+      </attribute>
+      <attribute id="Status_Key" order="3" attributeHierarchyActive="false" descriptionColumnName="Status_Final" displayAttribute="false">
+        <descriptions defaultDescription="Status"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Status_Key"/>
+      </attribute>
+      <attribute id="Status_Final" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Status_Final"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Status_Final"/>
+      </attribute>
+      <attribute id="EMP_NAME" order="5" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="EMP_NAME"/>
+        <keyMapping columnObjectName="Projection_3" columnName="EMP_NAME"/>
+      </attribute>
+      <attribute id="EMP_NUM" order="6" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="EMP_NUM"/>
+        <keyMapping columnObjectName="Projection_3" columnName="EMP_NUM"/>
+      </attribute>
+      <attribute id="ZDATE" order="7" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="ZDATE"/>
+        <keyMapping columnObjectName="Projection_3" columnName="ZDATE"/>
+      </attribute>
+      <attribute id="Status" order="8" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Status"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Status"/>
+      </attribute>
+      <attribute id="PRES_ABS" order="9" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="PRES_ABS"/>
+        <keyMapping columnObjectName="Projection_3" columnName="PRES_ABS"/>
+      </attribute>
+      <attribute id="Actual_In_V1" order="10" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Actual_In_V1"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Actual_In_V1"/>
+      </attribute>
+      <attribute id="Actual_Out_V1" order="11" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Actual_Out_V1"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Actual_Out_V1"/>
+      </attribute>
+      <attribute id="Planned_In_V2" order="12" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Planned_In_V2"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Planned_In_V2"/>
+      </attribute>
+      <attribute id="Planned_Out_V2" order="13" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Planned_Out_V2"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Planned_Out_V2"/>
+      </attribute>
+      <attribute id="Year_Month" order="14" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions/>
+        <keyMapping columnObjectName="Projection_3" columnName="Year_Month"/>
+      </attribute>
+      <attribute id="QUARTER" order="15" attributeHierarchyActive="false" descriptionColumnName="Quarter_Final" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Quarter"/>
+        <keyMapping columnObjectName="Projection_3" columnName="QUARTER"/>
+      </attribute>
+      <attribute id="YEAR" order="16" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Year"/>
+        <keyMapping columnObjectName="Projection_3" columnName="YEAR"/>
+      </attribute>
+      <attribute id="MONTH" order="17" attributeHierarchyActive="false" descriptionColumnName="Final_Month" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Month"/>
+        <keyMapping columnObjectName="Projection_3" columnName="MONTH"/>
+      </attribute>
+      <attribute id="Quarter_Final" order="18" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Quarter_Final"/>
+        <keyMapping columnObjectName="Projection_3" columnName="Quarter_Final"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Count_1" order="1" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Projection_3" columnName="Count_1"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="176" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="803"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="803"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="707"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="629"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="629"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="533"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="455"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_6" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="455"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_7" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="455"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="321"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_8" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="243"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

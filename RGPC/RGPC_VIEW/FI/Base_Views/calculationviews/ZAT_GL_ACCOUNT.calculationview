@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAT_GL_ACCOUNT" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="TREE_BASED" dataCategory="DIMENSION" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Projection">
+  <origin/>
+  <descriptions defaultDescription="ZAT_GL_ACCOUNT"/>
+  <metadata activatedAt="2020-11-10 15:23:45.0" changedAt="2020-11-10 17:40:17.543"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="SKA1" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="SKA1"/>
+    </DataSource>
+    <DataSource id="T077Z" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="T077Z"/>
+    </DataSource>
+    <DataSource id="SKAT" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="SKAT"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="GL_Account">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="KTOPL">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="RGPC"/>
+        </viewAttribute>
+        <viewAttribute id="SAKNR"/>
+        <viewAttribute id="XBILK"/>
+        <viewAttribute id="SAKAN"/>
+        <viewAttribute id="GLACCOUNT_TYPE"/>
+        <viewAttribute id="KTOKS"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#SKA1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="KTOPL" source="KTOPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAKNR" source="SAKNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="XBILK" source="XBILK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAKAN" source="SAKAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT_TYPE" source="GLACCOUNT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KTOKS" source="KTOKS"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Acc_Grp_Desc">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SPRAS">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="E"/>
+        </viewAttribute>
+        <viewAttribute id="KTOPL"/>
+        <viewAttribute id="KTOKS"/>
+        <viewAttribute id="TXT30"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#T077Z">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SPRAS" source="SPRAS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KTOPL" source="KTOPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KTOKS" source="KTOKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT30" source="TXT30"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Account_Group_Description"/>
+        <viewAttribute id="Chart_of_Accounts"/>
+        <viewAttribute id="GL_Account"/>
+        <viewAttribute id="GL_Account_Formated"/>
+        <viewAttribute id="GLACCOUNT_TYPE"/>
+        <viewAttribute id="Account_Group"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#GL_Account">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Chart_of_Accounts" source="KTOPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account" source="SAKNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account_Formated" source="SAKAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GLACCOUNT_TYPE" source="GLACCOUNT_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Account_Group" source="KTOKS"/>
+      </input>
+      <input node="#Acc_Grp_Desc">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Account_Group_Description" source="TXT30"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Chart_of_Accounts" source="KTOPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Account_Group" source="KTOKS"/>
+      </input>
+      <joinAttribute name="Chart_of_Accounts"/>
+      <joinAttribute name="Account_Group"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="GL_Desc">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SPRAS">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="E"/>
+        </viewAttribute>
+        <viewAttribute id="KTOPL"/>
+        <viewAttribute id="SAKNR"/>
+        <viewAttribute id="GL_Short_Text"/>
+        <viewAttribute id="GL_Long_Text"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#SKAT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SPRAS" source="SPRAS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KTOPL" source="KTOPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAKNR" source="SAKNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Short_Text" source="TXT20"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Long_Text" source="TXT50"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Account_Group_Description"/>
+        <viewAttribute id="Chart_of_Accounts"/>
+        <viewAttribute id="GL_Account"/>
+        <viewAttribute id="GL_Account_Formated"/>
+        <viewAttribute id="Account_Group"/>
+        <viewAttribute id="GL_Short_Text"/>
+        <viewAttribute id="GL_Long_Text"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Account_Group_Description" source="Account_Group_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Chart_of_Accounts" source="Chart_of_Accounts"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account" source="GL_Account"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account_Formated" source="GL_Account_Formated"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Account_Group" source="Account_Group"/>
+      </input>
+      <input node="#GL_Desc">
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Short_Text" source="GL_Short_Text"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Long_Text" source="GL_Long_Text"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Chart_of_Accounts" source="KTOPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Account" source="SAKNR"/>
+      </input>
+      <joinAttribute name="Chart_of_Accounts"/>
+      <joinAttribute name="GL_Account"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_2">
+    <descriptions/>
+    <attributes>
+      <attribute id="Account_Group_Description" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Account_Group_Description"/>
+        <keyMapping columnObjectName="Join_2" columnName="Account_Group_Description"/>
+      </attribute>
+      <attribute id="Chart_of_Accounts" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Chart_of_Accounts"/>
+        <keyMapping columnObjectName="Join_2" columnName="Chart_of_Accounts"/>
+      </attribute>
+      <attribute id="GL_Account" order="3" attributeHierarchyActive="false" descriptionColumnName="GL_Short_Text" displayAttribute="false">
+        <descriptions defaultDescription="GL_Account"/>
+        <keyMapping columnObjectName="Join_2" columnName="GL_Account"/>
+      </attribute>
+      <attribute id="GL_Account_Formated" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="GL_Account_Formated"/>
+        <keyMapping columnObjectName="Join_2" columnName="GL_Account_Formated"/>
+      </attribute>
+      <attribute id="Account_Group" order="5" attributeHierarchyActive="false" descriptionColumnName="Account_Group_Description" displayAttribute="false">
+        <descriptions defaultDescription="Account_Group"/>
+        <keyMapping columnObjectName="Join_2" columnName="Account_Group"/>
+      </attribute>
+      <attribute id="GL_Short_Text" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="GL_Short_Text"/>
+        <keyMapping columnObjectName="Join_2" columnName="GL_Short_Text"/>
+      </attribute>
+      <attribute id="GL_Long_Text" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="GL_Long_Text"/>
+        <keyMapping columnObjectName="Join_2" columnName="GL_Long_Text"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="176" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="GL_Account" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="357"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Acc_Grp_Desc" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="357"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="GL_Desc" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="165"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

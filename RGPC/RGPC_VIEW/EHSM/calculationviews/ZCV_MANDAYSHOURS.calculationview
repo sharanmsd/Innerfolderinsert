@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_MANDAYSHOURS" applyPrivilegeType="NONE" checkAnalyticPrivileges="false" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_MANDAYSHOURS"/>
+  <metadata activatedAt="2021-07-07 14:05:11.0" changedAt="2020-12-09 10:28:51.709" createdAt="2020-12-09 10:28:51.709"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="ZEHSM_T_EM_GEN" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="ZEHSM_T_EM_GEN"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TYPE">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="MANHOURS"/>
+            <operands value="MANDAYS"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="RECORD_DATE"/>
+        <viewAttribute id="VALUE"/>
+        <viewAttribute id="UNIT"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZEHSM_T_EM_GEN">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RECORD_DATE" source="RECORD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VALUE" source="VALUE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UNIT" source="UNIT"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="RECORD_DATE"/>
+        <viewAttribute id="VALUE"/>
+        <viewAttribute id="UNIT"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RECORD_DATE" source="RECORD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VALUE" source="VALUE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UNIT" source="UNIT"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>TYPE</partitionViewAttributeName>
+        <order byViewAttributeName="RECORD_DATE" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Mandays">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TYPE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="MANDAYS"/>
+        </viewAttribute>
+        <viewAttribute id="mandays"/>
+        <viewAttribute id="mandays_unit"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="mandays_million" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;mandays&quot;/1000000</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'a'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Rank_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="mandays" source="VALUE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="mandays_unit" source="UNIT"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Manhours">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TYPE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="MANHOURS"/>
+        </viewAttribute>
+        <viewAttribute id="manhours"/>
+        <viewAttribute id="manhours_units"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="manhours_million" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;manhours&quot;/1000000</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'a'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Rank_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="manhours" source="VALUE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="manhours_units" source="UNIT"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="manhours_million"/>
+        <viewAttribute id="manhours_units"/>
+        <viewAttribute id="mandays_million"/>
+        <viewAttribute id="mandays_unit"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="KPI" length="50" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(isnull(&quot;manhours_million&quot;),'-',string(&quot;manhours_million&quot;)) +'M Man Hours and ' +if(isnull(&quot;mandays_million&quot;),'-',string(&quot;mandays_million&quot;)) +'M Man Days Since Last LTI'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Manhours">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="manhours_million" source="manhours_million"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="manhours_units" source="manhours_units"/>
+      </input>
+      <input node="#Mandays">
+        <mapping xsi:type="Calculation:AttributeMapping" target="mandays_million" source="mandays_million"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="mandays_unit" source="mandays_unit"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+      </input>
+      <joinAttribute name="Dummy"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="KPI" keepFlag="true"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI" source="KPI"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_2">
+    <descriptions/>
+    <attributes>
+      <attribute id="KPI" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="KPI"/>
+        <keyMapping columnObjectName="Projection_2" columnName="KPI"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes>
+      <calculatedAttribute id="KPI_Text" hidden="false" order="3" semanticType="empty" attributeHierarchyActive="false" descriptionColumnName="KPI" displayAttribute="false">
+        <descriptions defaultDescription="KPI_Text"/>
+        <keyCalculation datatype="NVARCHAR" expressionLanguage="COLUMN_ENGINE" length="1">
+          <formula>'1'</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+    </calculatedAttributes>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures>
+      <measure id="Count" hidden="false" order="1" aggregationType="sum" engineAggregation="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="Count"/>
+        <formula>1</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="99" y="87"/>
+        <rectangleSize/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="495"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="417"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Mandays" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="339"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Manhours" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="339"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="243"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

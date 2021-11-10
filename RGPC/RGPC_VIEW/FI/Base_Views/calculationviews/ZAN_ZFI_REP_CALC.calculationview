@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAN_ZFI_REP_CALC" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="TREE_BASED" dataCategory="DIMENSION" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Projection">
+  <origin/>
+  <descriptions defaultDescription="ZAN_ZFI_REP_CALC"/>
+  <metadata activatedAt="2020-11-10 15:23:45.0" changedAt="2020-11-10 17:40:16.992" createdAt="2020-10-07 15:39:07.457"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="ZFI_REP_CALC" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="ZFI_REP_CALC"/>
+    </DataSource>
+    <DataSource id="ZFI_SCHEDULE" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="ZFI_SCHEDULE"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="GL_Hierarchy">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="REP_USAGE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="MGMT"/>
+        </viewAttribute>
+        <viewAttribute id="ITEM_CODE"/>
+        <viewAttribute id="ITEMINDEX"/>
+        <viewAttribute id="CALC_CODE"/>
+        <viewAttribute id="CALC_IND"/>
+        <viewAttribute id="FUNC_NAME"/>
+        <viewAttribute id="ITEM_DESC"/>
+        <viewAttribute id="NEG_IND"/>
+        <viewAttribute id="REP_CODE">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="OPRS"/>
+            <operands value="BALS"/>
+          </filter>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZFI_REP_CALC">
+        <mapping xsi:type="Calculation:AttributeMapping" target="REP_USAGE" source="REP_USAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_CODE" source="ITEM_CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ITEMINDEX" source="ITEMINDEX"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CALC_CODE" source="CALC_CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CALC_IND" source="CALC_IND"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FUNC_NAME" source="FUNC_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_DESC" source="ITEM_DESC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NEG_IND" source="NEG_IND"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REP_CODE" source="REP_CODE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="GL_Line_Item">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEDULE_USAGE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="MGMT"/>
+        </viewAttribute>
+        <viewAttribute id="SCHEDULE_CODE"/>
+        <viewAttribute id="SCHEDULE_LINE"/>
+        <viewAttribute id="HKONT"/>
+        <viewAttribute id="GL_Description"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="SCH_CODE" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>lpad(&quot;SCHEDULE_CODE&quot;, 4,'0')</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="GL_ACCOUNT" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>lpad(&quot;HKONT&quot;,10,'0')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZFI_SCHEDULE">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEDULE_USAGE" source="SCHEDULE_USAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEDULE_CODE" source="SCHEDULE_CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEDULE_LINE" source="SCHEDULE_LINE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HKONT" source="HKONT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Description" source="SCHEDULE_DES"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Remove_Duplicates">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SCHEDULE_USAGE"/>
+        <viewAttribute id="SCH_CODE"/>
+        <viewAttribute id="GL_ACCOUNT"/>
+        <viewAttribute id="GL_Description"/>
+        <viewAttribute aggregationType="sum" id="SCHEDULE_LINE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#GL_Line_Item">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEDULE_USAGE" source="SCHEDULE_USAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCH_CODE" source="SCH_CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_ACCOUNT" source="GL_ACCOUNT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Description" source="GL_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SCHEDULE_LINE" source="SCHEDULE_LINE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="REP_USAGE"/>
+        <viewAttribute id="CALC_CODE"/>
+        <viewAttribute id="CALC_IND"/>
+        <viewAttribute id="FUNC_NAME"/>
+        <viewAttribute id="ITEM_DESC"/>
+        <viewAttribute id="NEG_IND"/>
+        <viewAttribute id="GL_ACCOUNT"/>
+        <viewAttribute id="GL_Description"/>
+        <viewAttribute id="REP_CODE"/>
+        <viewAttribute id="ITEM_CODE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#GL_Hierarchy">
+        <mapping xsi:type="Calculation:AttributeMapping" target="REP_USAGE" source="REP_USAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CALC_CODE" source="CALC_CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CALC_IND" source="CALC_IND"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FUNC_NAME" source="FUNC_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_DESC" source="ITEM_DESC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NEG_IND" source="NEG_IND"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REP_CODE" source="REP_CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ITEM_CODE" source="ITEM_CODE"/>
+      </input>
+      <input node="#Remove_Duplicates">
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_ACCOUNT" source="GL_ACCOUNT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GL_Description" source="GL_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REP_USAGE" source="SCHEDULE_USAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CALC_CODE" source="SCH_CODE"/>
+      </input>
+      <joinAttribute name="REP_USAGE"/>
+      <joinAttribute name="CALC_CODE"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="REP_USAGE" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="REP_USAGE"/>
+        <keyMapping columnObjectName="Join_1" columnName="REP_USAGE"/>
+      </attribute>
+      <attribute id="CALC_CODE" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CALC_CODE"/>
+        <keyMapping columnObjectName="Join_1" columnName="CALC_CODE"/>
+      </attribute>
+      <attribute id="CALC_IND" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CALC_IND"/>
+        <keyMapping columnObjectName="Join_1" columnName="CALC_IND"/>
+      </attribute>
+      <attribute id="FUNC_NAME" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="FUNC_NAME"/>
+        <keyMapping columnObjectName="Join_1" columnName="FUNC_NAME"/>
+      </attribute>
+      <attribute id="ITEM_DESC" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ITEM_DESC"/>
+        <keyMapping columnObjectName="Join_1" columnName="ITEM_DESC"/>
+      </attribute>
+      <attribute id="NEG_IND" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="NEG_IND"/>
+        <keyMapping columnObjectName="Join_1" columnName="NEG_IND"/>
+      </attribute>
+      <attribute id="GL_ACCOUNT" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="GL_ACCOUNT"/>
+        <keyMapping columnObjectName="Join_1" columnName="GL_ACCOUNT"/>
+      </attribute>
+      <attribute id="GL_Description" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="GL_Description"/>
+        <keyMapping columnObjectName="Join_1" columnName="GL_Description"/>
+      </attribute>
+      <attribute id="REP_CODE" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="REP_CODE"/>
+        <keyMapping columnObjectName="Join_1" columnName="REP_CODE"/>
+      </attribute>
+      <attribute id="ITEM_CODE" order="10" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ITEM_CODE"/>
+        <keyMapping columnObjectName="Join_1" columnName="ITEM_CODE"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="99" y="87"/>
+        <rectangleSize/>
+      </shape>
+      <shape expanded="true" modelObjectName="GL_Hierarchy" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="GL_Line_Item" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="339"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Remove_Duplicates" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="261"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

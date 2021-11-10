@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAT_INCIDENT_CATEGORY" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="TREE_BASED" dataCategory="DIMENSION" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Projection">
+  <origin/>
+  <descriptions defaultDescription="ZCV_INCIDENT_CATEGORY"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:07:46.532"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="EHHSSD_INC_INCGR" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSD_INC_INCGR"/>
+    </DataSource>
+    <DataSource id="EHHSSC_INC_GRP_T" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSC_INC_GRP_T"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:AggregationView" id="Category">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PARENT_KEY"/>
+        <viewAttribute id="INC_GROUP"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#EHHSSD_INC_INCGR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_KEY" source="PARENT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Category_Text">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="LANGUAGE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="E"/>
+        </viewAttribute>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="DESCRIPTION"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Category_Priority" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>case(&quot;CODE&quot;,&#xD;
+'ZEHHSS_IGR_60_SAF','1',&#xD;
+'ZEHHSS_IGR_70_MED','2',&#xD;
+'EHHSS_IGR_OCC_INC','3',&#xD;
+'ZEHHSS_IGR_20_FIRE','4',&#xD;
+'ZEHHSS_IGR_50_VEC','4',&#xD;
+'ZEHHSS_IGR_30_PD','5',&#xD;
+'ZEHHSS_IGR_10_NM','6',&#xD;
+'ZEHHSS_IGR_TECH','7',&#xD;
+'EHHSS_IGR_RELEASE','8',&#xD;
+'ZEHHSS_IGR_40_HTE','9',&#xD;
+'ZEHHSS_IGR_99_OTH','10',&#xD;
+'11')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#EHHSSC_INC_GRP_T">
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANGUAGE" source="LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="INC_GROUP"/>
+        <viewAttribute id="PARENT_KEY"/>
+        <viewAttribute id="Category_Priority"/>
+        <viewAttribute id="DESCRIPTION"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Category">
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_KEY" source="PARENT_KEY"/>
+      </input>
+      <input node="#Category_Text">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Category_Priority" source="Category_Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="CODE"/>
+      </input>
+      <joinAttribute name="INC_GROUP"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Top_Priority">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Category_Priority"/>
+        <viewAttribute id="PARENT_KEY"/>
+        <viewAttribute id="INC_GROUP"/>
+        <viewAttribute id="DESCRIPTION"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Category_Priority" source="Category_Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_KEY" source="PARENT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>PARENT_KEY</partitionViewAttributeName>
+        <order byViewAttributeName="Category_Priority" direction="ASC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="Category_Priority" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Category_Priority"/>
+        <keyMapping columnObjectName="Join_1" columnName="Category_Priority"/>
+      </attribute>
+      <attribute id="INC_GROUP" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="INC_GROUP"/>
+        <keyMapping columnObjectName="Join_1" columnName="INC_GROUP"/>
+      </attribute>
+      <attribute id="DESCRIPTION" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DESCRIPTION"/>
+        <keyMapping columnObjectName="Join_1" columnName="DESCRIPTION"/>
+      </attribute>
+      <attribute id="PARENT_KEY" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PARENT_KEY"/>
+        <keyMapping columnObjectName="Join_1" columnName="PARENT_KEY"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="22" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Category" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Category_Text" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="165"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Top_Priority" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="87"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

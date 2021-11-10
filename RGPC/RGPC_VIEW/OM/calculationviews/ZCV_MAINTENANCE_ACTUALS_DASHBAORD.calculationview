@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_MAINTENANCE_ACTUALS_DASHBAORD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_OPERATIONS_BUDGET_DASHBAORD"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:27.257"/>
+  <localVariables>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'yyyy-mm-dd')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="47"/>
+  <dataSources>
+    <DataSource id="ZAN_FAGLFLEXT" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_FAGLFLEXT</resourceUri>
+    </DataSource>
+    <DataSource id="M_TIME_DIMENSION_MONTH" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION_MONTH"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="RYEAR"/>
+        <viewAttribute id="RPMAX"/>
+        <viewAttribute id="RTCUR"/>
+        <viewAttribute id="RACCT"/>
+        <viewAttribute id="RBUKRS"/>
+        <viewAttribute id="RCNTR"/>
+        <viewAttribute id="HSLVT"/>
+        <viewAttribute id="HSL01"/>
+        <viewAttribute id="HSL02"/>
+        <viewAttribute id="HSL03"/>
+        <viewAttribute id="HSL04"/>
+        <viewAttribute id="HSL05"/>
+        <viewAttribute id="HSL06"/>
+        <viewAttribute id="HSL07"/>
+        <viewAttribute id="HSL08"/>
+        <viewAttribute id="HSL09"/>
+        <viewAttribute id="HSL10"/>
+        <viewAttribute id="HSL11"/>
+        <viewAttribute id="HSL12"/>
+        <viewAttribute id="HSL13"/>
+        <viewAttribute id="HSL14"/>
+        <viewAttribute id="HSL15"/>
+        <viewAttribute id="HSL16"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Year" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>component(&quot;Date&quot;,1)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Month" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(string(&quot;Date&quot;),6,2)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>'$$To_Date$$'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Trim_GL" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>ltrim(&quot;RACCT&quot;,'0')</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Trim_Cost" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>ltrim(&quot;RCNTR&quot;,'0')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_FAGLFLEXT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="RYEAR" source="RYEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RPMAX" source="RPMAX"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RTCUR" source="RTCUR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RBUKRS" source="RBUKRS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RCNTR" source="RCNTR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSLVT" source="HSLVT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL01" source="HSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL02" source="HSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL03" source="HSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL04" source="HSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL05" source="HSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL06" source="HSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL07" source="HSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL08" source="HSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL09" source="HSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL10" source="HSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL11" source="HSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL12" source="HSL12"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL13" source="HSL13"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL14" source="HSL14"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL15" source="HSL15"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL16" source="HSL16"/>
+      </input>
+      <filter>(&quot;RBUKRS&quot; ='RGPC') AND (&quot;RYEAR&quot; = &quot;Year&quot;) AND ((in (&quot;Trim_GL&quot;,'400050','400051','400052','400054','400055','400058','400059','400060','400069','400070','400302','400360','400374','400378','400379','400380','400381')) or (in (&quot;Trim_Cost&quot;,'120060','120061','120062','120063','120064','120065','120066','120067','120068','120079','120080','130060','130061','130062','130063','130064','130065','130066','130067','130068','130069','140000','140001')))</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="Date"/>
+        <viewAttribute id="RYEAR"/>
+        <viewAttribute id="RPMAX"/>
+        <viewAttribute id="RTCUR"/>
+        <viewAttribute id="RACCT"/>
+        <viewAttribute id="RBUKRS"/>
+        <viewAttribute id="RCNTR"/>
+        <viewAttribute id="HSLVT"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+        <viewAttribute id="HSL01"/>
+        <viewAttribute id="HSL02"/>
+        <viewAttribute id="HSL03"/>
+        <viewAttribute id="HSL04"/>
+        <viewAttribute id="HSL05"/>
+        <viewAttribute id="HSL06"/>
+        <viewAttribute id="HSL07"/>
+        <viewAttribute id="HSL08"/>
+        <viewAttribute id="HSL09"/>
+        <viewAttribute id="HSL10"/>
+        <viewAttribute id="HSL11"/>
+        <viewAttribute id="HSL12"/>
+        <viewAttribute id="HSL13"/>
+        <viewAttribute id="HSL14"/>
+        <viewAttribute id="HSL15"/>
+        <viewAttribute id="HSL16"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RYEAR" source="RYEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RPMAX" source="RPMAX"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RTCUR" source="RTCUR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RBUKRS" source="RBUKRS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RCNTR" source="RCNTR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSLVT" source="HSLVT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL01" source="HSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL02" source="HSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL03" source="HSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL04" source="HSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL05" source="HSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL06" source="HSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL07" source="HSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL08" source="HSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL09" source="HSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL10" source="HSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL11" source="HSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL12" source="HSL12"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL13" source="HSL13"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL14" source="HSL14"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL15" source="HSL15"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL16" source="HSL16"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="MONTH"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="DATE" expressionLanguage="COLUMN_ENGINE">
+          <formula>'$$To_Date$$'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Component_month" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(string(&quot;DATE&quot;),6,2)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#M_TIME_DIMENSION_MONTH">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+      </input>
+      <filter>(&quot;MONTH&quot;&lt;=&quot;Component_month&quot;) and (&quot;MONTH&quot;!='00')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" dynamic="false" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="Date"/>
+        <viewAttribute id="RPMAX"/>
+        <viewAttribute id="RTCUR"/>
+        <viewAttribute id="RACCT"/>
+        <viewAttribute id="RBUKRS"/>
+        <viewAttribute id="RCNTR"/>
+        <viewAttribute id="HSLVT"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+        <viewAttribute id="HSL01"/>
+        <viewAttribute id="HSL02"/>
+        <viewAttribute id="HSL03"/>
+        <viewAttribute id="HSL04"/>
+        <viewAttribute id="HSL05"/>
+        <viewAttribute id="HSL06"/>
+        <viewAttribute id="HSL07"/>
+        <viewAttribute id="HSL08"/>
+        <viewAttribute id="HSL09"/>
+        <viewAttribute id="HSL10"/>
+        <viewAttribute id="HSL11"/>
+        <viewAttribute id="HSL12"/>
+        <viewAttribute id="HSL13"/>
+        <viewAttribute id="HSL14"/>
+        <viewAttribute id="HSL15"/>
+        <viewAttribute id="HSL16"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Aggregation_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RPMAX" source="RPMAX"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RTCUR" source="RTCUR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RBUKRS" source="RBUKRS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RCNTR" source="RCNTR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSLVT" source="HSLVT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL01" source="HSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL02" source="HSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL03" source="HSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL04" source="HSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL05" source="HSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL06" source="HSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL07" source="HSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL08" source="HSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL09" source="HSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL10" source="HSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL11" source="HSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL12" source="HSL12"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL13" source="HSL13"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL14" source="HSL14"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL15" source="HSL15"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL16" source="HSL16"/>
+      </input>
+      <input node="#Aggregation_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+      </input>
+      <joinAttribute name="Dummy"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Date"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="RACCT"/>
+        <viewAttribute id="RBUKRS"/>
+        <viewAttribute id="RCNTR"/>
+        <viewAttribute id="HSLVT"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+        <viewAttribute id="HSL02"/>
+        <viewAttribute id="HSL01"/>
+        <viewAttribute id="HSL04"/>
+        <viewAttribute id="HSL03"/>
+        <viewAttribute id="HSL05"/>
+        <viewAttribute id="HSL06"/>
+        <viewAttribute id="HSL07"/>
+        <viewAttribute id="HSL08"/>
+        <viewAttribute id="HSL09"/>
+        <viewAttribute id="HSL10"/>
+        <viewAttribute id="HSL11"/>
+        <viewAttribute id="HSL12"/>
+        <viewAttribute id="HSL13"/>
+        <viewAttribute id="HSL14"/>
+        <viewAttribute id="HSL15"/>
+        <viewAttribute id="HSL16"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_One" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='01',&quot;HSL01&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Two" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='02',&quot;HSL02&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Three" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='03',&quot;HSL03&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Four" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='04',&quot;HSL04&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Five" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='05',&quot;HSL05&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Six" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='06',&quot;HSL06&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Seven" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='07',&quot;HSL07&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Eight" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='08',&quot;HSL08&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Nine" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='09',&quot;HSL09&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Ten" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='10',&quot;HSL10&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Eleven" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='11',&quot;HSL11&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Month_Twelve" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='12',&quot;HSL12&quot;,0)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RBUKRS" source="RBUKRS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RCNTR" source="RCNTR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSLVT" source="HSLVT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL02" source="HSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL01" source="HSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL04" source="HSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL03" source="HSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL05" source="HSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL06" source="HSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL07" source="HSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL08" source="HSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL09" source="HSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL10" source="HSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL11" source="HSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL12" source="HSL12"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL13" source="HSL13"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL14" source="HSL14"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL15" source="HSL15"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL16" source="HSL16"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="Date"/>
+        <viewAttribute aggregationType="sum" id="Month_One"/>
+        <viewAttribute aggregationType="sum" id="Month_Two"/>
+        <viewAttribute aggregationType="sum" id="Month_Three"/>
+        <viewAttribute aggregationType="sum" id="Month_Four"/>
+        <viewAttribute aggregationType="sum" id="Month_Five"/>
+        <viewAttribute aggregationType="sum" id="Month_Six"/>
+        <viewAttribute aggregationType="sum" id="Month_Seven"/>
+        <viewAttribute aggregationType="sum" id="Month_Eight"/>
+        <viewAttribute aggregationType="sum" id="Month_Nine"/>
+        <viewAttribute aggregationType="sum" id="Month_Ten"/>
+        <viewAttribute aggregationType="sum" id="Month_Eleven"/>
+        <viewAttribute aggregationType="sum" id="Month_Twelve"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_One" source="Month_One"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Two" source="Month_Two"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Three" source="Month_Three"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Four" source="Month_Four"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Five" source="Month_Five"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Six" source="Month_Six"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Seven" source="Month_Seven"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Eight" source="Month_Eight"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Nine" source="Month_Nine"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Ten" source="Month_Ten"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Eleven" source="Month_Eleven"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Twelve" source="Month_Twelve"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+      </input>
+      <filter>(&quot;Trim_Cost&quot; = ('120060')) or ((&quot;Trim_GL&quot;= '400050') and &quot;Trim_Cost&quot; = ('120061')) or ((&quot;Trim_GL&quot;= '400051') and &quot;Trim_Cost&quot; = ('120062')) or ((&quot;Trim_GL&quot;= '400052') and &quot;Trim_Cost&quot; = ('120063')) or ((&quot;Trim_GL&quot;= '400054') and &quot;Trim_Cost&quot; = ('120064')) or ((&quot;Trim_GL&quot;= '400055') and &quot;Trim_Cost&quot; = ('120065')) or ((&quot;Trim_GL&quot;= '400058') and &quot;Trim_Cost&quot; = ('120066')) or ((&quot;Trim_GL&quot;= '400059') and &quot;Trim_Cost&quot; = ('120067')) or ((&quot;Trim_GL&quot;= '400060') and &quot;Trim_Cost&quot; = ('120068')) or ((&quot;Trim_GL&quot;= '400069') and &quot;Trim_Cost&quot; = ('120079')) or ((&quot;Trim_GL&quot;= '400070') and &quot;Trim_Cost&quot; = ('120080')) or (&quot;Trim_Cost&quot; = ('130060'))  or (&quot;Trim_Cost&quot; = ('130061')) or ((&quot;Trim_GL&quot;= '400302') and &quot;Trim_Cost&quot; = ('130062')) or (&quot;Trim_Cost&quot; = ('130063')) or ((&quot;Trim_GL&quot;= '400360') and &quot;Trim_Cost&quot; = ('130064')) or ((&quot;Trim_GL&quot;= '400374') and &quot;Trim_Cost&quot; = ('130065')) or ( &quot;Trim_Cost&quot; = ('130066')) or ((&quot;Trim_GL&quot;= '400378') and &quot;Trim_Cost&quot; = ('130067')) or ((&quot;Trim_GL&quot;= '400379') and &quot;Trim_Cost&quot; = ('130068')) or ((&quot;Trim_GL&quot;= '400380') and &quot;Trim_Cost&quot; = ('130069'))  or ((&quot;Trim_GL&quot;= '400381') and &quot;Trim_Cost&quot; = ('140000')) or (&quot;Trim_Cost&quot; = ('140001'))</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="All">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="Month_One"/>
+        <viewAttribute id="Month_Two"/>
+        <viewAttribute id="Month_Four"/>
+        <viewAttribute id="Month_Three"/>
+        <viewAttribute id="Month_Five"/>
+        <viewAttribute id="Month_Six"/>
+        <viewAttribute id="Month_Seven"/>
+        <viewAttribute id="Month_Eight"/>
+        <viewAttribute id="Month_Nine"/>
+        <viewAttribute id="Month_Ten"/>
+        <viewAttribute id="Month_Eleven"/>
+        <viewAttribute id="Month_Twelve"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Final_Month" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='01','Jan',if(&quot;MONTH&quot;='02','Feb',if(&quot;MONTH&quot;='03','Mar',if(&quot;MONTH&quot;='04','Apr',if(&quot;MONTH&quot;='05','May',if(&quot;MONTH&quot;='06','Jun',if(&quot;MONTH&quot;='07','Jul',if(&quot;MONTH&quot;='08','Aug',if(&quot;MONTH&quot;='09','Sep',if(&quot;MONTH&quot;='10','Oct',if(&quot;MONTH&quot;='11','Nov','Dec')))))))))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Final_Budget" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='01',&quot;Month_One&quot;,if(&quot;MONTH&quot;='02',&quot;Month_Two&quot;,if(&quot;MONTH&quot;='03',&quot;Month_Three&quot;,if(&quot;MONTH&quot;='04',&quot;Month_Four&quot;,if(&quot;MONTH&quot;='05',&quot;Month_Five&quot;,if(&quot;MONTH&quot;='06',&quot;Month_Six&quot;,if(&quot;MONTH&quot;='07',&quot;Month_Seven&quot;,if(&quot;MONTH&quot;='08',&quot;Month_Eight&quot;,if(&quot;MONTH&quot;='09',&quot;Month_Nine&quot;,if(&quot;MONTH&quot;='10',&quot;Month_Ten&quot;,if(&quot;MONTH&quot;='11',&quot;Month_Eleven&quot;,if(&quot;MONTH&quot;='12',&quot;Month_Twelve&quot;,0))))))))))))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Aggregation_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_One" source="Month_One"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Two" source="Month_Two"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Four" source="Month_Four"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Three" source="Month_Three"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Five" source="Month_Five"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Six" source="Month_Six"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Seven" source="Month_Seven"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Eight" source="Month_Eight"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Nine" source="Month_Nine"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Ten" source="Month_Ten"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Eleven" source="Month_Eleven"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month_Twelve" source="Month_Twelve"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Month">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="Final_Month"/>
+        <viewAttribute id="Final_Budget"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#All">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Month" source="Final_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Budget" source="Final_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="YTD">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="Final_Budget"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Month" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>'13'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Final_Month" length="3" expressionLanguage="COLUMN_ENGINE">
+          <formula>'YTD'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#All">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Budget" source="Final_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Union_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Final_Budget"/>
+        <viewAttribute id="Final_Month"/>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="MONTH" transparentFilter="false"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Month">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Budget" source="Final_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Month" source="Final_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#YTD">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Budget" source="Final_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Month" source="Final_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Union_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="Final_Month" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Final_Month"/>
+        <keyMapping columnObjectName="Union_1" columnName="Final_Month"/>
+      </attribute>
+      <attribute id="MONTH" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="MONTH"/>
+        <keyMapping columnObjectName="Union_1" columnName="MONTH"/>
+      </attribute>
+      <attribute id="Year" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Year"/>
+        <keyMapping columnObjectName="Union_1" columnName="Year"/>
+      </attribute>
+      <attribute id="Trim_GL" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Trim_GL"/>
+        <keyMapping columnObjectName="Union_1" columnName="Trim_GL"/>
+      </attribute>
+      <attribute id="Trim_Cost" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Trim_Cost"/>
+        <keyMapping columnObjectName="Union_1" columnName="Trim_Cost"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Final_Budget" order="1" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Final_Budget"/>
+        <measureMapping columnObjectName="Union_1" columnName="Final_Budget"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="99" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="767"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="689"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="689"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="593"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="515"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="437"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="All" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="359"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Month" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="281"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="YTD" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="281"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

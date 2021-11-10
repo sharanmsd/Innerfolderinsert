@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" schemaVersion="2.3" id="ZCV_TOP10_MATERIALS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_TOP10_MATERIALS"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:17.083"/>
+  <localVariables>
+    <variable id="Material_Type" parameter="true">
+      <descriptions defaultDescription="Material_Type"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="*" length="25" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="true" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>date(leftstr(string(now()),4)+'0101')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="Purchase_Group_Filter" parameter="true">
+      <descriptions defaultDescription="Purchase_Group"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="*" length="25" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="true" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZAN_STOCK_QTY_MATERIAL">
+      <targetVariable name="Material_Type_Filter" resourceUri="/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL"/>
+      <localVariable>#Material_Type</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZAN_STOCK_QTY_MATERIAL">
+      <targetVariable name="To_Date" resourceUri="/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL"/>
+      <localVariable>#To_Date</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZAN_STOCK_QTY_MATERIAL">
+      <targetVariable name="From_Date" resourceUri="/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL"/>
+      <localVariable>#From_Date</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZAN_STOCK_QTY_MATERIAL">
+      <targetVariable name="Purchase_Group_Filter" resourceUri="/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL"/>
+      <localVariable>#Purchase_Group_Filter</localVariable>
+    </mapping>
+  </variableMappings>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="ZAN_STOCK_QTY_MATERIAL" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Stock">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Base_Unit"/>
+        <viewAttribute id="Material_Type_1"/>
+        <viewAttribute id="Material_Number"/>
+        <viewAttribute id="Material_Description"/>
+        <viewAttribute id="Material_Type_Description"/>
+        <viewAttribute id="Issue_Stock"/>
+        <viewAttribute id="Issue_Value"/>
+        <viewAttribute id="INV_EKGRP"/>
+        <viewAttribute id="INV_EKNAM"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_STOCK_QTY_MATERIAL">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Base_Unit" source="Base_Unit"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_1" source="Material_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number" source="Material_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Description" source="Material_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_Description" source="Material_Type_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Stock" source="Issue_Stock"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Value" source="Issue_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKGRP" source="INV_EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKNAM" source="INV_EKNAM"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Top_N">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Base_Unit"/>
+        <viewAttribute id="Material_Type_1"/>
+        <viewAttribute id="Material_Number"/>
+        <viewAttribute id="Material_Description"/>
+        <viewAttribute id="Material_Type_Description"/>
+        <viewAttribute id="Issue_Stock"/>
+        <viewAttribute id="Issue_Value"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="INV_EKGRP"/>
+        <viewAttribute id="INV_EKNAM"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Stock">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Base_Unit" source="Base_Unit"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_1" source="Material_Type_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number" source="Material_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Description" source="Material_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_Description" source="Material_Type_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Stock" source="Issue_Stock"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Value" source="Issue_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKGRP" source="INV_EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKNAM" source="INV_EKNAM"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>Dummy</partitionViewAttributeName>
+        <order byViewAttributeName="Issue_Value" direction="DESC"/>
+        <rankThreshold>
+          <value>10</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Top_N">
+    <descriptions/>
+    <attributes>
+      <attribute id="Base_Unit" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Unit"/>
+        <keyMapping columnObjectName="Top_N" columnName="Base_Unit"/>
+      </attribute>
+      <attribute id="Material_Type_1" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Type"/>
+        <keyMapping columnObjectName="Top_N" columnName="Material_Type_1"/>
+      </attribute>
+      <attribute id="Material_Number" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Number"/>
+        <keyMapping columnObjectName="Top_N" columnName="Material_Number"/>
+      </attribute>
+      <attribute id="Material_Description" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material"/>
+        <keyMapping columnObjectName="Top_N" columnName="Material_Description"/>
+      </attribute>
+      <attribute id="Material_Type_Description" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material Type"/>
+        <keyMapping columnObjectName="Top_N" columnName="Material_Type_Description"/>
+      </attribute>
+      <attribute id="INV_EKGRP" order="8" attributeHierarchyActive="false" descriptionColumnName="INV_EKNAM" displayAttribute="false">
+        <descriptions defaultDescription="INV_EKGRP"/>
+        <keyMapping columnObjectName="Top_N" columnName="INV_EKGRP"/>
+      </attribute>
+      <attribute id="INV_EKNAM" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="INV_EKNAM"/>
+        <keyMapping columnObjectName="Top_N" columnName="INV_EKNAM"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Issue_Value" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Issue Value"/>
+        <measureMapping columnObjectName="Top_N" columnName="Issue_Value"/>
+      </measure>
+      <measure id="Issue_Stock" order="7" semanticType="quantity" aggregationType="sum" measureType="quantity">
+        <descriptions defaultDescription="Issued Stock"/>
+        <unitCurrencyAttribute attributeName="Base_Unit"/>
+        <measureMapping columnObjectName="Top_N" columnName="Issue_Stock"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="22" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Stock" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="243"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Top_N" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="165"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

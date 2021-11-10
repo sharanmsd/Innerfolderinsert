@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" schemaVersion="2.3" id="ZCV_OPERATIONS_DASHBOARD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_OPERATIONS_DASHBOARD"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:42.927"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>date(leftstr(format(now(),'yyyymmdd'),6)+'01')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="Department" parameter="true">
+      <descriptions defaultDescription="Department"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="*" length="20" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE">
+      <targetVariable name="From_Date" resourceUri="/RGPC_VIEW.OM/calculationviews/ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE"/>
+      <localVariable>#From_Date</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE">
+      <targetVariable name="To_Date" resourceUri="/RGPC_VIEW.OM/calculationviews/ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE"/>
+      <localVariable>#To_Date</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE">
+      <targetVariable name="Department" resourceUri="/RGPC_VIEW.OM/calculationviews/ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE"/>
+      <localVariable>#Department</localVariable>
+    </mapping>
+  </variableMappings>
+  <informationModelLayout relativeWidthScenario="43"/>
+  <dataSources>
+    <DataSource id="ZAN_T001W" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_T001W</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_CRHD" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_CRHD</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_QMEL" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_QMEL</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_QMIH" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_QMIH</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_ILOA" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_ILOA</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_IFLOT" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_IFLOT</resourceUri>
+    </DataSource>
+    <DataSource id="ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM/calculationviews/ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Plant">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_T001W">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Departments" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_CRHD">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+      </input>
+      <filter>(&quot;VERWE&quot; ='0005') AND  match(&quot;ARBPL&quot; ,'$$Department$$')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Plant">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+      </input>
+      <input node="#Departments">
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+      </input>
+      <joinAttribute name="WERKS"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Notofications" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="ARBPLWERK"/>
+        <viewAttribute id="ERDAT"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="QMDAB"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Open_Notifications" length="5" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;PHASE&quot;='1' or &quot;PHASE&quot;='3','Open',if(&quot;PHASE&quot;='4','Close',''))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Days_Calculation" expressionLanguage="COLUMN_ENGINE">
+          <formula>daysbetween(date(&quot;ERDAT&quot;),&quot;Input_Char&quot;) + 1</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="Created_On" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ERDAT&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Greater_90_Days" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Days_Calculation&quot;>90,1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="Priority" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;PRIOK&quot;='1','Emergency',if(&quot;PRIOK&quot;='2','High-Critical Eqpt',if(&quot;PRIOK&quot;='3','Med-Resource/Plan',if(&quot;PRIOK&quot;='4','Planned Shutdown',''))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="Input_Char" expressionLanguage="COLUMN_ENGINE">
+          <formula>'$$To_Date$$'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="Closed_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;QMDAB&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_QMEL">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPLWERK" source="ARBPLWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ERDAT" source="ERDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMDAB" source="QMDAB"/>
+      </input>
+      <filter>(in (&quot;HERKZ&quot;,'01','02','03','04')) AND (in (&quot;PHASE&quot;,'1','3','4')) AND (&quot;Created_On&quot; >='$$From_Date$$' AND &quot;Created_On&quot;&lt;='$$To_Date$$')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="Open_Notifications"/>
+        <viewAttribute id="Days_Calculation"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Greater_90_Days"/>
+        <viewAttribute id="Priority"/>
+        <viewAttribute id="Closed_Date"/>
+        <viewAttribute id="Input_Char"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+      </input>
+      <input node="#Notofications">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Open_Notifications" source="Open_Notifications"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_Calculation" source="Days_Calculation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Greater_90_Days" source="Greater_90_Days"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Priority" source="Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Closed_Date" source="Closed_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Input_Char" source="Input_Char"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="ARBPLWERK"/>
+      </input>
+      <joinAttribute name="OBJID"/>
+      <joinAttribute name="WERKS"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="ILOAN"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_QMIH">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_3" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="Open_Notifications"/>
+        <viewAttribute id="Days_Calculation"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Greater_90_Days"/>
+        <viewAttribute id="Priority"/>
+        <viewAttribute id="ILOAN"/>
+        <viewAttribute id="Closed_Date"/>
+        <viewAttribute id="Input_Char"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Open_Notifications" source="Open_Notifications"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_Calculation" source="Days_Calculation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Greater_90_Days" source="Greater_90_Days"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Priority" source="Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Closed_Date" source="Closed_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Input_Char" source="Input_Char"/>
+      </input>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+      </input>
+      <joinAttribute name="QMNUM"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ILOAN"/>
+        <viewAttribute id="TPLNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_ILOA">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_4" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Priority"/>
+        <viewAttribute id="Greater_90_Days"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Days_Calculation"/>
+        <viewAttribute id="Open_Notifications"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="ILOAN"/>
+        <viewAttribute id="TPLNR"/>
+        <viewAttribute id="Closed_Date"/>
+        <viewAttribute id="Input_Char"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Priority" source="Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Greater_90_Days" source="Greater_90_Days"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_Calculation" source="Days_Calculation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Open_Notifications" source="Open_Notifications"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Closed_Date" source="Closed_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Input_Char" source="Input_Char"/>
+      </input>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+      </input>
+      <joinAttribute name="ILOAN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TPLNR"/>
+        <viewAttribute id="TPLMA"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_IFLOT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLMA" source="TPLMA"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Block_Wise_Status" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="Open_Notifications"/>
+        <viewAttribute id="Days_Calculation"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Greater_90_Days"/>
+        <viewAttribute id="Priority"/>
+        <viewAttribute id="ILOAN"/>
+        <viewAttribute id="TPLNR"/>
+        <viewAttribute id="TPLMA"/>
+        <viewAttribute id="Closed_Date"/>
+        <viewAttribute id="Input_Char"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Block_Wise" length="8" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(midstr(&quot;TPLMA&quot;,6,3)='COM','Common',if(midstr(&quot;TPLMA&quot;,6,3)='WTR','Water',if(midstr(&quot;TPLMA&quot;,6,3)='PWR','Power','Others')))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Open_Notifications" source="Open_Notifications"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_Calculation" source="Days_Calculation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Greater_90_Days" source="Greater_90_Days"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Priority" source="Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Closed_Date" source="Closed_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Input_Char" source="Input_Char"/>
+      </input>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLMA" source="TPLMA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+      </input>
+      <joinAttribute name="TPLNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="Open_Notifications"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Priority"/>
+        <viewAttribute id="ILOAN"/>
+        <viewAttribute id="TPLNR"/>
+        <viewAttribute id="TPLMA"/>
+        <viewAttribute id="Block_Wise"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="Days_Calculation"/>
+        <viewAttribute id="Greater_90_Days"/>
+        <viewAttribute id="Closed_Date"/>
+        <viewAttribute id="Input_Char"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Notification_Closed" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Open_Notifications&quot;='Close',1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Notification_Open" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Open_Notifications&quot;='Open',1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="NC_NR" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((&quot;Notification_Closed&quot;=0) OR (&quot;Count&quot;=0) OR isnull(&quot;Count&quot;),0,(&quot;Notification_Closed&quot;/ &quot;Count&quot;)*100)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Notification_Closed__same_period" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Open_Notifications&quot;='Close' and  &quot;Closed_Date&quot;&lt;= &quot;Input_Char&quot; ,1,0)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Block_Wise_Status">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Open_Notifications" source="Open_Notifications"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Priority" source="Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLMA" source="TPLMA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Block_Wise" source="Block_Wise"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_Calculation" source="Days_Calculation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Greater_90_Days" source="Greater_90_Days"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Closed_Date" source="Closed_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Input_Char" source="Input_Char"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_5">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Close_Previous"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Priority"/>
+        <viewAttribute id="ILOAN"/>
+        <viewAttribute id="TPLNR"/>
+        <viewAttribute id="TPLMA"/>
+        <viewAttribute id="Block_Wise"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZCV_OPERATIONS_DASHBOARD_PREVIOUS_CLOSE">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Close_Previous" source="Close_Previous"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Priority" source="Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLMA" source="TPLMA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Block_Wise" source="Block_Wise"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Union_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="Open_Notifications"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Priority"/>
+        <viewAttribute id="ILOAN"/>
+        <viewAttribute id="TPLNR"/>
+        <viewAttribute id="TPLMA"/>
+        <viewAttribute id="Block_Wise"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="Days_Calculation"/>
+        <viewAttribute id="Greater_90_Days"/>
+        <viewAttribute id="Notification_Closed"/>
+        <viewAttribute id="Notification_Open"/>
+        <viewAttribute id="NC_NR"/>
+        <viewAttribute id="Close_Previous" transparentFilter="false"/>
+        <viewAttribute id="Notification_Closed__same_period" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Projection_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Open_Notifications" source="Open_Notifications"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Priority" source="Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLMA" source="TPLMA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Block_Wise" source="Block_Wise"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_Calculation" source="Days_Calculation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Greater_90_Days" source="Greater_90_Days"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Notification_Closed" source="Notification_Closed"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Notification_Open" source="Notification_Open"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NC_NR" source="NC_NR"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Close_Previous" null="true" value=""/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Notification_Closed__same_period" source="Notification_Closed__same_period"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Projection_5">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Open_Notifications" null="true" value=""/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Priority" source="Priority"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLNR" source="TPLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TPLMA" source="TPLMA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Block_Wise" source="Block_Wise"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Count" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Days_Calculation" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Greater_90_Days" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Notification_Closed" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Notification_Open" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="NC_NR" null="true" value=""/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Close_Previous" source="Close_Previous"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Notification_Closed__same_period" null="true" value=""/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Union_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="OBJID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="OBJID"/>
+        <keyMapping columnObjectName="Union_1" columnName="OBJID"/>
+      </attribute>
+      <attribute id="ARBPL" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ARBPL"/>
+        <keyMapping columnObjectName="Union_1" columnName="ARBPL"/>
+      </attribute>
+      <attribute id="VERWE" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="VERWE"/>
+        <keyMapping columnObjectName="Union_1" columnName="VERWE"/>
+      </attribute>
+      <attribute id="NAME1" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="NAME1"/>
+        <keyMapping columnObjectName="Union_1" columnName="NAME1"/>
+      </attribute>
+      <attribute id="IWERK" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="IWERK"/>
+        <keyMapping columnObjectName="Union_1" columnName="IWERK"/>
+      </attribute>
+      <attribute id="WERKS" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="WERKS"/>
+        <keyMapping columnObjectName="Union_1" columnName="WERKS"/>
+      </attribute>
+      <attribute id="QMNUM" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="QMNUM"/>
+        <keyMapping columnObjectName="Union_1" columnName="QMNUM"/>
+      </attribute>
+      <attribute id="PRIOK" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PRIOK"/>
+        <keyMapping columnObjectName="Union_1" columnName="PRIOK"/>
+      </attribute>
+      <attribute id="HERKZ" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="HERKZ"/>
+        <keyMapping columnObjectName="Union_1" columnName="HERKZ"/>
+      </attribute>
+      <attribute id="PHASE" order="10" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PHASE"/>
+        <keyMapping columnObjectName="Union_1" columnName="PHASE"/>
+      </attribute>
+      <attribute id="Open_Notifications" order="11" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Notification Status"/>
+        <keyMapping columnObjectName="Union_1" columnName="Open_Notifications"/>
+      </attribute>
+      <attribute id="Created_On" order="12" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Created_On"/>
+        <keyMapping columnObjectName="Union_1" columnName="Created_On"/>
+      </attribute>
+      <attribute id="Priority" order="13" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Priority"/>
+        <keyMapping columnObjectName="Union_1" columnName="Priority"/>
+      </attribute>
+      <attribute id="ILOAN" order="14" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ILOAN"/>
+        <keyMapping columnObjectName="Union_1" columnName="ILOAN"/>
+      </attribute>
+      <attribute id="TPLNR" order="15" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TPLNR"/>
+        <keyMapping columnObjectName="Union_1" columnName="TPLNR"/>
+      </attribute>
+      <attribute id="TPLMA" order="16" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TPLMA"/>
+        <keyMapping columnObjectName="Union_1" columnName="TPLMA"/>
+      </attribute>
+      <attribute id="Block_Wise" order="17" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Block Type"/>
+        <keyMapping columnObjectName="Union_1" columnName="Block_Wise"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes>
+      <calculatedAttribute id="Block_Key" hidden="false" order="28" semanticType="empty" attributeHierarchyActive="false" descriptionColumnName="Block_Wise" displayAttribute="false">
+        <descriptions defaultDescription="Block"/>
+        <keyCalculation datatype="NVARCHAR" expressionLanguage="COLUMN_ENGINE" length="3">
+          <formula>if(&quot;Block_Wise&quot;='Common','1',if(&quot;Block_Wise&quot;='Power','2',if(&quot;Block_Wise&quot;='Water','3',if(&quot;Block_Wise&quot;='Others','4','5'))))</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+    </calculatedAttributes>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Count" order="18" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Created"/>
+        <measureMapping columnObjectName="Union_1" columnName="Count"/>
+      </measure>
+      <measure id="Days_Calculation" order="19" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Days_Calculation"/>
+        <measureMapping columnObjectName="Union_1" columnName="Days_Calculation"/>
+      </measure>
+      <measure id="Greater_90_Days" order="20" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Greater_90_Days"/>
+        <measureMapping columnObjectName="Union_1" columnName="Greater_90_Days"/>
+      </measure>
+      <measure id="Notification_Closed" order="21" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Closed"/>
+        <measureMapping columnObjectName="Union_1" columnName="Notification_Closed"/>
+      </measure>
+      <measure id="Notification_Open" order="22" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Open Notification"/>
+        <measureMapping columnObjectName="Union_1" columnName="Notification_Open"/>
+      </measure>
+      <measure id="NC_NR" order="23" aggregationType="sum" engineAggregation="avg" measureType="simple">
+        <descriptions defaultDescription="NC_NR"/>
+        <measureMapping columnObjectName="Union_1" columnName="NC_NR"/>
+      </measure>
+      <measure id="Close_Previous" order="24" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Closed_Previous_Final"/>
+        <measureMapping columnObjectName="Union_1" columnName="Close_Previous"/>
+      </measure>
+      <measure id="Notification_Closed__same_period" order="26" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Close"/>
+        <measureMapping columnObjectName="Union_1" columnName="Notification_Closed__same_period"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="Notification_Open_same_period" hidden="false" order="25" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="Open"/>
+        <formula>&quot;Count&quot;-&quot;Notification_Closed__same_period&quot;</formula>
+      </measure>
+      <measure id="Closed_Previous_Final" hidden="false" order="27" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="Close-Previous"/>
+        <formula>if(isnull(&quot;Close_Previous&quot;),0,&quot;Close_Previous&quot;)</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="324" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Plant" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="839"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Departments" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="839"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="743"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Notofications" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="743"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="175" y="647"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="329" y="647"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="250" y="551"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="404" y="551"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="325" y="455"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="171" y="455"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Block_Wise_Status" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="247" y="359"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="247" y="281"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="401" y="281"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="324" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

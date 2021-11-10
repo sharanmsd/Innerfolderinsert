@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAN_FAGLFLEXT" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED">
+  <origin/>
+  <descriptions defaultDescription="ZAN_FAGLFLEXT"/>
+  <metadata activatedAt="2020-11-10 15:23:45.0" changedAt="2020-11-10 17:40:13.688"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="FAGLFLEXT" type="DATA_BASE_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="FAGLFLEXT"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="GL_Actuals">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="RYEAR"/>
+        <viewAttribute id="RBUKRS">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="RGPC"/>
+        </viewAttribute>
+        <viewAttribute id="RACCT"/>
+        <viewAttribute id="RPMAX"/>
+        <viewAttribute id="HSLVT"/>
+        <viewAttribute id="HSL01"/>
+        <viewAttribute id="HSL02"/>
+        <viewAttribute id="HSL03"/>
+        <viewAttribute id="HSL04"/>
+        <viewAttribute id="HSL05"/>
+        <viewAttribute id="HSL06"/>
+        <viewAttribute id="HSL07"/>
+        <viewAttribute id="HSL08"/>
+        <viewAttribute id="HSL09"/>
+        <viewAttribute id="HSL10"/>
+        <viewAttribute id="HSL11"/>
+        <viewAttribute id="HSL12"/>
+        <viewAttribute id="HSL13"/>
+        <viewAttribute id="HSL14"/>
+        <viewAttribute id="HSL15"/>
+        <viewAttribute id="HSL16"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#FAGLFLEXT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="RYEAR" source="RYEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RBUKRS" source="RBUKRS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RPMAX" source="RPMAX"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSLVT" source="HSLVT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL01" source="HSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL02" source="HSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL03" source="HSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL04" source="HSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL05" source="HSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL06" source="HSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL07" source="HSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL08" source="HSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL09" source="HSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL10" source="HSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL11" source="HSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL12" source="HSL12"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL13" source="HSL13"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL14" source="HSL14"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL15" source="HSL15"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HSL16" source="HSL16"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="GL_Actuals">
+    <descriptions/>
+    <attributes>
+      <attribute id="RYEAR" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="RYEAR"/>
+        <keyMapping columnObjectName="GL_Actuals" columnName="RYEAR"/>
+      </attribute>
+      <attribute id="RBUKRS" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="RBUKRS"/>
+        <keyMapping columnObjectName="GL_Actuals" columnName="RBUKRS"/>
+      </attribute>
+      <attribute id="RACCT" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="RACCT"/>
+        <keyMapping columnObjectName="GL_Actuals" columnName="RACCT"/>
+      </attribute>
+      <attribute id="RPMAX" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="RPMAX"/>
+        <keyMapping columnObjectName="GL_Actuals" columnName="RPMAX"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="HSLVT" order="5" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSLVT"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSLVT"/>
+      </measure>
+      <measure id="HSL01" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL01"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL01"/>
+      </measure>
+      <measure id="HSL02" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL02"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL02"/>
+      </measure>
+      <measure id="HSL03" order="8" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL03"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL03"/>
+      </measure>
+      <measure id="HSL04" order="9" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL04"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL04"/>
+      </measure>
+      <measure id="HSL05" order="10" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL05"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL05"/>
+      </measure>
+      <measure id="HSL06" order="11" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL06"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL06"/>
+      </measure>
+      <measure id="HSL07" order="12" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL07"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL07"/>
+      </measure>
+      <measure id="HSL08" order="13" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL08"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL08"/>
+      </measure>
+      <measure id="HSL09" order="14" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL09"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL09"/>
+      </measure>
+      <measure id="HSL10" order="15" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL10"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL10"/>
+      </measure>
+      <measure id="HSL11" order="16" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL11"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL11"/>
+      </measure>
+      <measure id="HSL12" order="17" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL12"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL12"/>
+      </measure>
+      <measure id="HSL13" order="18" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL13"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL13"/>
+      </measure>
+      <measure id="HSL14" order="19" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL14"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL14"/>
+      </measure>
+      <measure id="HSL15" order="20" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL15"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL15"/>
+      </measure>
+      <measure id="HSL16" order="21" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="HSL16"/>
+        <measureMapping columnObjectName="GL_Actuals" columnName="HSL16"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+    <sharedDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="22" y="87"/>
+        <rectangleSize/>
+      </shape>
+      <shape modelObjectName="GL_Actuals" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
+        <upperLeftCorner x="250" y="250"/>
+      </shape>
+      <shape expanded="true" modelObjectName="GL_Actuals" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="185"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_HR_HEADCOUNT_NATIONALITY_DASHBOARD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_HR_HEADCOUNT_NATIONALITY_DASHBOARD"/>
+  <metadata activatedAt="2020-11-10 15:18:39.0" changedAt="2020-11-10 17:40:43.548"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="47"/>
+  <dataSources>
+    <DataSource id="ZAN_PA0000" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR.Base_Views/calculationviews/ZAN_PA0000</resourceUri>
+    </DataSource>
+    <DataSource id="ZCV_PA0002" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR.Base_Views/calculationviews/ZCV_PA0002</resourceUri>
+    </DataSource>
+    <DataSource id="T005T" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="T005T"/>
+    </DataSource>
+    <DataSource id="ZCV_HR_SALARY_REPORT" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR/calculationviews/ZCV_HR_SALARY_REPORT</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_PA0000">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+      </input>
+      <filter>(now() >= date(&quot;BEGDA&quot;) AND now() &lt;= date(&quot;ENDDA&quot;) )and &quot;STAT2&quot;='3'</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZCV_PA0002">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+      </input>
+      <filter>(now() >= date(&quot;BEGDA&quot;) AND now() &lt;= date(&quot;ENDDA&quot;))</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+      <joinAttribute name="PERNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SPRAS">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="E"/>
+        </viewAttribute>
+        <viewAttribute id="LAND1"/>
+        <viewAttribute id="NATIO50"/>
+        <viewAttribute id="LANDX50"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#T005T">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SPRAS" source="SPRAS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LAND1" source="LAND1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO50" source="NATIO50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="NATIO50"/>
+        <viewAttribute id="LANDX50"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+      </input>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO50" source="NATIO50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="LAND1"/>
+      </input>
+      <joinAttribute name="NATIO"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value=""/>
+        </viewAttribute>
+        <viewAttribute id="NATIO50"/>
+        <viewAttribute id="LANDX50"/>
+        <viewAttribute id="Count"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO50" source="NATIO50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_5">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="STEXT_1"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZCV_HR_SALARY_REPORT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STEXT_1" source="STEXT_1"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_3" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO"/>
+        <viewAttribute id="NATIO50"/>
+        <viewAttribute id="LANDX50"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="STEXT_1"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO50" source="NATIO50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+      </input>
+      <input node="#Projection_5">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STEXT_1" source="STEXT_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+      <joinAttribute name="PERNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_6">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="LANDX50"/>
+        <viewAttribute id="NATIO50"/>
+        <viewAttribute id="NATIO"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="STEXT_1"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_Dept" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO50" source="NATIO50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STEXT_1" source="STEXT_1"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_6">
+    <descriptions/>
+    <attributes>
+      <attribute id="LANDX50" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Country Name"/>
+        <keyMapping columnObjectName="Projection_6" columnName="LANDX50"/>
+      </attribute>
+      <attribute id="NATIO50" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Naionality"/>
+        <keyMapping columnObjectName="Projection_6" columnName="NATIO50"/>
+      </attribute>
+      <attribute id="NATIO" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="NATIO"/>
+        <keyMapping columnObjectName="Projection_6" columnName="NATIO"/>
+      </attribute>
+      <attribute id="PERNR" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Employee Number"/>
+        <keyMapping columnObjectName="Projection_6" columnName="PERNR"/>
+      </attribute>
+      <attribute id="STEXT_1" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Department"/>
+        <keyMapping columnObjectName="Projection_6" columnName="STEXT_1"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Count" order="1" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Projection_6" columnName="Count"/>
+      </measure>
+      <measure id="Count_Dept" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Projection_6" columnName="Count_Dept"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="252" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="609"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="609"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="513"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="513"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="175" y="417"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="175" y="339"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="329" y="339"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="252" y="243"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_6" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="252" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

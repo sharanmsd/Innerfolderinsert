@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_CASH_BALANCE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_CASH_BALANCE"/>
+  <metadata activatedAt="2020-11-10 15:23:45.0" changedAt="2020-11-10 17:40:23.442"/>
+  <localVariables>
+    <variable id="P_DOCYEAR1" parameter="true">
+      <descriptions defaultDescription="P_DOCYEAR1"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'yyyy-mm-dd')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="40"/>
+  <dataSources>
+    <DataSource id="ZAN_ACDOCA" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.FI.Base_Views/calculationviews/ZAN_ACDOCA</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="RBUKRS"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="DOCLN"/>
+        <viewAttribute id="RYEAR"/>
+        <viewAttribute id="RKCUR"/>
+        <viewAttribute id="RACCT"/>
+        <viewAttribute id="KSL"/>
+        <viewAttribute id="BLDAT"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="InputDate" length="12" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr('$$P_DOCYEAR1$$',4) + midstr('$$P_DOCYEAR1$$', 6,2) + midstr('$$P_DOCYEAR1$$',9,2)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_ACDOCA">
+        <mapping xsi:type="Calculation:AttributeMapping" target="RBUKRS" source="RBUKRS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DOCLN" source="DOCLN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RYEAR" source="RYEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RKCUR" source="RKCUR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KSL" source="KSL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BLDAT" source="BLDAT"/>
+      </input>
+      <filter>(in (&quot;RACCT&quot;,'0000100904','0000100905','0000100906','0000100907','0000100908','0000100909','0000100910','0000100911','0000100912','0000100913','0000100914','0000100915','0000100916','0000100917','0000100918','0000100919','0000100920','0000100921','0000100922','0000100923','0000100401','0000100712')) AND (&quot;RBUKRS&quot; = 'RGPC') AND (&quot;BLDAT&quot; &lt;= &quot;InputDate&quot;)</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Cash_Balance"/>
+        <viewAttribute id="RACCT"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Account_Type" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(in(&quot;RACCT&quot;,&#xD;
+'0000100401',&#xD;
+'0000100712'), 'Fixed Deposit',&#xD;
+if(in(&quot;RACCT&quot;,&#xD;
+'0000100904',&#xD;
+'0000100905',&#xD;
+'0000100906',&#xD;
+'0000100907'),'Onshore Operations',&#xD;
+if(in(&quot;RACCT&quot;,&#xD;
+'0000100908',&#xD;
+'0000100909'),'Offshore Operations',&#xD;
+if(in(&quot;RACCT&quot;,&#xD;
+'0000100910',&#xD;
+'0000100911'),'DSRA',&#xD;
+if(in(&quot;RACCT&quot;,&#xD;
+'0000100912',&#xD;
+'0000100913',&#xD;
+'0000100914',&#xD;
+'0000100915',&#xD;
+'0000100916',&#xD;
+'0000100917',&#xD;
+'0000100918',&#xD;
+'0000100919',&#xD;
+'0000100920',&#xD;
+'0000100921',&#xD;
+'0000100922',&#xD;
+'0000100923'),'Offshore Others','0')))))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cash_Balance" source="KSL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RACCT" source="RACCT"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="Account_Type" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Account_Type"/>
+        <keyMapping columnObjectName="Projection_1" columnName="Account_Type"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Cash_Balance" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Cash_Balance"/>
+        <measureMapping columnObjectName="Projection_1" columnName="Cash_Balance"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="22" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="243"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

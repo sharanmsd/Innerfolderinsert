@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAN_PA0015" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED">
+  <origin/>
+  <descriptions defaultDescription="ZAN_PA0015"/>
+  <metadata activatedAt="2020-11-10 15:18:39.0" changedAt="2020-11-10 17:40:37.237" createdAt="2020-09-09 20:59:43.878"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="PA0015" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="PA0015"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="SUBTY"/>
+        <viewAttribute id="ANZHL"/>
+        <viewAttribute id="PERNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PA0015">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBTY" source="SUBTY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ANZHL" source="ANZHL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="BEGDA" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="BEGDA"/>
+        <keyMapping columnObjectName="Projection_1" columnName="BEGDA"/>
+      </attribute>
+      <attribute id="ENDDA" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ENDDA"/>
+        <keyMapping columnObjectName="Projection_1" columnName="ENDDA"/>
+      </attribute>
+      <attribute id="SUBTY" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SUBTY"/>
+        <keyMapping columnObjectName="Projection_1" columnName="SUBTY"/>
+      </attribute>
+      <attribute id="PERNR" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PERNR"/>
+        <keyMapping columnObjectName="Projection_1" columnName="PERNR"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="ANZHL" order="4" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="ANZHL"/>
+        <measureMapping columnObjectName="Projection_1" columnName="ANZHL"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+    <sharedDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+        <rectangleSize/>
+      </shape>
+      <shape modelObjectName="Projection_1" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
+        <upperLeftCorner x="250" y="250"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="10" y="220"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

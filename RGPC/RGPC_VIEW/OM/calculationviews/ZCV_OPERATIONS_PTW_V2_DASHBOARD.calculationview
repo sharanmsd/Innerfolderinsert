@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_OPERATIONS_PTW_V2_DASHBOARD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_OPERATIONS_PTW_V1_DASHBOARD"/>
+  <metadata activatedAt="2020-12-01 16:45:29.0" changedAt="2020-12-01 19:11:30.89" createdAt="2020-12-01 19:11:30.89"/>
+  <localVariables>
+    <variable id="Department" parameter="true">
+      <descriptions defaultDescription="Department"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="*" length="20" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="48"/>
+  <dataSources>
+    <DataSource id="ZAN_T001W" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_T001W</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_CRHD" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_CRHD</resourceUri>
+    </DataSource>
+    <DataSource id="WCAW" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="WCAW"/>
+    </DataSource>
+    <DataSource id="WCACG" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="WCACG"/>
+    </DataSource>
+    <DataSource id="ZAN_JEST" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_JEST</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="LET01"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_T001W">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LET01" source="LET01"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="PARV1"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_CRHD">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARV1" source="PARV1"/>
+      </input>
+      <filter>(&quot;VERWE&quot; ='0005') AND match(&quot;ARBPL&quot; ,'$$Department$$')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+      </input>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+      </input>
+      <joinAttribute name="WERKS"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="DATETO"/>
+        <viewAttribute id="TIMETO"/>
+        <viewAttribute id="WKCRID"/>
+        <viewAttribute id="CRDATE"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Created_On" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;CRDATE&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="to_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>format(now(),'YYYY-MM-DD')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#WCAW">
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATETO" source="DATETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TIMETO" source="TIMETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WKCRID" source="WKCRID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRDATE" source="CRDATE"/>
+      </input>
+      <filter>(&quot;Created_On&quot;&lt;= now())</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_3" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="TIMETO"/>
+        <viewAttribute id="DATETO"/>
+        <viewAttribute id="CRDATE"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="to_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+      </input>
+      <input node="#Projection_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TIMETO" source="TIMETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATETO" source="DATETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRDATE" source="CRDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="to_Date" source="to_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="WKCRID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+      </input>
+      <joinAttribute name="OBJID"/>
+      <joinAttribute name="IWERK"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_9">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="CODEGRP">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="PERMIT"/>
+            <operands value="LOA"/>
+          </filter>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#WCACG">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODEGRP" source="CODEGRP"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_5" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="DATETO"/>
+        <viewAttribute id="TIMETO"/>
+        <viewAttribute id="to_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATETO" source="DATETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TIMETO" source="TIMETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="to_Date" source="to_Date"/>
+      </input>
+      <input node="#Projection_9">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+      </input>
+      <joinAttribute name="OBJNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_10">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="DATETO"/>
+        <viewAttribute id="TIMETO"/>
+        <viewAttribute id="to_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_5">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATETO" source="DATETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TIMETO" source="TIMETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="to_Date" source="to_Date"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="STAT"/>
+        <viewAttribute id="INACT"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_JEST">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT" source="STAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INACT" source="INACT"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_4" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="DATETO"/>
+        <viewAttribute id="TIMETO"/>
+        <viewAttribute id="to_Date"/>
+        <viewAttribute id="STAT"/>
+        <viewAttribute id="INACT"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_10">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATETO" source="DATETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TIMETO" source="TIMETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="to_Date" source="to_Date"/>
+      </input>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT" source="STAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INACT" source="INACT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+      </input>
+      <joinAttribute name="OBJNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_6">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="DATETO"/>
+        <viewAttribute id="TIMETO"/>
+        <viewAttribute id="to_Date"/>
+        <viewAttribute id="STAT"/>
+        <viewAttribute id="INACT"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Check_I0175" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;STAT&quot;='I0175' AND &quot;INACT&quot;='',1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Check_I0046" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;STAT&quot;='I0046',1,0)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATETO" source="DATETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TIMETO" source="TIMETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="to_Date" source="to_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT" source="STAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INACT" source="INACT"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="DATETO"/>
+        <viewAttribute id="TIMETO"/>
+        <viewAttribute aggregationType="sum" id="Check_I0046"/>
+        <viewAttribute aggregationType="sum" id="Check_I0175"/>
+        <viewAttribute id="to_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Final_Objnr" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((&quot;Check_I0175&quot;>=1) and (&quot;Check_I0046&quot;!=1),&quot;OBJNR&quot;,'')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_6">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATETO" source="DATETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TIMETO" source="TIMETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Check_I0046" source="Check_I0046"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Check_I0175" source="Check_I0175"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="to_Date" source="to_Date"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_5">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="OBJNR" keepFlag="true"/>
+        <viewAttribute id="OBJID" keepFlag="true"/>
+        <viewAttribute id="ARBPL" keepFlag="true"/>
+        <viewAttribute id="CODE" keepFlag="true"/>
+        <viewAttribute id="DATETO" keepFlag="true"/>
+        <viewAttribute id="TIMETO" keepFlag="true"/>
+        <viewAttribute id="Final_Objnr" keepFlag="true">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value=""/>
+        </viewAttribute>
+        <viewAttribute id="to_Date" keepFlag="true"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(((seconddate(&quot;DATETO&quot;+&quot;TIMETO&quot;) >= &quot;to_Date&quot;)),1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_Cold" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(((seconddate(&quot;DATETO&quot;+&quot;TIMETO&quot;) >= &quot;to_Date&quot;) and (&quot;CODE&quot;='COLD')),1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_Hot" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(((seconddate(&quot;DATETO&quot;+&quot;TIMETO&quot;) >= &quot;to_Date&quot;) and (&quot;CODE&quot;='HOT')),1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_Con" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(((seconddate(&quot;DATETO&quot;+&quot;TIMETO&quot;) >= &quot;to_Date&quot;) and (&quot;CODE&quot;='CON')),1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_Elec" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(((seconddate(&quot;DATETO&quot;+&quot;TIMETO&quot;) >= &quot;to_Date&quot;) and (&quot;CODE&quot;='ELEC')),1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_LOA" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(((seconddate(&quot;DATETO&quot;+&quot;TIMETO&quot;) >= &quot;to_Date&quot;) and (&quot;CODE&quot;='LOA')),1,0)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Aggregation_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATETO" source="DATETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TIMETO" source="TIMETO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Objnr" source="Final_Objnr"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="to_Date" source="to_Date"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_5">
+    <descriptions/>
+    <attributes>
+      <attribute id="WERKS" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="WERKS"/>
+        <keyMapping columnObjectName="Projection_5" columnName="WERKS"/>
+      </attribute>
+      <attribute id="IWERK" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="IWERK"/>
+        <keyMapping columnObjectName="Projection_5" columnName="IWERK"/>
+      </attribute>
+      <attribute id="OBJNR" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="OBJNR"/>
+        <keyMapping columnObjectName="Projection_5" columnName="OBJNR"/>
+      </attribute>
+      <attribute id="OBJID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="OBJID"/>
+        <keyMapping columnObjectName="Projection_5" columnName="OBJID"/>
+      </attribute>
+      <attribute id="ARBPL" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ARBPL"/>
+        <keyMapping columnObjectName="Projection_5" columnName="ARBPL"/>
+      </attribute>
+      <attribute id="CODE" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CODE"/>
+        <keyMapping columnObjectName="Projection_5" columnName="CODE"/>
+      </attribute>
+      <attribute id="DATETO" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DATETO"/>
+        <keyMapping columnObjectName="Projection_5" columnName="DATETO"/>
+      </attribute>
+      <attribute id="TIMETO" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TIMETO"/>
+        <keyMapping columnObjectName="Projection_5" columnName="TIMETO"/>
+      </attribute>
+      <attribute id="Final_Objnr" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Final_Objnr"/>
+        <keyMapping columnObjectName="Projection_5" columnName="Final_Objnr"/>
+      </attribute>
+      <attribute id="to_Date" order="11" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="to_Date"/>
+        <keyMapping columnObjectName="Projection_5" columnName="to_Date"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Count" order="10" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Projection_5" columnName="Count"/>
+      </measure>
+      <measure id="Count_Cold" order="12" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count_Cold"/>
+        <measureMapping columnObjectName="Projection_5" columnName="Count_Cold"/>
+      </measure>
+      <measure id="Count_Hot" order="13" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count_Hot"/>
+        <measureMapping columnObjectName="Projection_5" columnName="Count_Hot"/>
+      </measure>
+      <measure id="Count_Con" order="14" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count_Con"/>
+        <measureMapping columnObjectName="Projection_5" columnName="Count_Con"/>
+      </measure>
+      <measure id="Count_Elec" order="15" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count_Elec"/>
+        <measureMapping columnObjectName="Projection_5" columnName="Count_Elec"/>
+      </measure>
+      <measure id="Count_LOA" order="16" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count_LOA"/>
+        <measureMapping columnObjectName="Projection_5" columnName="Count_LOA"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="176" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="861"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="861"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="765"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="765"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="669"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_9" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="669"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="573"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_10" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="495"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="399"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_6" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="321"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="495"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="243"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="165"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

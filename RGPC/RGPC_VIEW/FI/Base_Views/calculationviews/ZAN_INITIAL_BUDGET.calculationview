@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAN_INITIAL_BUDGET" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED">
+  <origin/>
+  <descriptions defaultDescription="ZAN_INITIAL_BUDGET"/>
+  <metadata activatedAt="2021-01-04 08:47:21.0" changedAt="2020-11-10 17:40:15.872" createdAt="2020-11-10 17:40:15.872"/>
+  <localVariables>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="44"/>
+  <dataSources>
+    <DataSource id="ZFIBUDAPPRH" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="ZFIBUDAPPRH"/>
+    </DataSource>
+    <DataSource id="ZFIBUDAPPRIT" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="ZFIBUDAPPRIT"/>
+    </DataSource>
+    <DataSource id="ZUTLTM00004" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="ZUTLTM00004"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APPROVAL_ID"/>
+        <viewAttribute id="FM_AREA"/>
+        <viewAttribute id="APPROVAL_YEAR"/>
+        <viewAttribute id="BUDGET_TYPE"/>
+        <viewAttribute id="DOCDATE"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Doc_Date" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(&quot;DOCDATE&quot;,4)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Filter_Date" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(string('$$To_Date$$'),4)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZFIBUDAPPRH">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_ID" source="APPROVAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FM_AREA" source="FM_AREA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDGET_TYPE" source="BUDGET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DOCDATE" source="DOCDATE"/>
+      </input>
+      <filter>(&quot;APPROVAL_YEAR&quot; = &quot;Filter_Date&quot;) and (&quot;FM_AREA&quot;='RGPC') AND (&quot;BUDGET_TYPE&quot;='1000')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APPROVAL_ID"/>
+        <viewAttribute id="APPROVAL_YEAR"/>
+        <viewAttribute id="TSL01"/>
+        <viewAttribute id="TSL02"/>
+        <viewAttribute id="TSL03"/>
+        <viewAttribute id="TSL04"/>
+        <viewAttribute id="TSL05"/>
+        <viewAttribute id="TSL06"/>
+        <viewAttribute id="TSL07"/>
+        <viewAttribute id="TSL08"/>
+        <viewAttribute id="TSL09"/>
+        <viewAttribute id="TSL10"/>
+        <viewAttribute id="TSL11"/>
+        <viewAttribute id="TSL12"/>
+        <viewAttribute id="RFISTL"/>
+        <viewAttribute id="RFIPEX"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="MTD_Budget" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Month&quot;='01',&quot;TSL01&quot;,&#xD;
+if(&quot;Month&quot;='02',&quot;TSL02&quot;,&#xD;
+if(&quot;Month&quot;='03',&quot;TSL03&quot;,&#xD;
+if(&quot;Month&quot;='04',&quot;TSL04&quot;,&#xD;
+if(&quot;Month&quot;='05',&quot;TSL05&quot;,&#xD;
+if(&quot;Month&quot;='06',&quot;TSL06&quot;,&#xD;
+if(&quot;Month&quot;='07',&quot;TSL07&quot;,&#xD;
+if(&quot;Month&quot;='08',&quot;TSL08&quot;,&#xD;
+if(&quot;Month&quot;='09',&quot;TSL09&quot;,&#xD;
+if(&quot;Month&quot;='10',&quot;TSL10&quot;,&#xD;
+if(&quot;Month&quot;='11',&quot;TSL11&quot;,&#xD;
+if(&quot;Month&quot;='12',&quot;TSL12&quot;,0))))))))))))&#xD;
+</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Month" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(string('$$To_Date$$'),6,2)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="YTD_Budget" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Month&quot;='01',&quot;TSL01&quot;,&#xD;
+if(&quot;Month&quot;='02',&quot;TSL01&quot;+&quot;TSL02&quot;,&#xD;
+if(&quot;Month&quot;='03',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;,&#xD;
+if(&quot;Month&quot;='04',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;,&#xD;
+if(&quot;Month&quot;='05',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;+&quot;TSL05&quot;,&#xD;
+if(&quot;Month&quot;='06',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;+&quot;TSL05&quot;+&quot;TSL06&quot;,&#xD;
+if(&quot;Month&quot;='07',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;+&quot;TSL05&quot;+&quot;TSL06&quot;+&quot;TSL07&quot;,&#xD;
+if(&quot;Month&quot;='08',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;+&quot;TSL05&quot;+&quot;TSL06&quot;+&quot;TSL07&quot;+&quot;TSL08&quot;,&#xD;
+if(&quot;Month&quot;='09',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;+&quot;TSL05&quot;+&quot;TSL06&quot;+&quot;TSL07&quot;+&quot;TSL08&quot;+&quot;TSL09&quot;,&#xD;
+if(&quot;Month&quot;='10',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;+&quot;TSL05&quot;+&quot;TSL06&quot;+&quot;TSL07&quot;+&quot;TSL08&quot;+&quot;TSL09&quot;+&quot;TSL10&quot;,&#xD;
+if(&quot;Month&quot;='11',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;+&quot;TSL05&quot;+&quot;TSL06&quot;+&quot;TSL07&quot;+&quot;TSL08&quot;+&quot;TSL09&quot;+&quot;TSL10&quot;+&quot;TSL11&quot;,&#xD;
+if(&quot;Month&quot;='12',&quot;TSL01&quot;+&quot;TSL02&quot;+&quot;TSL03&quot;+&quot;TSL04&quot;+&quot;TSL05&quot;+&quot;TSL06&quot;+&quot;TSL07&quot;+&quot;TSL08&quot;+&quot;TSL09&quot;+&quot;TSL10&quot;+&quot;TSL11&quot;+&quot;TSL12&quot;,0))))))))))))&#xD;
+</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZFIBUDAPPRIT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_ID" source="APPROVAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL01" source="TSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL02" source="TSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL03" source="TSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL04" source="TSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL05" source="TSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL06" source="TSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL07" source="TSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL08" source="TSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL09" source="TSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL10" source="TSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL11" source="TSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL12" source="TSL12"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFISTL" source="RFISTL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFIPEX" source="RFIPEX"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APPROVAL_ID"/>
+        <viewAttribute id="APPROVAL_YEAR"/>
+        <viewAttribute id="STATUS">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="A"/>
+        </viewAttribute>
+        <viewAttribute id="SUBMIT_DATE"/>
+        <viewAttribute id="SUBMIT_TIME"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZUTLTM00004">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_ID" source="APPROVAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBMIT_DATE" source="SUBMIT_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBMIT_TIME" source="SUBMIT_TIME"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APPROVAL_ID"/>
+        <viewAttribute id="FM_AREA"/>
+        <viewAttribute id="APPROVAL_YEAR"/>
+        <viewAttribute id="DOCDATE"/>
+        <viewAttribute id="Doc_Date"/>
+        <viewAttribute id="BUDGET_TYPE"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="STATUS"/>
+        <viewAttribute id="SUBMIT_DATE"/>
+        <viewAttribute id="SUBMIT_TIME"/>
+        <viewAttribute hidden="true" id="JOIN$APPROVAL_YEAR$APPROVAL_YEAR"/>
+        <viewAttribute hidden="true" id="JOIN$APPROVAL_ID$APPROVAL_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="TIMESTAMP" id="Time_Check" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;SUBMIT_DATE&quot;+&quot;SUBMIT_TIME&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="DUMMY" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBMIT_DATE" source="SUBMIT_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBMIT_TIME" source="SUBMIT_TIME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$APPROVAL_YEAR$APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$APPROVAL_ID$APPROVAL_ID" source="APPROVAL_ID"/>
+      </input>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_ID" source="APPROVAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FM_AREA" source="FM_AREA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DOCDATE" source="DOCDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Doc_Date" source="Doc_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDGET_TYPE" source="BUDGET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$APPROVAL_YEAR$APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$APPROVAL_ID$APPROVAL_ID" source="APPROVAL_ID"/>
+      </input>
+      <joinAttribute name="JOIN$APPROVAL_YEAR$APPROVAL_YEAR"/>
+      <joinAttribute name="JOIN$APPROVAL_ID$APPROVAL_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="BUDGET_TYPE"/>
+        <viewAttribute id="Doc_Date"/>
+        <viewAttribute id="DOCDATE"/>
+        <viewAttribute id="APPROVAL_YEAR"/>
+        <viewAttribute id="FM_AREA"/>
+        <viewAttribute id="APPROVAL_ID"/>
+        <viewAttribute id="Time_Check"/>
+        <viewAttribute id="DUMMY"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDGET_TYPE" source="BUDGET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Doc_Date" source="Doc_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DOCDATE" source="DOCDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FM_AREA" source="FM_AREA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_ID" source="APPROVAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Time_Check" source="Time_Check"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DUMMY" source="DUMMY"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>DUMMY</partitionViewAttributeName>
+        <order byViewAttributeName="Time_Check" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TSL01"/>
+        <viewAttribute id="TSL02"/>
+        <viewAttribute id="TSL03"/>
+        <viewAttribute id="TSL04"/>
+        <viewAttribute id="TSL05"/>
+        <viewAttribute id="TSL06"/>
+        <viewAttribute id="TSL07"/>
+        <viewAttribute id="TSL08"/>
+        <viewAttribute id="TSL09"/>
+        <viewAttribute id="TSL10"/>
+        <viewAttribute id="TSL11"/>
+        <viewAttribute id="TSL12"/>
+        <viewAttribute id="RFIPEX"/>
+        <viewAttribute id="MTD_Budget"/>
+        <viewAttribute id="YTD_Budget"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="BUDGET_TYPE"/>
+        <viewAttribute id="Doc_Date"/>
+        <viewAttribute id="DOCDATE"/>
+        <viewAttribute id="APPROVAL_YEAR"/>
+        <viewAttribute id="FM_AREA"/>
+        <viewAttribute id="APPROVAL_ID"/>
+        <viewAttribute id="Time_Check"/>
+        <viewAttribute hidden="true" id="JOIN$APPROVAL_YEAR$APPROVAL_YEAR"/>
+        <viewAttribute hidden="true" id="JOIN$APPROVAL_ID$APPROVAL_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL01" source="TSL01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL02" source="TSL02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL03" source="TSL03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL04" source="TSL04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL05" source="TSL05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL06" source="TSL06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL07" source="TSL07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL08" source="TSL08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL09" source="TSL09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL10" source="TSL10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL11" source="TSL11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TSL12" source="TSL12"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFIPEX" source="RFIPEX"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MTD_Budget" source="MTD_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YTD_Budget" source="YTD_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$APPROVAL_ID$APPROVAL_ID" source="APPROVAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$APPROVAL_YEAR$APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+      </input>
+      <input node="#Rank_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDGET_TYPE" source="BUDGET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Doc_Date" source="Doc_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DOCDATE" source="DOCDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FM_AREA" source="FM_AREA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_ID" source="APPROVAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Time_Check" source="Time_Check"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$APPROVAL_ID$APPROVAL_ID" source="APPROVAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$APPROVAL_YEAR$APPROVAL_YEAR" source="APPROVAL_YEAR"/>
+      </input>
+      <joinAttribute name="JOIN$APPROVAL_ID$APPROVAL_ID"/>
+      <joinAttribute name="JOIN$APPROVAL_YEAR$APPROVAL_YEAR"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="APPROVAL_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="APPROVAL_ID"/>
+        <keyMapping columnObjectName="Join_1" columnName="APPROVAL_ID"/>
+      </attribute>
+      <attribute id="FM_AREA" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="FM_AREA"/>
+        <keyMapping columnObjectName="Join_1" columnName="FM_AREA"/>
+      </attribute>
+      <attribute id="APPROVAL_YEAR" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="APPROVAL_YEAR"/>
+        <keyMapping columnObjectName="Join_1" columnName="APPROVAL_YEAR"/>
+      </attribute>
+      <attribute id="DOCDATE" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DOCDATE"/>
+        <keyMapping columnObjectName="Join_1" columnName="DOCDATE"/>
+      </attribute>
+      <attribute id="Doc_Date" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Doc_Date"/>
+        <keyMapping columnObjectName="Join_1" columnName="Doc_Date"/>
+      </attribute>
+      <attribute id="BUDGET_TYPE" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="BUDGET_TYPE"/>
+        <keyMapping columnObjectName="Join_1" columnName="BUDGET_TYPE"/>
+      </attribute>
+      <attribute id="RFIPEX" order="20" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="RFIPEX"/>
+        <keyMapping columnObjectName="Join_1" columnName="RFIPEX"/>
+      </attribute>
+      <attribute id="Time_Check" order="23" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Time_Check"/>
+        <keyMapping columnObjectName="Join_1" columnName="Time_Check"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Count" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Join_1" columnName="Count"/>
+      </measure>
+      <measure id="TSL01" order="8" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL01"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL01"/>
+      </measure>
+      <measure id="TSL02" order="9" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL02"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL02"/>
+      </measure>
+      <measure id="TSL03" order="10" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL03"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL03"/>
+      </measure>
+      <measure id="TSL04" order="11" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL04"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL04"/>
+      </measure>
+      <measure id="TSL05" order="12" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL05"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL05"/>
+      </measure>
+      <measure id="TSL06" order="13" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL06"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL06"/>
+      </measure>
+      <measure id="TSL07" order="14" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL07"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL07"/>
+      </measure>
+      <measure id="TSL08" order="15" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL08"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL08"/>
+      </measure>
+      <measure id="TSL09" order="16" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL09"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL09"/>
+      </measure>
+      <measure id="TSL10" order="17" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL10"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL10"/>
+      </measure>
+      <measure id="TSL11" order="18" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL11"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL11"/>
+      </measure>
+      <measure id="TSL12" order="19" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="TSL12"/>
+        <measureMapping columnObjectName="Join_1" columnName="TSL12"/>
+      </measure>
+      <measure id="MTD_Budget" order="21" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="MTD_Budget"/>
+        <measureMapping columnObjectName="Join_1" columnName="MTD_Budget"/>
+      </measure>
+      <measure id="YTD_Budget" order="22" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="YTD_Budget"/>
+        <measureMapping columnObjectName="Join_1" columnName="YTD_Budget"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+    <sharedDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="99" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="455"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="281"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="455"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="359"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="281"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="185"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape modelObjectName="Join_1" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
+        <upperLeftCorner x="250" y="250"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>
