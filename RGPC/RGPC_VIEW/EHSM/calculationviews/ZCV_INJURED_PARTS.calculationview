@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" schemaVersion="2.3" id="ZCV_INJURED_PARTS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_INJURED_PARTS"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:07:49.151"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>leftstr(string(now()),4)+'-01-01'</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZAT_INCIDENT_KEY">
+      <targetVariable name="From_Date" resourceUri="/RGPC_VIEW.EHSM.Base_Views/calculationviews/ZAT_INCIDENT_KEY"/>
+      <localVariable>#From_Date</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZAT_INCIDENT_KEY">
+      <targetVariable name="To_Date" resourceUri="/RGPC_VIEW.EHSM.Base_Views/calculationviews/ZAT_INCIDENT_KEY"/>
+      <localVariable>#To_Date</localVariable>
+    </mapping>
+  </variableMappings>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="ZAT_INCIDENT_KEY" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.EHSM.Base_Views/calculationviews/ZAT_INCIDENT_KEY</resourceUri>
+    </DataSource>
+    <DataSource id="EHHSSD_INC_INJIL" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSD_INC_INJIL"/>
+    </DataSource>
+    <DataSource id="EHHSSC_BDYPART_T" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSC_BDYPART_T"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Incident_Keys">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="CATEGORY">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="001"/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAT_INCIDENT_KEY">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CATEGORY" source="CATEGORY"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Injured_Parts">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ROOT_KEY"/>
+        <viewAttribute id="BODY_PART">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value=""/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#EHHSSD_INC_INJIL">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ROOT_KEY" source="ROOT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BODY_PART" source="BODY_PART"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Parts_Description">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="LANGUAGE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="E"/>
+        </viewAttribute>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="DESCRIPTION"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Body_Parts_Group" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(in(&quot;CODE&quot;,&#xD;
+'EHHSS_BP_LOWER_BACK',&#xD;
+'EHHSS_BP_MIDLLE_BACK',&#xD;
+'EHHSS_BP_UPPER_BACK',&#xD;
+'EHHSS_BP_HIP'&#xD;
+),'Back and Hip',&#xD;
+if(in(&quot;CODE&quot;,&#xD;
+'EHHSS_BP_CHEST',&#xD;
+'EHHSS_BP_CIRC_SYS',&#xD;
+'EHHSS_BP_INTERN_ORGAN',&#xD;
+'EHHSS_BP_NERV_SYSTEM',&#xD;
+'EHHSS_BP_RESPIRAT_SYS'&#xD;
+),'Chest and Internal Organs',&#xD;
+if(in(&quot;CODE&quot;,&#xD;
+'EHHSS_BP_FOOT',&#xD;
+'EHHSS_BP_SOLE_FOOT',&#xD;
+'EHHSS_BP_TOE',&#xD;
+'EHHSS_BP_TOP_FOOT'&#xD;
+),'Foot',&#xD;
+if(in(&quot;CODE&quot;,&#xD;
+'EHHSS_BP_BACK_HAND',&#xD;
+'EHHSS_BP_ELBOW',&#xD;
+'EHHSS_BP_FINGER',&#xD;
+'EHHSS_BP_LOWER_ARM',&#xD;
+'EHHSS_BP_PALM_HAND',&#xD;
+'EHHSS_BP_UPPER_ARM',&#xD;
+'EHHSS_BP_WRIST'&#xD;
+),'Hand',&#xD;
+if(in(&quot;CODE&quot;,&#xD;
+'EHHSS_BP_EAR',&#xD;
+'EHHSS_BP_EYE',&#xD;
+'EHHSS_BP_FACE',&#xD;
+'EHHSS_BP_MOUTH',&#xD;
+'EHHSS_BP_NOSE',&#xD;
+'EHHSS_BP_HEAD',&#xD;
+'EHHSS_BP_TOOTH'&#xD;
+),'Head',&#xD;
+if(in(&quot;CODE&quot;,&#xD;
+'EHHSS_BP_KNEE',&#xD;
+'EHHSS_BP_LOWER_LEG',&#xD;
+'EHHSS_BP_UPPER_LEG'&#xD;
+),'Leg',&#xD;
+if(in(&quot;CODE&quot;,&#xD;
+'EHHSS_BP_NECK',&#xD;
+'EHHSS_BP_SHOULDER'&#xD;
+),'Neck and Shoulder',&#xD;
+'Others')))))))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#EHHSSC_BDYPART_T">
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANGUAGE" source="LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="BODY_PART"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Incident_Keys">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+      </input>
+      <input node="#Injured_Parts">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BODY_PART" source="BODY_PART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="ROOT_KEY"/>
+      </input>
+      <joinAttribute name="DB_KEY"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Part_count">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BODY_PART"/>
+        <viewAttribute aggregationType="sum" id="Count"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BODY_PART" source="BODY_PART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Body_Parts_Group"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute hidden="true" id="JOIN$CODE$BODY_PART"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Parts_Description">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Body_Parts_Group" source="Body_Parts_Group"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CODE$BODY_PART" source="CODE"/>
+      </input>
+      <input node="#Part_count">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CODE$BODY_PART" source="BODY_PART"/>
+      </input>
+      <joinAttribute name="JOIN$CODE$BODY_PART"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="Body_Parts_Group" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Body_Parts_Group"/>
+        <keyMapping columnObjectName="Join_1" columnName="Body_Parts_Group"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Count" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Join_1" columnName="Count"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="Incident_Count" hidden="false" order="3" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="Incident_Count"/>
+        <formula>if(isnull(&quot;Count&quot;),0,&quot;Count&quot;)</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="92" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Incident_Keys" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="90" y="435"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Injured_Parts" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="244" y="435"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Parts_Description" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="261"/>
+        <rectangleSize height="66" width="131"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="167" y="339"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Part_count" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="167" y="261"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="92" y="165"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

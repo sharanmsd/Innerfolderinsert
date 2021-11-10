@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_INV_TURNOVER_MATERIAL_V2" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_INV_TURNOVER"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:08.422"/>
+  <localVariables>
+    <variable id="Calmonth" parameter="true">
+      <descriptions defaultDescription="Calmonth"/>
+      <variableProperties datatype="NVARCHAR" defaultExpressionLanguage="COLUMN_ENGINE" length="6" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYYMM')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="Mat_Type_Filter" parameter="true">
+      <descriptions defaultDescription="Mat_Type_Filter"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="*" length="4" mandatory="false" scale="0">
+        <valueDomain type="AttributeValue">
+          <externalLikeStructureName>RGPC_VIEW.MM.Base_Views::ZAT_MARA</externalLikeStructureName>
+          <externalLikeStructureType>CALCULATION_VIEW</externalLikeStructureType>
+          <externalLikeElementName>Material_Type</externalLikeElementName>
+        </valueDomain>
+        <selection multiLine="true" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="37"/>
+  <dataSources>
+    <DataSource id="ZAN_STOCK_QTY_MATERIAL" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Stock" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Posting_CalMonth"/>
+        <viewAttribute id="Material_Number"/>
+        <viewAttribute id="Receipt_Stock"/>
+        <viewAttribute id="Receipt_Value"/>
+        <viewAttribute id="Issue_Stock"/>
+        <viewAttribute id="Issue_Value"/>
+        <viewAttribute id="Material_Type_Description"/>
+        <viewAttribute id="Material_Type"/>
+        <viewAttribute id="Material_Description"/>
+        <viewAttribute id="Base_Unit"/>
+        <viewAttribute id="Material_Number_Formated"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="INV_EKGRP"/>
+        <viewAttribute id="INV_EKNAM"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="M" length="6" expressionLanguage="COLUMN_ENGINE">
+          <formula>'$$Calmonth$$'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_STOCK_QTY_MATERIAL">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Posting_CalMonth" source="Posting_CalMonth"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number" source="Material_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Receipt_Stock" source="Receipt_Stock"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Receipt_Value" source="Receipt_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Stock" source="Issue_Stock"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Value" source="Issue_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_Description" source="Material_Type_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type" source="Material_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Description" source="Material_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Base_Unit" source="Base_Unit"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number_Formated" source="Material_Number_Formated"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKGRP" source="INV_EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKNAM" source="INV_EKNAM"/>
+      </input>
+      <filter>match(&quot;Material_Type&quot;,$$Mat_Type_Filter$$) or in(&quot;Material_Type&quot;,$$Mat_Type_Filter$$)</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="M1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Posting_CalMonth"/>
+        <viewAttribute id="Material_Number"/>
+        <viewAttribute id="Receipt_Stock"/>
+        <viewAttribute id="Receipt_Value"/>
+        <viewAttribute id="Issue_Stock"/>
+        <viewAttribute id="Issue_Value"/>
+        <viewAttribute id="M"/>
+        <viewAttribute id="Material_Type_Description"/>
+        <viewAttribute id="Material_Type"/>
+        <viewAttribute id="Material_Description"/>
+        <viewAttribute id="Base_Unit"/>
+        <viewAttribute id="Material_Number_Formated"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="INV_EKGRP"/>
+        <viewAttribute id="INV_EKNAM"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Receive_stock_till_start" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Posting_CalMonth&quot;&lt;&quot;M&quot;,&quot;Receipt_Stock&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Receive_value_till_start" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Posting_CalMonth&quot;&lt;&quot;M&quot;,&quot;Receipt_Value&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Issue_stock_till_start" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Posting_CalMonth&quot;&lt;&quot;M&quot;,&quot;Issue_Stock&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Issue_value_till_start" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Posting_CalMonth&quot;&lt;&quot;M&quot;,&quot;Issue_Value&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Opening_Stock" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;Receive_stock_till_start&quot;-&quot;Issue_stock_till_start&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Opening_Value" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;Receive_value_till_start&quot;-&quot;Issue_value_till_start&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Receive_Stock_M" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Posting_CalMonth&quot;=&quot;M&quot;,&quot;Receipt_Stock&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Issue_Stock_M" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Posting_CalMonth&quot;=&quot;M&quot;,&quot;Issue_Stock&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Issue_Value_M" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Posting_CalMonth&quot;=&quot;M&quot;,&quot;Issue_Value&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Receive_Value_M" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Posting_CalMonth&quot;=&quot;M&quot;,&quot;Receipt_Value&quot;,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Closing_Stock" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;Opening_Stock&quot;+&quot;Receive_Stock_M&quot;-&quot;Issue_Stock_M&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Closing_Value" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;Opening_Value&quot;+&quot;Receive_Value_M&quot;-&quot;Issue_Value_M&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Stock">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Posting_CalMonth" source="Posting_CalMonth"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number" source="Material_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Receipt_Stock" source="Receipt_Stock"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Receipt_Value" source="Receipt_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Stock" source="Issue_Stock"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Value" source="Issue_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="M" source="M"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_Description" source="Material_Type_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type" source="Material_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Description" source="Material_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Base_Unit" source="Base_Unit"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number_Formated" source="Material_Number_Formated"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKGRP" source="INV_EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKNAM" source="INV_EKNAM"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="M1">
+    <descriptions/>
+    <attributes>
+      <attribute id="Material_Number" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Number"/>
+        <keyMapping columnObjectName="M1" columnName="Material_Number"/>
+      </attribute>
+      <attribute id="M" order="10" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="M"/>
+        <keyMapping columnObjectName="M1" columnName="M"/>
+      </attribute>
+      <attribute id="Material_Type_Description" order="11" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Type_Description"/>
+        <keyMapping columnObjectName="M1" columnName="Material_Type_Description"/>
+      </attribute>
+      <attribute id="Material_Type" order="12" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Type"/>
+        <keyMapping columnObjectName="M1" columnName="Material_Type"/>
+      </attribute>
+      <attribute id="Material_Description" order="13" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Description"/>
+        <keyMapping columnObjectName="M1" columnName="Material_Description"/>
+      </attribute>
+      <attribute id="Base_Unit" order="14" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Base_Unit"/>
+        <keyMapping columnObjectName="M1" columnName="Base_Unit"/>
+      </attribute>
+      <attribute id="Material_Number_Formated" order="16" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Number_Formated"/>
+        <keyMapping columnObjectName="M1" columnName="Material_Number_Formated"/>
+      </attribute>
+      <attribute id="EKNAM" order="17" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EKNAM"/>
+        <keyMapping columnObjectName="M1" columnName="EKNAM"/>
+      </attribute>
+      <attribute id="Department" order="18" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Department"/>
+        <keyMapping columnObjectName="M1" columnName="Department"/>
+      </attribute>
+      <attribute id="EKGRP" order="19" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EKGRP"/>
+        <keyMapping columnObjectName="M1" columnName="EKGRP"/>
+      </attribute>
+      <attribute id="INV_EKGRP" order="20" attributeHierarchyActive="false" descriptionColumnName="INV_EKNAM" displayAttribute="false">
+        <descriptions defaultDescription="INV_EKGRP"/>
+        <keyMapping columnObjectName="M1" columnName="INV_EKGRP"/>
+      </attribute>
+      <attribute id="INV_EKNAM" order="21" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="INV_EKNAM"/>
+        <keyMapping columnObjectName="M1" columnName="INV_EKNAM"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Opening_Stock" order="1" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Opening_Stock"/>
+        <measureMapping columnObjectName="M1" columnName="Opening_Stock"/>
+      </measure>
+      <measure id="Opening_Value" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Opening_Value"/>
+        <measureMapping columnObjectName="M1" columnName="Opening_Value"/>
+      </measure>
+      <measure id="Receive_Stock_M" order="3" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Receive_Stock_M"/>
+        <measureMapping columnObjectName="M1" columnName="Receive_Stock_M"/>
+      </measure>
+      <measure id="Issue_Stock_M" order="4" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Issue_Stock_M"/>
+        <measureMapping columnObjectName="M1" columnName="Issue_Stock_M"/>
+      </measure>
+      <measure id="Issue_Value_M" order="5" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Issue_Value_M"/>
+        <measureMapping columnObjectName="M1" columnName="Issue_Value_M"/>
+      </measure>
+      <measure id="Receive_Value_M" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Receive_Value_M"/>
+        <measureMapping columnObjectName="M1" columnName="Receive_Value_M"/>
+      </measure>
+      <measure id="Closing_Stock" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Closing_Stock"/>
+        <measureMapping columnObjectName="M1" columnName="Closing_Stock"/>
+      </measure>
+      <measure id="Closing_Value" order="8" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Closing_Value"/>
+        <measureMapping columnObjectName="M1" columnName="Closing_Value"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="Ratio" hidden="false" order="15" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="Ratio"/>
+        <formula>if(&quot;Issue_Value_M&quot; != 0 and &quot;Closing_Value&quot; != 0,&quot;Issue_Value_M&quot;/&quot;Closing_Value&quot;,0)</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="22" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Stock" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="243"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="M1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

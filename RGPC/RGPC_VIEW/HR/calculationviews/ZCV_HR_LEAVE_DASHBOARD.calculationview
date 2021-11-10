@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_HR_LEAVE_DASHBOARD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_HR_LEAVE_DASHBOARD"/>
+  <metadata activatedAt="2020-11-10 15:18:39.0" changedAt="2020-11-10 17:40:44.124"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>date(leftstr(string(now()),4)+'0101')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="42"/>
+  <dataSources>
+    <DataSource id="PA2001" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="PA2001"/>
+    </DataSource>
+    <DataSource id="M_TIME_DIMENSION" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION"/>
+    </DataSource>
+    <DataSource id="T554T" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="T554T"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="AWART"/>
+        <viewAttribute id="KALTG"/>
+        <viewAttribute id="PERNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Year_Value" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(string(now()),4)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Begda_Month" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(&quot;BEGDA&quot;,5,2)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Endda_Month" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(&quot;ENDDA&quot;,5,2)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="begin" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;BEGDA&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="end" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ENDDA&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#PA2001">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AWART" source="AWART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KALTG" source="KALTG"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+      <filter>&quot;begin&quot; >= '$$From_Date$$' and &quot;end&quot; &lt;= now()</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DATE_SAP"/>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="QUARTER"/>
+        <viewAttribute id="MONTH"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Monthh" length="8" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;MONTH&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Quarterr" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;QUARTER&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Yearr" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;YEAR&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;DATE_SAP&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#M_TIME_DIMENSION">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATE_SAP" source="DATE_SAP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+      </input>
+      <filter>&quot;date&quot; >= '$$From_Date$$' and &quot;date&quot; &lt;= '$$To_Date$$'</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="AWART"/>
+        <viewAttribute id="KALTG"/>
+        <viewAttribute id="Year_Value"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="DATE_SAP"/>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="QUARTER"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="Begda_Month"/>
+        <viewAttribute id="Endda_Month"/>
+        <viewAttribute id="Monthh"/>
+        <viewAttribute id="Quarterr"/>
+        <viewAttribute id="Yearr"/>
+        <viewAttribute id="date"/>
+        <viewAttribute id="begin"/>
+        <viewAttribute id="end"/>
+        <viewAttribute hidden="true" id="JOIN$Dummy$Dummy"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AWART" source="AWART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KALTG" source="KALTG"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Value" source="Year_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Begda_Month" source="Begda_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Endda_Month" source="Endda_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="begin" source="begin"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="end" source="end"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$Dummy$Dummy" source="Dummy"/>
+      </input>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATE_SAP" source="DATE_SAP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Monthh" source="Monthh"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Quarterr" source="Quarterr"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Yearr" source="Yearr"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="date" source="date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$Dummy$Dummy" source="Dummy"/>
+      </input>
+      <joinAttribute name="JOIN$Dummy$Dummy"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Year_Value"/>
+        <viewAttribute id="KALTG"/>
+        <viewAttribute id="AWART"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="DATE_SAP"/>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="QUARTER"/>
+        <viewAttribute id="Monthh"/>
+        <viewAttribute id="Quarterr"/>
+        <viewAttribute id="Yearr"/>
+        <viewAttribute id="date"/>
+        <viewAttribute id="begin"/>
+        <viewAttribute id="end"/>
+        <viewAttribute id="PERNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Value" source="Year_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KALTG" source="KALTG"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AWART" source="AWART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATE_SAP" source="DATE_SAP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Monthh" source="Monthh"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Quarterr" source="Quarterr"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Yearr" source="Yearr"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="date" source="date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="begin" source="begin"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="end" source="end"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+      <filter>&quot;begin&quot; &lt;= &quot;date&quot;  and &quot;end&quot; >= &quot;date&quot;</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="MOABW">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="99"/>
+        </viewAttribute>
+        <viewAttribute id="AWART"/>
+        <viewAttribute id="ATEXT"/>
+        <viewAttribute id="SPRSL">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="E"/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#T554T">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MOABW" source="MOABW"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AWART" source="AWART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ATEXT" source="ATEXT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SPRSL" source="SPRSL"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Year_Value"/>
+        <viewAttribute id="AWART"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="KALTG"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="ATEXT"/>
+        <viewAttribute id="QUARTER"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="YEAR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Leave_Group" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;ATEXT&quot;= 'Annual Leave', 'Annual Leave',&#xD;
+if((&quot;ATEXT&quot;='Sick Leave') or (&quot;ATEXT&quot; = 'Sick Leave - Half Basic') or (&quot;ATEXT&quot; ='Unpaid Sick Leave') ,'Sick Leave',&#xD;
+if(&quot;ATEXT&quot;='Leave without Pay','Leave without Pay','Others')))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Final_Month" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;MONTH&quot;='01','Jan',if(&quot;MONTH&quot;='02','Feb',if(&quot;MONTH&quot;='03','Mar',if(&quot;MONTH&quot;='04','Apr',if(&quot;MONTH&quot;='05','May',if(&quot;MONTH&quot;='06','Jun',if(&quot;MONTH&quot;='07','Jul',if(&quot;MONTH&quot;='08','Aug',if(&quot;MONTH&quot;='09','Sep',if(&quot;MONTH&quot;='10','Oct',if(&quot;MONTH&quot;='11','Nov','Dec')))))))))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Leave_Key" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Leave_Group&quot; ='Annual Leave',1,if(&quot;Leave_Group&quot; ='Sick Leave',2,if(&quot;Leave_Group&quot; ='Leave without Pay',3,4)))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year_Value" source="Year_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AWART" source="AWART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KALTG" source="KALTG"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QUARTER" source="QUARTER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+      </input>
+      <input node="#Projection_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ATEXT" source="ATEXT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AWART" source="AWART"/>
+      </input>
+      <joinAttribute name="AWART"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_2">
+    <descriptions/>
+    <attributes>
+      <attribute id="Year_Value" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Year_Value"/>
+        <keyMapping columnObjectName="Join_2" columnName="Year_Value"/>
+      </attribute>
+      <attribute id="AWART" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="AWART"/>
+        <keyMapping columnObjectName="Join_2" columnName="AWART"/>
+      </attribute>
+      <attribute id="BEGDA" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="BEGDA"/>
+        <keyMapping columnObjectName="Join_2" columnName="BEGDA"/>
+      </attribute>
+      <attribute id="ENDDA" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ENDDA"/>
+        <keyMapping columnObjectName="Join_2" columnName="ENDDA"/>
+      </attribute>
+      <attribute id="ATEXT" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ATEXT"/>
+        <keyMapping columnObjectName="Join_2" columnName="ATEXT"/>
+      </attribute>
+      <attribute id="QUARTER" order="8" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions/>
+        <keyMapping columnObjectName="Join_2" columnName="QUARTER"/>
+      </attribute>
+      <attribute id="MONTH" order="9" semanticType="empty" attributeHierarchyActive="false" descriptionColumnName="Final_Month" displayAttribute="false">
+        <descriptions/>
+        <keyMapping columnObjectName="Join_2" columnName="MONTH"/>
+      </attribute>
+      <attribute id="YEAR" order="10" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Year"/>
+        <keyMapping columnObjectName="Join_2" columnName="YEAR"/>
+      </attribute>
+      <attribute id="Leave_Group" order="11" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Leave_Group"/>
+        <keyMapping columnObjectName="Join_2" columnName="Leave_Group"/>
+      </attribute>
+      <attribute id="Final_Month" order="12" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Final_Month"/>
+        <keyMapping columnObjectName="Join_2" columnName="Final_Month"/>
+      </attribute>
+      <attribute id="Leave_Key" hidden="false" order="13" attributeHierarchyActive="false" descriptionColumnName="Leave_Group" displayAttribute="false">
+        <descriptions defaultDescription="Leave Type"/>
+        <keyMapping columnObjectName="Join_2" columnName="Leave_Key"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="KALTG" order="5" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="KALTG"/>
+        <measureMapping columnObjectName="Join_2" columnName="KALTG"/>
+      </measure>
+      <measure id="Count" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Join_2" columnName="Count"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="176" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="435"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="435"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="339"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="261"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_LOT_INSPECTION" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="Lot Inspection Details Report"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:10.235"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>leftstr(string(now()),4)+'-01-01'</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="ZAN_QALS" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_QALS</resourceUri>
+    </DataSource>
+    <DataSource id="JEST" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="JEST"/>
+    </DataSource>
+    <DataSource id="TJ02T" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="TJ02T"/>
+    </DataSource>
+    <DataSource id="QAVE" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="QAVE"/>
+    </DataSource>
+    <DataSource id="ZAT_MARA" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAT_MARA</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Lot">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="PRUEFLOS"/>
+        <viewAttribute id="MBLNR"/>
+        <viewAttribute id="ZEILE"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="SELMATNR"/>
+        <viewAttribute id="LOSMENGE"/>
+        <viewAttribute id="ENSTEHDAT"/>
+        <viewAttribute id="PAENDTERM"/>
+        <viewAttribute id="PASTRTERM"/>
+        <viewAttribute id="Lot_Creation_Date">
+          <filter xsi:type="AccessControl:RangeValueFilter" operator="BT" including="true" lowValue="$$From_Date$$" highValue="$$To_Date$$"/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_QALS">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRUEFLOS" source="PRUEFLOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MBLNR" source="MBLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZEILE" source="ZEILE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SELMATNR" source="SELMATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LOSMENGE" source="LOSMENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENSTEHDAT" source="ENSTEHDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PAENDTERM" source="PAENDTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PASTRTERM" source="PASTRTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Lot_Creation_Date" source="Lot_Creation_Date"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Status">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJNR">
+          <filter xsi:type="AccessControl:SingleValueFilter" operator="CP" including="true" value="QL*"/>
+        </viewAttribute>
+        <viewAttribute id="STAT"/>
+        <viewAttribute id="INACT">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value=""/>
+        </viewAttribute>
+        <viewAttribute id="CHGNR"/>
+        <viewAttribute id="_DATAAGING"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#JEST">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT" source="STAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INACT" source="INACT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHGNR" source="CHGNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="_DATAAGING" source="_DATAAGING"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Status_Desc" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ISTAT"/>
+        <viewAttribute id="TXT30"/>
+        <viewAttribute id="SPRAS"/>
+        <viewAttribute id="TXT04"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Status_Order" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;TXT04&quot;='CRTD', '1',if(&quot;TXT04&quot;='REL' ,'2',if(&quot;TXT04&quot;='INSP' , '3',if(&quot;TXT04&quot;='UD', '4','0'))))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#TJ02T">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ISTAT" source="ISTAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT30" source="TXT30"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SPRAS" source="SPRAS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT04" source="TXT04"/>
+      </input>
+      <filter>(&quot;SPRAS&quot; ='E') and &quot;Status_Order&quot;!='0'</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="STAT"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="Status_Order"/>
+        <viewAttribute id="TXT30"/>
+        <viewAttribute id="TXT04"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Status">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT" source="STAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+      </input>
+      <input node="#Status_Desc">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status_Order" source="Status_Order"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT30" source="TXT30"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT04" source="TXT04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT" source="ISTAT"/>
+      </input>
+      <joinAttribute name="STAT"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Current_Status">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TXT30"/>
+        <viewAttribute id="TXT04"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="Status_Order"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT30" source="TXT30"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT04" source="TXT04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status_Order" source="Status_Order"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>OBJNR</partitionViewAttributeName>
+        <order byViewAttributeName="Status_Order" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Lot_Status" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="PRUEFLOS"/>
+        <viewAttribute id="MBLNR"/>
+        <viewAttribute id="ZEILE"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="SELMATNR"/>
+        <viewAttribute id="LOSMENGE"/>
+        <viewAttribute id="ENSTEHDAT"/>
+        <viewAttribute id="PAENDTERM"/>
+        <viewAttribute id="PASTRTERM"/>
+        <viewAttribute id="TXT30"/>
+        <viewAttribute id="TXT04"/>
+        <viewAttribute id="Status_Order"/>
+        <viewAttribute id="Lot_Creation_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Lot">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRUEFLOS" source="PRUEFLOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MBLNR" source="MBLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZEILE" source="ZEILE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SELMATNR" source="SELMATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LOSMENGE" source="LOSMENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENSTEHDAT" source="ENSTEHDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PAENDTERM" source="PAENDTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PASTRTERM" source="PASTRTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Lot_Creation_Date" source="Lot_Creation_Date"/>
+      </input>
+      <input node="#Current_Status">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT30" source="TXT30"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT04" source="TXT04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Status_Order" source="Status_Order"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+      </input>
+      <joinAttribute name="OBJNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Person_Responsible">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PRUEFLOS" keepFlag="true"/>
+        <viewAttribute id="VNAME"/>
+        <viewAttribute id="VDATUM"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="UD_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;VDATUM&quot;='00000000','99991231',&quot;VDATUM&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#QAVE">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRUEFLOS" source="PRUEFLOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VNAME" source="VNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VDATUM" source="VDATUM"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Lot_done_by" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PRUEFLOS"/>
+        <viewAttribute id="MBLNR"/>
+        <viewAttribute id="ZEILE"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="SELMATNR"/>
+        <viewAttribute id="PAENDTERM"/>
+        <viewAttribute id="PASTRTERM"/>
+        <viewAttribute id="LOSMENGE"/>
+        <viewAttribute id="VNAME"/>
+        <viewAttribute id="TXT30"/>
+        <viewAttribute id="TXT04"/>
+        <viewAttribute id="Lot_Creation_Date"/>
+        <viewAttribute id="UD_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Lot_Status">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRUEFLOS" source="PRUEFLOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MBLNR" source="MBLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZEILE" source="ZEILE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SELMATNR" source="SELMATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PAENDTERM" source="PAENDTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PASTRTERM" source="PASTRTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LOSMENGE" source="LOSMENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT30" source="TXT30"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT04" source="TXT04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Lot_Creation_Date" source="Lot_Creation_Date"/>
+      </input>
+      <input node="#Person_Responsible">
+        <mapping xsi:type="Calculation:AttributeMapping" target="VNAME" source="VNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UD_Date" source="UD_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRUEFLOS" source="PRUEFLOS"/>
+      </input>
+      <joinAttribute name="PRUEFLOS"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Inspection_Days">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PRUEFLOS"/>
+        <viewAttribute id="MBLNR"/>
+        <viewAttribute id="ZEILE"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="SELMATNR"/>
+        <viewAttribute id="PAENDTERM"/>
+        <viewAttribute id="PASTRTERM"/>
+        <viewAttribute id="VNAME"/>
+        <viewAttribute id="LOSMENGE"/>
+        <viewAttribute id="TXT30"/>
+        <viewAttribute id="TXT04">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="UD"/>
+        </viewAttribute>
+        <viewAttribute id="Lot_Creation_Date"/>
+        <viewAttribute id="UD_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Planned_Start_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;PASTRTERM&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="Planned_End_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;PAENDTERM&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute aggregationType="sum" datatype="INTEGER" id="Inspection_Days" expressionLanguage="COLUMN_ENGINE">
+          <formula>daysbetween(&quot;Planned_Start_Date&quot;,&quot;Actual_End_Date&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="Actual_End_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;UD_Date&quot;=date('9999-12-31') or isnull(&quot;UD_Date&quot;),&quot;Planned_End_Date&quot;,&quot;UD_Date&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Lot_done_by">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRUEFLOS" source="PRUEFLOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MBLNR" source="MBLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZEILE" source="ZEILE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SELMATNR" source="SELMATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PAENDTERM" source="PAENDTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PASTRTERM" source="PASTRTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VNAME" source="VNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LOSMENGE" source="LOSMENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT30" source="TXT30"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT04" source="TXT04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Lot_Creation_Date" source="Lot_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UD_Date" source="UD_Date"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PRUEFLOS" keepFlag="true"/>
+        <viewAttribute id="MBLNR"/>
+        <viewAttribute id="ZEILE"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="SELMATNR"/>
+        <viewAttribute id="VNAME"/>
+        <viewAttribute id="Inspection_Start_Date"/>
+        <viewAttribute id="Inspection_End_Date"/>
+        <viewAttribute id="TXT30"/>
+        <viewAttribute id="TXT04"/>
+        <viewAttribute id="Lot_Creation_Date"/>
+        <viewAttribute id="LOSMENGE"/>
+        <viewAttribute id="Inspection_Days"/>
+        <viewAttribute id="Material_Number_Formated"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Material_Description"/>
+        <viewAttribute id="Material_Type_Description"/>
+        <viewAttribute id="Material_Type"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="Actual_End_Date"/>
+        <viewAttribute id="INV_EKGRP"/>
+        <viewAttribute id="INV_EKNAM"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Inspection_Days">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRUEFLOS" source="PRUEFLOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MBLNR" source="MBLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZEILE" source="ZEILE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SELMATNR" source="SELMATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VNAME" source="VNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Inspection_Start_Date" source="Planned_Start_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Inspection_End_Date" source="Planned_End_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT30" source="TXT30"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXT04" source="TXT04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Lot_Creation_Date" source="Lot_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LOSMENGE" source="LOSMENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Inspection_Days" source="Inspection_Days"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_End_Date" source="Actual_End_Date"/>
+      </input>
+      <input node="#ZAT_MARA">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number_Formated" source="Material_Number_Formated"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Description" source="Material_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_Description" source="Material_Type_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type" source="Material_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKGRP" source="INV_EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKNAM" source="INV_EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SELMATNR" source="Material_Number"/>
+      </input>
+      <joinAttribute name="SELMATNR"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_2">
+    <descriptions/>
+    <attributes>
+      <attribute id="PRUEFLOS" order="1" attributeHierarchyActive="false" displayAttribute="false" keepFlag="true">
+        <descriptions defaultDescription="PRUEFLOS"/>
+        <keyMapping columnObjectName="Join_2" columnName="PRUEFLOS"/>
+      </attribute>
+      <attribute id="MBLNR" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="MBLNR"/>
+        <keyMapping columnObjectName="Join_2" columnName="MBLNR"/>
+      </attribute>
+      <attribute id="ZEILE" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ZEILE"/>
+        <keyMapping columnObjectName="Join_2" columnName="ZEILE"/>
+      </attribute>
+      <attribute id="EBELN" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EBELN"/>
+        <keyMapping columnObjectName="Join_2" columnName="EBELN"/>
+      </attribute>
+      <attribute id="EBELP" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EBELP"/>
+        <keyMapping columnObjectName="Join_2" columnName="EBELP"/>
+      </attribute>
+      <attribute id="SELMATNR" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SELMATNR"/>
+        <keyMapping columnObjectName="Join_2" columnName="SELMATNR"/>
+      </attribute>
+      <attribute id="VNAME" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="VNAME"/>
+        <keyMapping columnObjectName="Join_2" columnName="VNAME"/>
+      </attribute>
+      <attribute id="Inspection_Start_Date" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Inspection_Start_Date"/>
+        <keyMapping columnObjectName="Join_2" columnName="Inspection_Start_Date"/>
+      </attribute>
+      <attribute id="Inspection_End_Date" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Inspection_End_Date"/>
+        <keyMapping columnObjectName="Join_2" columnName="Inspection_End_Date"/>
+      </attribute>
+      <attribute id="TXT30" order="10" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TXT30"/>
+        <keyMapping columnObjectName="Join_2" columnName="TXT30"/>
+      </attribute>
+      <attribute id="TXT04" order="11" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TXT04"/>
+        <keyMapping columnObjectName="Join_2" columnName="TXT04"/>
+      </attribute>
+      <attribute id="Lot_Creation_Date" order="12" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Lot_Creation_Date"/>
+        <keyMapping columnObjectName="Join_2" columnName="Lot_Creation_Date"/>
+      </attribute>
+      <attribute id="Material_Number_Formated" order="15" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Number_Formated"/>
+        <keyMapping columnObjectName="Join_2" columnName="Material_Number_Formated"/>
+      </attribute>
+      <attribute id="Department" order="16" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Department"/>
+        <keyMapping columnObjectName="Join_2" columnName="Department"/>
+      </attribute>
+      <attribute id="EKNAM" order="17" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EKNAM"/>
+        <keyMapping columnObjectName="Join_2" columnName="EKNAM"/>
+      </attribute>
+      <attribute id="Material_Description" order="18" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Description"/>
+        <keyMapping columnObjectName="Join_2" columnName="Material_Description"/>
+      </attribute>
+      <attribute id="Material_Type_Description" order="19" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Type_Description"/>
+        <keyMapping columnObjectName="Join_2" columnName="Material_Type_Description"/>
+      </attribute>
+      <attribute id="Material_Type" order="20" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Type"/>
+        <keyMapping columnObjectName="Join_2" columnName="Material_Type"/>
+      </attribute>
+      <attribute id="EKGRP" order="21" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EKGRP"/>
+        <keyMapping columnObjectName="Join_2" columnName="EKGRP"/>
+      </attribute>
+      <attribute id="Actual_End_Date" order="22" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Inspection_End_Date"/>
+        <keyMapping columnObjectName="Join_2" columnName="Actual_End_Date"/>
+      </attribute>
+      <attribute id="INV_EKGRP" order="23" attributeHierarchyActive="false" descriptionColumnName="INV_EKNAM" displayAttribute="false">
+        <descriptions defaultDescription="INV_EKGRP"/>
+        <keyMapping columnObjectName="Join_2" columnName="INV_EKGRP"/>
+      </attribute>
+      <attribute id="INV_EKNAM" order="24" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="INV_EKNAM"/>
+        <keyMapping columnObjectName="Join_2" columnName="INV_EKNAM"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="LOSMENGE" order="13" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="LOSMENGE"/>
+        <measureMapping columnObjectName="Join_2" columnName="LOSMENGE"/>
+      </measure>
+      <measure id="Inspection_Days" order="14" aggregationType="sum" engineAggregation="avg" measureType="simple">
+        <descriptions defaultDescription="Inspection_Days"/>
+        <measureMapping columnObjectName="Join_2" columnName="Inspection_Days"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="176" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Lot" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="531"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Status" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="705"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Status_Desc" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="705"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="609"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Current_Status" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="531"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Lot_Status" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="435"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Person_Responsible" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="435"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Lot_done_by" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="339"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Inspection_Days" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="261"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAT_INCIDENT_KEY" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="TREE_BASED" dataCategory="DIMENSION" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Projection">
+  <origin/>
+  <descriptions defaultDescription="ZAT_EHHSSD_INC_BINFA"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:07:47.115"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>leftstr(string(now()),4)+'-01-01'</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="EHHSSD_INC_BINFA" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSD_INC_BINFA"/>
+    </DataSource>
+    <DataSource id="EHHSSD_INC_ROOT" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSD_INC_ROOT"/>
+    </DataSource>
+    <DataSource id="EHHSSD_INC_INCGR" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSD_INC_INCGR"/>
+    </DataSource>
+    <DataSource id="EHHSSC_INC_GRP_T" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSC_INC_GRP_T"/>
+    </DataSource>
+    <DataSource id="EHHSSD_INC_PINJI" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSD_INC_PINJI"/>
+    </DataSource>
+    <DataSource id="EHHSSD_INC_ASINV" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EHHSSD_INC_ASINV"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Basic_Info" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PARENT_KEY" keepFlag="true"/>
+        <viewAttribute id="TITLE"/>
+        <viewAttribute id="START_TIMESTAMP"/>
+        <viewAttribute id="ZZSW_INS"/>
+        <viewAttribute id="ZZSW_INS_ID"/>
+        <viewAttribute id="ZZSW_INS_DPT"/>
+        <viewAttribute id="START_TIME_ZONE"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Date" expressionLanguage="SQL">
+          <formula>UTCTOLOCAL(TO_TIMESTAMP(&quot;START_TIMESTAMP&quot;, 'YYYYMMDDHH24MISS'),&quot;START_TIME_ZONE&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#EHHSSD_INC_BINFA">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_KEY" source="PARENT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TITLE" source="TITLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="START_TIMESTAMP" source="START_TIMESTAMP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS" source="ZZSW_INS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_ID" source="ZZSW_INS_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_DPT" source="ZZSW_INS_DPT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="START_TIME_ZONE" source="START_TIME_ZONE"/>
+      </input>
+      <filter>&quot;Date&quot;>='$$From_Date$$' and &quot;Date&quot;&lt;='$$To_Date$$'</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Root_Data">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="CATEGORY">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="001"/>
+            <operands value="003"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="STATUS">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="false">
+            <operands value=""/>
+            <operands value="00"/>
+          </filter>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#EHHSSD_INC_ROOT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CATEGORY" source="CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Final_Incident_Key" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TITLE"/>
+        <viewAttribute id="CATEGORY"/>
+        <viewAttribute id="ZZSW_INS"/>
+        <viewAttribute id="ZZSW_INS_ID"/>
+        <viewAttribute id="ZZSW_INS_DPT"/>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="STATUS"/>
+        <viewAttribute id="Date"/>
+        <viewAttribute hidden="true" id="JOIN$PARENT_KEY$DB_KEY"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Basic_Info">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TITLE" source="TITLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS" source="ZZSW_INS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_ID" source="ZZSW_INS_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_DPT" source="ZZSW_INS_DPT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$PARENT_KEY$DB_KEY" source="PARENT_KEY"/>
+      </input>
+      <input node="#Root_Data">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CATEGORY" source="CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$PARENT_KEY$DB_KEY" source="DB_KEY"/>
+      </input>
+      <joinAttribute name="JOIN$PARENT_KEY$DB_KEY"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Incident_Group">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PARENT_KEY"/>
+        <viewAttribute id="INC_GROUP">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value=""/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#EHHSSD_INC_INCGR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_KEY" source="PARENT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Group" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TITLE"/>
+        <viewAttribute id="CATEGORY"/>
+        <viewAttribute id="ZZSW_INS"/>
+        <viewAttribute id="ZZSW_INS_ID"/>
+        <viewAttribute id="ZZSW_INS_DPT"/>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="STATUS"/>
+        <viewAttribute id="Date"/>
+        <viewAttribute id="INC_GROUP"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Final_Incident_Key">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TITLE" source="TITLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CATEGORY" source="CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS" source="ZZSW_INS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_ID" source="ZZSW_INS_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_DPT" source="ZZSW_INS_DPT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+      </input>
+      <input node="#Incident_Group">
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="PARENT_KEY"/>
+      </input>
+      <joinAttribute name="DB_KEY"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Group_Text">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="LANGUAGE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="E"/>
+        </viewAttribute>
+        <viewAttribute id="CODE"/>
+        <viewAttribute id="DESCRIPTION"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#EHHSSC_INC_GRP_T">
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANGUAGE" source="LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CODE" source="CODE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Group_Test" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Date"/>
+        <viewAttribute id="STATUS"/>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="ZZSW_INS_DPT"/>
+        <viewAttribute id="ZZSW_INS_ID"/>
+        <viewAttribute id="ZZSW_INS"/>
+        <viewAttribute id="CATEGORY"/>
+        <viewAttribute id="TITLE"/>
+        <viewAttribute id="INC_GROUP"/>
+        <viewAttribute id="DESCRIPTION"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Group">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_DPT" source="ZZSW_INS_DPT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_ID" source="ZZSW_INS_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS" source="ZZSW_INS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CATEGORY" source="CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TITLE" source="TITLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+      </input>
+      <input node="#Group_Text">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="CODE"/>
+      </input>
+      <joinAttribute name="INC_GROUP"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Remove_invalid_001" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TITLE"/>
+        <viewAttribute id="CATEGORY"/>
+        <viewAttribute id="ZZSW_INS"/>
+        <viewAttribute id="ZZSW_INS_ID"/>
+        <viewAttribute id="ZZSW_INS_DPT"/>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="STATUS"/>
+        <viewAttribute id="Date"/>
+        <viewAttribute id="INC_GROUP"/>
+        <viewAttribute id="DESCRIPTION"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Header_Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Group_Test">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TITLE" source="TITLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CATEGORY" source="CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS" source="ZZSW_INS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_ID" source="ZZSW_INS_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_DPT" source="ZZSW_INS_DPT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      </input>
+      <filter>not((&quot;CATEGORY&quot;='001') AND isNull(&quot;INC_GROUP&quot;))</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Person_count">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OC_INC_TYPE">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="ZEHHSS_OIT_OCC_INC"/>
+            <operands value="ZEHHSS_OIT_70_MED"/>
+            <operands value="ZEHHSS_OIT_60_SAF"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="ROOT_KEY"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Incident_Category" length="21" expressionLanguage="COLUMN_ENGINE">
+          <formula>case(&quot;OC_INC_TYPE&quot;,&#xD;
+'ZEHHSS_OIT_OCC_INC','EHHSS_IGR_OCC_INC',&#xD;
+'ZEHHSS_OIT_70_MED','ZEHHSS_IGR_70_MED',&#xD;
+'ZEHHSS_OIT_60_SAF','ZEHHSS_IGR_60_SAF',&#xD;
+'Others')</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#EHHSSD_INC_PINJI">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OC_INC_TYPE" source="OC_INC_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ROOT_KEY" source="ROOT_KEY"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Key_wise_Person">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ROOT_KEY"/>
+        <viewAttribute id="Incident_Category"/>
+        <viewAttribute aggregationType="sum" id="Count"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Person_count">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ROOT_KEY" source="ROOT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Incident_Category" source="Incident_Category"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="For_Line_Item" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TITLE"/>
+        <viewAttribute id="CATEGORY"/>
+        <viewAttribute id="ZZSW_INS"/>
+        <viewAttribute id="ZZSW_INS_ID"/>
+        <viewAttribute id="ZZSW_INS_DPT"/>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="STATUS"/>
+        <viewAttribute id="Date"/>
+        <viewAttribute id="INC_GROUP"/>
+        <viewAttribute id="DESCRIPTION"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Group_Test">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TITLE" source="TITLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CATEGORY" source="CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS" source="ZZSW_INS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_ID" source="ZZSW_INS_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_DPT" source="ZZSW_INS_DPT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+      </input>
+      <filter>not((&quot;CATEGORY&quot;='001') AND isNull(&quot;INC_GROUP&quot;))</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Key_with_people" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="Incident_Category"/>
+        <viewAttribute hidden="true" id="JOIN$INC_GROUP$Incident_Category"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#For_Line_Item">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$INC_GROUP$Incident_Category" source="INC_GROUP"/>
+      </input>
+      <input node="#Key_wise_Person">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Incident_Category" source="Incident_Category"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="ROOT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$INC_GROUP$Incident_Category" source="Incident_Category"/>
+      </input>
+      <joinAttribute name="DB_KEY"/>
+      <joinAttribute name="JOIN$INC_GROUP$Incident_Category"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Property_count">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PARENT_KEY"/>
+        <viewAttribute id="TYPE">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="001"/>
+            <operands value="002"/>
+            <operands value="003"/>
+          </filter>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Incident_Category" length="21" expressionLanguage="COLUMN_ENGINE">
+          <formula>case(&quot;TYPE&quot;,&#xD;
+'001','ZEHHSS_IGR_30_PD',&#xD;
+'002','ZEHHSS_IGR_50_VEC',&#xD;
+'003','ZEHHSS_IGR_30_PD',&#xD;
+'Others')</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#EHHSSD_INC_ASINV">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_KEY" source="PARENT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Key_wise_Property">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Incident_Category"/>
+        <viewAttribute aggregationType="sum" id="Count"/>
+        <viewAttribute id="PARENT_KEY"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Property_count">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Incident_Category" source="Incident_Category"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARENT_KEY" source="PARENT_KEY"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Key_with_property" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="Incident_Category"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute hidden="true" id="JOIN$INC_GROUP$Incident_Category"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#For_Line_Item">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$INC_GROUP$Incident_Category" source="INC_GROUP"/>
+      </input>
+      <input node="#Key_wise_Property">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Incident_Category" source="Incident_Category"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="PARENT_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$INC_GROUP$Incident_Category" source="Incident_Category"/>
+      </input>
+      <joinAttribute name="DB_KEY"/>
+      <joinAttribute name="JOIN$INC_GROUP$Incident_Category"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Keys_with_line_items">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="Incident_Category"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Key_with_people">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Incident_Category" source="Incident_Category"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Key_with_property">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Incident_Category" source="Incident_Category"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="DESCRIPTION"/>
+        <viewAttribute id="INC_GROUP"/>
+        <viewAttribute id="Date"/>
+        <viewAttribute id="STATUS"/>
+        <viewAttribute id="DB_KEY"/>
+        <viewAttribute id="ZZSW_INS_DPT"/>
+        <viewAttribute id="ZZSW_INS_ID"/>
+        <viewAttribute id="ZZSW_INS"/>
+        <viewAttribute id="CATEGORY"/>
+        <viewAttribute id="TITLE"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="Header_Count"/>
+        <viewAttribute id="DB_KEY_1"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Final_count" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(isnull(&quot;DB_KEY_1&quot;),&quot;Header_Count&quot;,&quot;Count&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Remove_invalid_001">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DESCRIPTION" source="DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="INC_GROUP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Date" source="Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_DPT" source="ZZSW_INS_DPT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS_ID" source="ZZSW_INS_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZZSW_INS" source="ZZSW_INS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CATEGORY" source="CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TITLE" source="TITLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Header_Count" source="Header_Count"/>
+      </input>
+      <input node="#Keys_with_line_items">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY_1" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DB_KEY" source="DB_KEY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INC_GROUP" source="Incident_Category"/>
+      </input>
+      <joinAttribute name="DB_KEY"/>
+      <joinAttribute name="INC_GROUP"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="DESCRIPTION" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DESCRIPTION"/>
+        <keyMapping columnObjectName="Join_1" columnName="DESCRIPTION"/>
+      </attribute>
+      <attribute id="INC_GROUP" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="INC_GROUP"/>
+        <keyMapping columnObjectName="Join_1" columnName="INC_GROUP"/>
+      </attribute>
+      <attribute id="Date" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Date"/>
+        <keyMapping columnObjectName="Join_1" columnName="Date"/>
+      </attribute>
+      <attribute id="STATUS" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="STATUS"/>
+        <keyMapping columnObjectName="Join_1" columnName="STATUS"/>
+      </attribute>
+      <attribute id="DB_KEY" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DB_KEY"/>
+        <keyMapping columnObjectName="Join_1" columnName="DB_KEY"/>
+      </attribute>
+      <attribute id="ZZSW_INS_DPT" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ZZSW_INS_DPT"/>
+        <keyMapping columnObjectName="Join_1" columnName="ZZSW_INS_DPT"/>
+      </attribute>
+      <attribute id="ZZSW_INS_ID" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ZZSW_INS_ID"/>
+        <keyMapping columnObjectName="Join_1" columnName="ZZSW_INS_ID"/>
+      </attribute>
+      <attribute id="ZZSW_INS" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ZZSW_INS"/>
+        <keyMapping columnObjectName="Join_1" columnName="ZZSW_INS"/>
+      </attribute>
+      <attribute id="CATEGORY" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CATEGORY"/>
+        <keyMapping columnObjectName="Join_1" columnName="CATEGORY"/>
+      </attribute>
+      <attribute id="TITLE" order="10" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TITLE"/>
+        <keyMapping columnObjectName="Join_1" columnName="TITLE"/>
+      </attribute>
+      <attribute id="Final_count" order="11" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Final_count"/>
+        <keyMapping columnObjectName="Join_1" columnName="Final_count"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="204" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Basic_Info" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="839"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Root_Data" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="839"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Final_Incident_Key" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="743"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Incident_Group" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="743"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Group" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="175" y="647"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Group_Text" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="329" y="647"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Group_Test" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="250" y="551"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Remove_invalid_001" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="127" y="261"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Person_count" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="523" y="551"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Key_wise_Person" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="523" y="473"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="For_Line_Item" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="369" y="473"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Key_with_people" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="416" y="377"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Property_count" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="96" y="551"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Key_wise_Property" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="215" y="473"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Key_with_property" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="262" y="377"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Keys_with_line_items" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="281" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="204" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

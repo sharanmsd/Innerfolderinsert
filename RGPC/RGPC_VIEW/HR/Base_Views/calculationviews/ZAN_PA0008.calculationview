@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAN_PA0008" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED">
+  <origin/>
+  <descriptions defaultDescription="ZAN_PA0008_PA0014"/>
+  <metadata activatedAt="2020-11-10 15:18:39.0" changedAt="2020-11-10 17:40:36.145" createdAt="2020-09-09 20:59:37.934"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="45"/>
+  <dataSources>
+    <DataSource id="PA0008" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="PA0008"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="SUBTY"/>
+        <viewAttribute id="OBJPS"/>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="BET01"/>
+        <viewAttribute id="BET02"/>
+        <viewAttribute id="BET03"/>
+        <viewAttribute id="BET04"/>
+        <viewAttribute id="BET05"/>
+        <viewAttribute id="BET06"/>
+        <viewAttribute id="BET07"/>
+        <viewAttribute id="LGA01"/>
+        <viewAttribute id="LGA02"/>
+        <viewAttribute id="LGA03"/>
+        <viewAttribute id="LGA04"/>
+        <viewAttribute id="LGA05"/>
+        <viewAttribute id="LGA06"/>
+        <viewAttribute id="LGA07"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PA0008">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBTY" source="SUBTY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJPS" source="OBJPS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BET01" source="BET01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BET02" source="BET02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BET03" source="BET03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BET04" source="BET04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BET05" source="BET05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BET06" source="BET06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BET07" source="BET07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LGA01" source="LGA01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LGA02" source="LGA02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LGA03" source="LGA03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LGA04" source="LGA04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LGA05" source="LGA05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LGA06" source="LGA06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LGA07" source="LGA07"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="PERNR" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PERNR"/>
+        <keyMapping columnObjectName="Projection_1" columnName="PERNR"/>
+      </attribute>
+      <attribute id="SUBTY" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SUBTY"/>
+        <keyMapping columnObjectName="Projection_1" columnName="SUBTY"/>
+      </attribute>
+      <attribute id="OBJPS" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="OBJPS"/>
+        <keyMapping columnObjectName="Projection_1" columnName="OBJPS"/>
+      </attribute>
+      <attribute id="ENDDA" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ENDDA"/>
+        <keyMapping columnObjectName="Projection_1" columnName="ENDDA"/>
+      </attribute>
+      <attribute id="BEGDA" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="BEGDA"/>
+        <keyMapping columnObjectName="Projection_1" columnName="BEGDA"/>
+      </attribute>
+      <attribute id="LGA01" order="13" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="LGA01"/>
+        <keyMapping columnObjectName="Projection_1" columnName="LGA01"/>
+      </attribute>
+      <attribute id="LGA02" order="14" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="LGA02"/>
+        <keyMapping columnObjectName="Projection_1" columnName="LGA02"/>
+      </attribute>
+      <attribute id="LGA03" order="15" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="LGA03"/>
+        <keyMapping columnObjectName="Projection_1" columnName="LGA03"/>
+      </attribute>
+      <attribute id="LGA04" order="16" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="LGA04"/>
+        <keyMapping columnObjectName="Projection_1" columnName="LGA04"/>
+      </attribute>
+      <attribute id="LGA05" order="17" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="LGA05"/>
+        <keyMapping columnObjectName="Projection_1" columnName="LGA05"/>
+      </attribute>
+      <attribute id="LGA06" order="18" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="LGA06"/>
+        <keyMapping columnObjectName="Projection_1" columnName="LGA06"/>
+      </attribute>
+      <attribute id="LGA07" order="19" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="LGA07"/>
+        <keyMapping columnObjectName="Projection_1" columnName="LGA07"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="BET01" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BET01"/>
+        <measureMapping columnObjectName="Projection_1" columnName="BET01"/>
+      </measure>
+      <measure id="BET02" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BET02"/>
+        <measureMapping columnObjectName="Projection_1" columnName="BET02"/>
+      </measure>
+      <measure id="BET03" order="8" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BET03"/>
+        <measureMapping columnObjectName="Projection_1" columnName="BET03"/>
+      </measure>
+      <measure id="BET04" order="9" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BET04"/>
+        <measureMapping columnObjectName="Projection_1" columnName="BET04"/>
+      </measure>
+      <measure id="BET05" order="10" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BET05"/>
+        <measureMapping columnObjectName="Projection_1" columnName="BET05"/>
+      </measure>
+      <measure id="BET06" order="11" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BET06"/>
+        <measureMapping columnObjectName="Projection_1" columnName="BET06"/>
+      </measure>
+      <measure id="BET07" order="12" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="BET07"/>
+        <measureMapping columnObjectName="Projection_1" columnName="BET07"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+    <sharedDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="10" y="200"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape modelObjectName="Projection_1" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
+        <upperLeftCorner x="250" y="250"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

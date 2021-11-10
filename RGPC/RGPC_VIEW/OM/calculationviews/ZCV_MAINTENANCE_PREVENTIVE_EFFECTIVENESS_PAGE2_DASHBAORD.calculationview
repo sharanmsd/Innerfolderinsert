@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_MAINTENANCE_PREVENTIVE_EFFECTIVENESS_PAGE2_DASHBAORD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_MAINTENANCE_DASHBAORD"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:36.598"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>date(leftstr(string(now()),4)+'0101')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="Department" parameter="true">
+      <descriptions defaultDescription="Department"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="*" length="20" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="51"/>
+  <dataSources>
+    <DataSource id="ZAN_T001W" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_T001W</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_CRHD" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_CRHD</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_AUFK" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_AUFK</resourceUri>
+    </DataSource>
+    <DataSource id="AFIH" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="AFIH"/>
+    </DataSource>
+    <DataSource id="ZAN_PMCO" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_PMCO</resourceUri>
+    </DataSource>
+    <DataSource id="AFKO" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="AFKO"/>
+    </DataSource>
+    <DataSource id="AFVV" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="AFVV"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_T001W">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_CRHD">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+      </input>
+      <filter>(&quot;VERWE&quot; ='0005') AND  match(&quot;ARBPL&quot; ,'$$Department$$')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="ARBPL"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+      </input>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+      </input>
+      <joinAttribute name="WERKS"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="VAPLZ"/>
+        <viewAttribute id="ERDAT"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="AUART"/>
+        <viewAttribute id="PHAS0"/>
+        <viewAttribute id="PHAS1"/>
+        <viewAttribute id="PHAS2"/>
+        <viewAttribute id="PHAS3"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Created_On" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ERDAT&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Open_Orders" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;PHAS0&quot;='X',1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Cal_Month" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(&quot;ERDAT&quot;,5,2)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Month" length="3" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Cal_Month&quot;='01','Jan',if(&quot;Cal_Month&quot;='02','Feb',if(&quot;Cal_Month&quot;='03','Mar',if(&quot;Cal_Month&quot;='04','Apr',if(&quot;Cal_Month&quot;='05','May',if(&quot;Cal_Month&quot;='06','Jun',if(&quot;Cal_Month&quot;='07','Jul',if(&quot;Cal_Month&quot;='08','Aug',if(&quot;Cal_Month&quot;='09','Sep',if(&quot;Cal_Month&quot;='10','Oct',if(&quot;Cal_Month&quot;='11','Nov','Dec')))))))))))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_AUFK">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VAPLZ" source="VAPLZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ERDAT" source="ERDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUART" source="AUART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHAS0" source="PHAS0"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHAS1" source="PHAS1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHAS2" source="PHAS2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHAS3" source="PHAS3"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_7">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="ILOAN"/>
+        <viewAttribute id="ADDAT"/>
+        <viewAttribute id="IPHAS">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="3"/>
+            <operands value="5"/>
+            <operands value="6"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="ILART"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Period_Date" expressionLanguage="COLUMN_ENGINE">
+          <filter xsi:type="AccessControl:RangeValueFilter" operator="BT" including="true" lowValue="$$From_Date$$" highValue="$$To_Date$$"/>
+          <formula>&quot;ADDAT&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Cal_Month" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>midstr(&quot;ADDAT&quot;,5,2)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Month" length="3" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Cal_Month&quot;='01','Jan',if(&quot;Cal_Month&quot;='02','Feb',if(&quot;Cal_Month&quot;='03','Mar',if(&quot;Cal_Month&quot;='04','Apr',if(&quot;Cal_Month&quot;='05','May',if(&quot;Cal_Month&quot;='06','Jun',if(&quot;Cal_Month&quot;='07','Jul',if(&quot;Cal_Month&quot;='08','Aug',if(&quot;Cal_Month&quot;='09','Sep',if(&quot;Cal_Month&quot;='10','Oct',if(&quot;Cal_Month&quot;='11','Nov','Dec')))))))))))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#AFIH">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILOAN" source="ILOAN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ADDAT" source="ADDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IPHAS" source="IPHAS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_5" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="ADDAT"/>
+        <viewAttribute id="IPHAS"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="VAPLZ"/>
+        <viewAttribute id="Cal_Month"/>
+        <viewAttribute id="Month"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_7">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ADDAT" source="ADDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IPHAS" source="IPHAS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+      </input>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VAPLZ" source="VAPLZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+      </input>
+      <joinAttribute name="AUFNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="ADDAT"/>
+        <viewAttribute id="IPHAS"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="Cal_Month"/>
+        <viewAttribute id="Month"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+      </input>
+      <input node="#Join_5">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ADDAT" source="ADDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IPHAS" source="IPHAS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="VAPLZ"/>
+      </input>
+      <joinAttribute name="WERKS"/>
+      <joinAttribute name="ARBPL"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="WRTTP">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="04"/>
+        </viewAttribute>
+        <viewAttribute id="WRT00"/>
+        <viewAttribute id="WRT01"/>
+        <viewAttribute id="WRT02"/>
+        <viewAttribute id="WRT03"/>
+        <viewAttribute id="WRT04"/>
+        <viewAttribute id="WRT05"/>
+        <viewAttribute id="WRT06"/>
+        <viewAttribute id="WRT07"/>
+        <viewAttribute id="WRT08"/>
+        <viewAttribute id="WRT09"/>
+        <viewAttribute id="WRT10"/>
+        <viewAttribute id="WRT11"/>
+        <viewAttribute id="WRT12"/>
+        <viewAttribute id="WRT13"/>
+        <viewAttribute id="WRT14"/>
+        <viewAttribute id="WRT15"/>
+        <viewAttribute id="WRT16"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Total_Spend" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;WRT00&quot;+&quot;WRT01&quot;+&quot;WRT02&quot;+&quot;WRT03&quot;+&quot;WRT04&quot;+&quot;WRT05&quot;+&quot;WRT06&quot;+&quot;WRT07&quot;+&quot;WRT08&quot;+&quot;WRT09&quot;+&quot;WRT10&quot;+&quot;WRT11&quot;+&quot;WRT12&quot;+&quot;WRT13&quot;+&quot;WRT14&quot;+&quot;WRT15&quot;+&quot;WRT16&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_PMCO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRTTP" source="WRTTP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT00" source="WRT00"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT01" source="WRT01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT02" source="WRT02"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT03" source="WRT03"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT04" source="WRT04"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT05" source="WRT05"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT06" source="WRT06"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT07" source="WRT07"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT08" source="WRT08"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT09" source="WRT09"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT10" source="WRT10"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT11" source="WRT11"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT12" source="WRT12"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT13" source="WRT13"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT14" source="WRT14"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT15" source="WRT15"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRT16" source="WRT16"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_3" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="WRTTP"/>
+        <viewAttribute id="Total_Spend"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="ADDAT"/>
+        <viewAttribute id="IPHAS"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="Cal_Month"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute hidden="true" id="JOIN$OBJNR$OBJNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Total_Count" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Count_EXCEPT_005" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;ILART&quot; = '005',0,1)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ADDAT" source="ADDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IPHAS" source="IPHAS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$OBJNR$OBJNR" source="OBJNR"/>
+      </input>
+      <input node="#Projection_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRTTP" source="WRTTP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend" source="Total_Spend"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$OBJNR$OBJNR" source="OBJNR"/>
+      </input>
+      <joinAttribute name="JOIN$OBJNR$OBJNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_5">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="AUFPL"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#AFKO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFPL" source="AUFPL"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_4" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WRTTP"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="Total_Spend"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="Cal_Month"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="Total_Count"/>
+        <viewAttribute id="Count_EXCEPT_005"/>
+        <viewAttribute id="AUFPL"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRTTP" source="WRTTP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend" source="Total_Spend"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Count" source="Total_Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_EXCEPT_005" source="Count_EXCEPT_005"/>
+      </input>
+      <input node="#Projection_5">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFPL" source="AUFPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+      </input>
+      <joinAttribute name="AUFNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_9">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="AUFPL"/>
+        <viewAttribute id="ARBEH"/>
+        <viewAttribute id="ISMNW"/>
+        <viewAttribute id="APLZL"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Hours" length="34" scale="5" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;ARBEH&quot;='H' or &quot;ARBEH&quot;= 'HR' or &quot;ARBEH&quot;= 'STD', &quot;ISMNW&quot; ,if(&quot;ARBEH&quot;='MIN',(&quot;ISMNW&quot;/60.00), if(&quot;ARBEH&quot; = 'S', (&quot;ISMNW&quot;/3600.00),if(&quot;ARBEH&quot; = 'DAY' OR &quot;ARBEH&quot; = 'TAG', (&quot;ISMNW&quot;*24),0))))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#AFVV">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFPL" source="AUFPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBEH" source="ARBEH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ISMNW" source="ISMNW"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APLZL" source="APLZL"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute aggregationType="sum" id="Hours"/>
+        <viewAttribute aggregationType="sum" id="ISMNW"/>
+        <viewAttribute id="AUFPL"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_9">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Hours" source="Hours"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ISMNW" source="ISMNW"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFPL" source="AUFPL"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_6" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Count_EXCEPT_005"/>
+        <viewAttribute id="Total_Count"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="Cal_Month"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="Total_Spend"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="WRTTP"/>
+        <viewAttribute id="AUFPL"/>
+        <viewAttribute id="Hours"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Final_Hours" length="34" scale="5" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Hours&quot;=0 or isnull(&quot;Hours&quot;),0,&quot;Hours&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_EXCEPT_005" source="Count_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Count" source="Total_Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend" source="Total_Spend"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRTTP" source="WRTTP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFPL" source="AUFPL"/>
+      </input>
+      <input node="#Aggregation_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Hours" source="Hours"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFPL" source="AUFPL"/>
+      </input>
+      <joinAttribute name="AUFPL"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_10">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WRTTP"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="Total_Spend"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="Cal_Month"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="Total_Count"/>
+        <viewAttribute id="Count_EXCEPT_005"/>
+        <viewAttribute id="Final_Hours"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_6">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRTTP" source="WRTTP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend" source="Total_Spend"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Count" source="Total_Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_EXCEPT_005" source="Count_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Hours" source="Final_Hours"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_8">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WRTTP"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="Total_Spend"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="Cal_Month"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="Total_Count"/>
+        <viewAttribute id="Count_EXCEPT_005"/>
+        <viewAttribute id="Final_Hours"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="PLANNED_EXCEPT_005" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;ILART&quot; = '005',0,&quot;Total_Spend_Final&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Total_Spend_Final" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(isnull(&quot;Total_Spend&quot;),0,&quot;Total_Spend&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="PLANNED_EXCEPT_005_Hours" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;ILART&quot; = '005',0,&quot;Final_Hours&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_10">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WRTTP" source="WRTTP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend" source="Total_Spend"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Count" source="Total_Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_EXCEPT_005" source="Count_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Hours" source="Final_Hours"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_6">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PLANNED_EXCEPT_005"/>
+        <viewAttribute id="Total_Spend_Final"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="Cal_Month"/>
+        <viewAttribute id="Month"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="Total_Count"/>
+        <viewAttribute id="Count_EXCEPT_005"/>
+        <viewAttribute id="PLANNED_EXCEPT_005_Hours"/>
+        <viewAttribute id="Final_Hours"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_8">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PLANNED_EXCEPT_005" source="PLANNED_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend_Final" source="Total_Spend_Final"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Count" source="Total_Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_EXCEPT_005" source="Count_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PLANNED_EXCEPT_005_Hours" source="PLANNED_EXCEPT_005_Hours"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Hours" source="Final_Hours"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="CopyOfProjection_6">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PLANNED_EXCEPT_005"/>
+        <viewAttribute id="Total_Spend_Final"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="ILART"/>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="Total_Count"/>
+        <viewAttribute id="Count_EXCEPT_005"/>
+        <viewAttribute id="PLANNED_EXCEPT_005_Hours"/>
+        <viewAttribute id="Final_Hours"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="C_Month" length="3" expressionLanguage="COLUMN_ENGINE">
+          <formula>13</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Mon" length="3" expressionLanguage="COLUMN_ENGINE">
+          <formula>'YTD'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_8">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PLANNED_EXCEPT_005" source="PLANNED_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend_Final" source="Total_Spend_Final"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Count" source="Total_Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_EXCEPT_005" source="Count_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PLANNED_EXCEPT_005_Hours" source="PLANNED_EXCEPT_005_Hours"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Hours" source="Final_Hours"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Union_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PLANNED_EXCEPT_005"/>
+        <viewAttribute id="Total_Spend_Final" transparentFilter="false"/>
+        <viewAttribute id="ARBPL" transparentFilter="false"/>
+        <viewAttribute id="ILART" transparentFilter="false"/>
+        <viewAttribute id="Cal_Month" transparentFilter="false"/>
+        <viewAttribute id="Month" transparentFilter="false"/>
+        <viewAttribute id="AUFNR" transparentFilter="false"/>
+        <viewAttribute id="Total_Count" transparentFilter="false"/>
+        <viewAttribute id="Count_EXCEPT_005" transparentFilter="false"/>
+        <viewAttribute id="Final_Hours" transparentFilter="false"/>
+        <viewAttribute id="PLANNED_EXCEPT_005_Hours" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Projection_6">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PLANNED_EXCEPT_005" source="PLANNED_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend_Final" source="Total_Spend_Final"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Count" source="Total_Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_EXCEPT_005" source="Count_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Hours" source="Final_Hours"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PLANNED_EXCEPT_005_Hours" source="PLANNED_EXCEPT_005_Hours"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#CopyOfProjection_6">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PLANNED_EXCEPT_005" source="PLANNED_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Spend_Final" source="Total_Spend_Final"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ILART" source="ILART"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cal_Month" source="C_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Month" source="Mon"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Total_Count" source="Total_Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_EXCEPT_005" source="Count_EXCEPT_005"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Hours" source="Final_Hours"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PLANNED_EXCEPT_005_Hours" source="PLANNED_EXCEPT_005_Hours"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Union_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="ARBPL" order="4" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="ARBPL"/>
+        <keyMapping columnObjectName="Union_1" columnName="ARBPL"/>
+      </attribute>
+      <attribute id="ILART" order="5" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="ILART"/>
+        <keyMapping columnObjectName="Union_1" columnName="ILART"/>
+      </attribute>
+      <attribute id="Cal_Month" order="6" attributeHierarchyActive="false" descriptionColumnName="Month" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Month"/>
+        <keyMapping columnObjectName="Union_1" columnName="Cal_Month"/>
+      </attribute>
+      <attribute id="Month" order="7" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="Month"/>
+        <keyMapping columnObjectName="Union_1" columnName="Month"/>
+      </attribute>
+      <attribute id="AUFNR" order="8" attributeHierarchyActive="false" displayAttribute="false" transparentFilter="false">
+        <descriptions defaultDescription="AUFNR"/>
+        <keyMapping columnObjectName="Union_1" columnName="AUFNR"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="PLANNED_EXCEPT_005" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="PLANNED_EXCEPT_005"/>
+        <measureMapping columnObjectName="Union_1" columnName="PLANNED_EXCEPT_005"/>
+      </measure>
+      <measure id="Total_Spend_Final" order="3" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Total_Spend_Final"/>
+        <measureMapping columnObjectName="Union_1" columnName="Total_Spend_Final"/>
+      </measure>
+      <measure id="Total_Count" order="9" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Total_Count"/>
+        <measureMapping columnObjectName="Union_1" columnName="Total_Count"/>
+      </measure>
+      <measure id="Count_EXCEPT_005" order="10" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="PLANNED_EXCEPT_005"/>
+        <measureMapping columnObjectName="Union_1" columnName="Count_EXCEPT_005"/>
+      </measure>
+      <measure id="Final_Hours" order="12" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Final_Hours"/>
+        <measureMapping columnObjectName="Union_1" columnName="Final_Hours"/>
+      </measure>
+      <measure id="PLANNED_EXCEPT_005_Hours" order="13" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="PLANNED_EXCEPT_005"/>
+        <measureMapping columnObjectName="Union_1" columnName="PLANNED_EXCEPT_005_Hours"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="Planned_Main_Effectiveness" hidden="false" order="1" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="Effectiveness %"/>
+        <formula>if((&quot;PLANNED_EXCEPT_005&quot;=0) or isnull(&quot;PLANNED_EXCEPT_005&quot;) or isnull(&quot;Total_Spend_Final&quot;) or &quot;Total_Spend_Final&quot;=0,0,(&quot;PLANNED_EXCEPT_005&quot;/ &quot;Total_Spend_Final&quot;) * 100.00)</formula>
+      </measure>
+      <measure id="Planned_Main_Effectiveness_Count" hidden="false" order="11" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="Effectiveness %"/>
+        <formula>if((&quot;Count_EXCEPT_005&quot;=0) or isnull(&quot;Count_EXCEPT_005&quot;) or isnull(&quot;Total_Count&quot;) or &quot;Total_Count&quot;=0,0,(&quot;Count_EXCEPT_005&quot;/ &quot;Total_Count&quot;) * 100.00)</formula>
+      </measure>
+      <measure id="Planned_Main_Effectiveness_Hours" hidden="false" order="14" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="Effectiveness %"/>
+        <formula>if((&quot;PLANNED_EXCEPT_005_Hours&quot;=0) or isnull(&quot;PLANNED_EXCEPT_005_Hours&quot;) or isnull(&quot;Final_Hours&quot;) or &quot;Final_Hours&quot;=0,0,(&quot;PLANNED_EXCEPT_005_Hours&quot;/ &quot;Final_Hours&quot;) * 100.00)</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="395" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="995"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="995"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="899"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="484" y="995"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_7" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="995"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="899"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="249" y="803"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="403" y="803"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="321" y="707"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="167" y="707"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="321" y="611"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_9" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="475" y="707"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="475" y="611"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_6" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="396" y="515"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_10" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="396" y="437"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_8" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="396" y="359"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_6" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="318" y="281"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="CopyOfProjection_6" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="472" y="281"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="395" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

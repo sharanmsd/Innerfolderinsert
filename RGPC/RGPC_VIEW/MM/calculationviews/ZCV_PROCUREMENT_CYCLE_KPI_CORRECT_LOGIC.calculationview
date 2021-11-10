@@ -1,0 +1,1922 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_PROCUREMENT_CYCLE_KPI_CORRECT_LOGIC" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_PROCUREMENT_CYCLE_REPORT"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:13.358" createdAt="2020-11-05 16:30:58.829"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From Date"/>
+      <variableProperties datatype="DATE" defaultValue="2011-06-01" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="Dept_Filter" parameter="true">
+      <descriptions defaultDescription="Dept_Filter"/>
+      <variableProperties datatype="NVARCHAR" length="30" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="true" type="SingleValue"/>
+        <defaultRange including="true" lowValue="Business"/>
+        <defaultRange including="true" lowValue="Safety"/>
+        <defaultRange including="true" lowValue="Maintenance"/>
+        <defaultRange including="true" lowValue="Operations"/>
+        <defaultRange including="true" lowValue="Finance"/>
+        <defaultRange including="true" lowValue="PO Upload Group"/>
+      </variableProperties>
+    </variable>
+    <variable id="Pur_Grp_Filter" parameter="true">
+      <descriptions defaultDescription="Pur_Grp_Filter"/>
+      <variableProperties datatype="NVARCHAR" length="10" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="true" type="SingleValue"/>
+        <defaultRange including="true" lowValue="001"/>
+        <defaultRange including="true" lowValue="002"/>
+        <defaultRange including="true" lowValue="003"/>
+        <defaultRange including="true" lowValue="004"/>
+        <defaultRange including="true" lowValue="005"/>
+        <defaultRange including="true" lowValue="006"/>
+        <defaultRange including="true" lowValue="007"/>
+        <defaultRange including="true" lowValue="008"/>
+        <defaultRange including="true" lowValue="009"/>
+        <defaultRange including="true" lowValue="010"/>
+        <defaultRange including="true" lowValue="011"/>
+        <defaultRange including="true" lowValue="012"/>
+        <defaultRange including="true" lowValue="013"/>
+        <defaultRange including="true" lowValue="014"/>
+        <defaultRange including="true" lowValue="015"/>
+        <defaultRange including="true" lowValue="999"/>
+      </variableProperties>
+    </variable>
+    <variable id="PO_Category_filter" parameter="true">
+      <descriptions defaultDescription="PO_Category_filter"/>
+      <variableProperties datatype="NVARCHAR" length="10" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="true" type="SingleValue"/>
+        <defaultRange including="true" lowValue="Service"/>
+        <defaultRange including="true" lowValue="Material"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="49"/>
+  <dataSources>
+    <DataSource id="ZAN_EBAN" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_EBAN</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_EKPO" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_EKPO</resourceUri>
+    </DataSource>
+    <DataSource id="ZUTLTM00004" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="ZUTLTM00004"/>
+    </DataSource>
+    <DataSource id="ZAN_EKKO" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_EKKO</resourceUri>
+    </DataSource>
+    <DataSource id="ZAT_CDPOS" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAT_CDPOS</resourceUri>
+    </DataSource>
+    <DataSource id="ZAT_CDHDR" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAT_CDHDR</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_EKBE" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_EKBE</resourceUri>
+    </DataSource>
+    <DataSource id="EKET" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="EKET"/>
+    </DataSource>
+    <DataSource id="CDPOS" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="CDPOS"/>
+    </DataSource>
+    <DataSource id="CDHDR" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="CDHDR"/>
+    </DataSource>
+    <DataSource id="T024" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="T024"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="PR_Number" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="MATNR"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Material_Service" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(strlen(&quot;MATNR&quot;)>2,'Material','Service')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_EBAN">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="MATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+      </input>
+      <filter>(&quot;PR_Created_On&quot; >='$$From_Date$$' AND &quot;PR_Created_On&quot;&lt;='$$To_Date$$')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="PO_Line_Items">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="ANFNR"/>
+        <viewAttribute id="LOEKZ">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value=""/>
+        </viewAttribute>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="MATNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_EKPO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ANFNR" source="ANFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LOEKZ" source="LOEKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="MATNR"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Tech_Commer_Date">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APR_TYPE">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="ZM03"/>
+            <operands value="MM03"/>
+            <operands value="MM08"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="RDOC">
+          <filter xsi:type="AccessControl:SingleValueFilter" operator="CP" including="true" value="1*"/>
+        </viewAttribute>
+        <viewAttribute id="ACTION_DATE">
+          <filter xsi:type="AccessControl:SingleValueFilter" operator="GT" including="true" value="00000000"/>
+        </viewAttribute>
+        <viewAttribute id="STATUS">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="A"/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZUTLTM00004">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APR_TYPE" source="APR_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RDOC" source="RDOC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ACTION_DATE" source="ACTION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STATUS" source="STATUS"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="PO_RFQ">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="AEDAT"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="BSTYP"/>
+        <viewAttribute id="LANDX50"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="VERKF"/>
+        <viewAttribute id="BEDAT"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Creation_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;AEDAT&quot;>&quot;BEDAT&quot;,&quot;BEDAT&quot;,&quot;AEDAT&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="Vendor_Type" length="15" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;LANDX50&quot;='Qatar','Domestic','Import')</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Cut_off_PO" length="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(leftstr(&quot;VERKF&quot;,2)='RG','Yes','No')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_EKKO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AEDAT" source="AEDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BSTYP" source="BSTYP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERKF" source="VERKF"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEDAT" source="BEDAT"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Approval_Logs">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="FNAME">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="BANPR"/>
+            <operands value="PROCSTAT"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="OBJECTID"/>
+        <viewAttribute id="TABNAME">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="EBAN"/>
+            <operands value="EKKO"/>
+          </filter>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAT_CDPOS">
+        <mapping xsi:type="Calculation:AttributeMapping" target="FNAME" source="FNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECTID" source="OBJECTID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TABNAME" source="TABNAME"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="PR_Approval_Logs">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="OBJECTID"/>
+        <viewAttribute id="FNAME">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="BANPR"/>
+        </viewAttribute>
+        <viewAttribute id="TABNAME">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="EBAN"/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Approval_Logs">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECTID" source="OBJECTID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FNAME" source="FNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TABNAME" source="TABNAME"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_3" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="CHANGENR"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PR_Number">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+      </input>
+      <input node="#PR_Approval_Logs">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="OBJECTID"/>
+      </input>
+      <joinAttribute name="BANFN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="PR_Approval_Log">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="PR_Created_On"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>BANFN</partitionViewAttributeName>
+        <order byViewAttributeName="CHANGENR" direction="ASC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Approval_Dates">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="UDATE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAT_CDHDR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UDATE" source="UDATE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="GR">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BEWTP">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="E"/>
+        </viewAttribute>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="BUDAT"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_EKBE">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEWTP" source="BEWTP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDAT" source="BUDAT"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Approved_PRs" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute hidden="true" id="JOIN$CHANGENR$CHANGENR"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PR_Approval_Log">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CHANGENR$CHANGENR" source="CHANGENR"/>
+      </input>
+      <input node="#Approval_Dates">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="UDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$CHANGENR$CHANGENR" source="CHANGENR"/>
+      </input>
+      <joinAttribute name="JOIN$CHANGENR$CHANGENR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="RFQ_Number">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EBELN">
+          <filter xsi:type="AccessControl:SingleValueFilter" operator="CP" including="true" value="6*"/>
+        </viewAttribute>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="BANFN">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value=""/>
+        </viewAttribute>
+        <viewAttribute id="BNFPO"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#EKET">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PR_Line_Items" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="Material_Service"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute hidden="true" id="JOIN$BANFN$BANFN"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Approved_PRs">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BANFN$BANFN" source="BANFN"/>
+      </input>
+      <input node="#PR_Number">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BANFN$BANFN" source="BANFN"/>
+      </input>
+      <joinAttribute name="JOIN$BANFN$BANFN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PR_RFQ" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="Material_Service"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PR_Line_Items">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+      </input>
+      <input node="#RFQ_Number">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+      </input>
+      <joinAttribute name="BANFN"/>
+      <joinAttribute name="BNFPO"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PR_RFQ_Date" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="RFQ_Number"/>
+        <viewAttribute id="AEDAT"/>
+        <viewAttribute id="RFQ_Creation_Date"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="Material_Service"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PR_RFQ">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Number" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+      </input>
+      <input node="#PO_RFQ">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AEDAT" source="AEDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Creation_Date" source="Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Number" source="EBELN"/>
+      </input>
+      <joinAttribute name="RFQ_Number"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="1st_Tech_Comm">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APR_TYPE"/>
+        <viewAttribute id="RDOC"/>
+        <viewAttribute id="ACTION_DATE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Tech_Commer_Date">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APR_TYPE" source="APR_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RDOC" source="RDOC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ACTION_DATE" source="ACTION_DATE"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>RDOC</partitionViewAttributeName>
+        <partitionViewAttributeName>APR_TYPE</partitionViewAttributeName>
+        <order byViewAttributeName="ACTION_DATE" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Tech_Eval">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APR_TYPE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="ZM03"/>
+        </viewAttribute>
+        <viewAttribute id="RDOC"/>
+        <viewAttribute id="ACTION_DATE"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="First_Tech_Eval_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ACTION_DATE&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#1st_Tech_Comm">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APR_TYPE" source="APR_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RDOC" source="RDOC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ACTION_DATE" source="ACTION_DATE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="RFQ_Number"/>
+        <viewAttribute id="First_RFQ_Creation_Date"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="Material_Service"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PR_RFQ_Date">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Number" source="RFQ_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="First_RFQ_Creation_Date" source="RFQ_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>BANFN</partitionViewAttributeName>
+        <partitionViewAttributeName>BNFPO</partitionViewAttributeName>
+        <order byViewAttributeName="First_RFQ_Creation_Date" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PR_RF_TE" dynamic="false" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Tech_Eval_Date"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="RFQ_Number"/>
+        <viewAttribute id="First_RFQ_Creation_Date"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="Material_Service"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Rank_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Number" source="RFQ_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="First_RFQ_Creation_Date" source="First_RFQ_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+      </input>
+      <input node="#Tech_Eval">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Tech_Eval_Date" source="First_Tech_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="RDOC"/>
+      </input>
+      <joinAttribute name="BANFN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Commer_Eval">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APR_TYPE">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="MM03"/>
+            <operands value="MM08"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="RDOC"/>
+        <viewAttribute id="ACTION_DATE"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="First_Commer_Eval_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ACTION_DATE&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#1st_Tech_Comm">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APR_TYPE" source="APR_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RDOC" source="RDOC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ACTION_DATE" source="ACTION_DATE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="MM03_vs_MM08">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Commer_Eval_Date"/>
+        <viewAttribute id="RDOC"/>
+        <viewAttribute id="ACTION_DATE"/>
+        <viewAttribute id="APR_TYPE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Commer_Eval">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Commer_Eval_Date" source="First_Commer_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RDOC" source="RDOC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ACTION_DATE" source="ACTION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APR_TYPE" source="APR_TYPE"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>RDOC</partitionViewAttributeName>
+        <order byViewAttributeName="ACTION_DATE" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PR_RF_TE_CM" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="Tech_Eval_Date"/>
+        <viewAttribute id="RFQ_Number"/>
+        <viewAttribute id="RFQ_Creation_Date"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="Material_Service"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="Commer_Eval_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PR_RF_TE">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Tech_Eval_Date" source="Tech_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Number" source="RFQ_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Creation_Date" source="First_RFQ_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+      </input>
+      <input node="#MM03_vs_MM08">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Commer_Eval_Date" source="Commer_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="RDOC"/>
+      </input>
+      <joinAttribute name="BANFN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="PO" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="BSTYP"/>
+        <viewAttribute id="Vendor_Type"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="Cut_off_PO"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PO_RFQ">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BSTYP" source="BSTYP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cut_off_PO" source="Cut_off_PO"/>
+      </input>
+      <filter>(&quot;PO_Creation_Date&quot; >='$$From_Date$$' AND &quot;PO_Creation_Date&quot;&lt;='$$To_Date$$') AND (&quot;BSTYP&quot; ='F')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Direct_PO" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="MATNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Material_Service_1" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(strlen(&quot;MATNR&quot;)>2,'Material','Service')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#PO_Line_Items">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="MATNR"/>
+      </input>
+      <filter>(&quot;BANFN&quot; ='')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Direct_PO_Items" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="Vendor_Type"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="Material_Service_1"/>
+        <viewAttribute id="Cut_off_PO"/>
+        <viewAttribute hidden="true" id="JOIN$EBELN$EBELN"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="PO_Type" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>'Direct'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#PO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cut_off_PO" source="Cut_off_PO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$EBELN$EBELN" source="EBELN"/>
+      </input>
+      <input node="#Direct_PO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service_1" source="Material_Service_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$EBELN$EBELN" source="EBELN"/>
+      </input>
+      <joinAttribute name="JOIN$EBELN$EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="PO_Approval_Logs">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="OBJECTID"/>
+        <viewAttribute id="FNAME">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="PROCSTAT"/>
+        </viewAttribute>
+        <viewAttribute id="TABNAME">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="EKKO"/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Approval_Logs">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECTID" source="OBJECTID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FNAME" source="FNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TABNAME" source="TABNAME"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Other_PO">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="MATNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Material_Service_1" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(strlen(&quot;MATNR&quot;)>2,'Material','Service')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#PO_Line_Items">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="MATNR"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PO_for_Approved_PR" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="Material_Service_1"/>
+        <viewAttribute hidden="true" id="JOIN$BANFN$BANFN"/>
+        <viewAttribute hidden="true" id="JOIN$BNFPO$BNFPO"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PR_Line_Items">
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BANFN$BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BNFPO$BNFPO" source="BNFPO"/>
+      </input>
+      <input node="#Other_PO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service_1" source="Material_Service_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BANFN$BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$BNFPO$BNFPO" source="BNFPO"/>
+      </input>
+      <joinAttribute name="JOIN$BANFN$BANFN"/>
+      <joinAttribute name="JOIN$BNFPO$BNFPO"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Other_PO_Creation_Date" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="Vendor_Type"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="Material_Service_1"/>
+        <viewAttribute id="Cut_off_PO"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="PO_Type" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>'Normal'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#PO_for_Approved_PR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service_1" source="Material_Service_1"/>
+      </input>
+      <input node="#PO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cut_off_PO" source="Cut_off_PO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+      </input>
+      <joinAttribute name="EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Union_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PO_Type"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="Vendor_Type" transparentFilter="false"/>
+        <viewAttribute id="EKNAM" transparentFilter="false"/>
+        <viewAttribute id="Department" transparentFilter="false"/>
+        <viewAttribute id="Material_Service_1" transparentFilter="false"/>
+        <viewAttribute id="Cut_off_PO" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Direct_PO_Items">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="BANFN" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="BNFPO" null="true" value=""/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service_1" source="Material_Service_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cut_off_PO" source="Cut_off_PO"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Other_PO_Creation_Date">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="EKGRP" null="true" value=""/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service_1" source="Material_Service_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cut_off_PO" source="Cut_off_PO"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="Cut_off_PO" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Union_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cut_off_PO" source="Cut_off_PO"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>EBELN</partitionViewAttributeName>
+        <order byViewAttributeName="PO_Creation_Date" direction="ASC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" dynamic="false" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="Cut_off_PO" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Rank_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cut_off_PO" source="Cut_off_PO"/>
+      </input>
+      <input node="#PO_Approval_Logs">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="OBJECTID"/>
+      </input>
+      <joinAttribute name="EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PO_Approval_Date" dynamic="false" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="UDATE"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="Cut_off_PO" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="PO_Approval_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Cut_off_PO&quot;='Yes',&quot;PO_Creation_Date&quot;,date(&quot;UDATE&quot;))</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Cut_off_PO" source="Cut_off_PO"/>
+      </input>
+      <input node="#Approval_Dates">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UDATE" source="UDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+      </input>
+      <joinAttribute name="CHANGENR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Delivery_Completion">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TABNAME">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="EKPO"/>
+        </viewAttribute>
+        <viewAttribute id="FNAME">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="ELIKZ"/>
+        </viewAttribute>
+        <viewAttribute id="VALUE_NEW">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="X"/>
+        </viewAttribute>
+        <viewAttribute id="VALUE_OLD">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value=""/>
+        </viewAttribute>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="OBJECTID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#CDPOS">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TABNAME" source="TABNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FNAME" source="FNAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VALUE_NEW" source="VALUE_NEW"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VALUE_OLD" source="VALUE_OLD"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECTID" source="OBJECTID"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="CHANGENR"/>
+        <viewAttribute id="OBJECTID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Delivery_Completion">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECTID" source="OBJECTID"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>OBJECTID</partitionViewAttributeName>
+        <order byViewAttributeName="CHANGENR" direction="ASC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_5" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJECTID"/>
+        <viewAttribute id="UDATE"/>
+        <viewAttribute id="CHANGENR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Delivery_Completion_Indicator_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;UDATE&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#CDHDR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UDATE" source="UDATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+      </input>
+      <input node="#Rank_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJECTID" source="OBJECTID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CHANGENR" source="CHANGENR"/>
+      </input>
+      <joinAttribute name="CHANGENR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_6" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="Delivery_Completion_Indicator_Date"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PO_Approval_Date">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+      </input>
+      <input node="#Join_5">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivery_Completion_Indicator_Date" source="Delivery_Completion_Indicator_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="OBJECTID"/>
+      </input>
+      <joinAttribute name="EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="First_BELNR">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BUDAT"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="EBELN"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#GR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDAT" source="BUDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>EBELN</partitionViewAttributeName>
+        <order byViewAttributeName="BUDAT" direction="ASC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_7" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="Delivery_Completion_Indicator_Date"/>
+        <viewAttribute id="BUDAT"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_6">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivery_Completion_Indicator_Date" source="Delivery_Completion_Indicator_Date"/>
+      </input>
+      <input node="#First_BELNR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDAT" source="BUDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+      </input>
+      <joinAttribute name="EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="Delivery_Completion_Indicator_Date"/>
+        <viewAttribute id="BUDAT"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="actual_approval_date" length="3" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;PO_Approval_Date&quot;>=&quot;Delivery_Completion_Indicator_Date&quot; or &quot;PO_Approval_Date&quot;> date(&quot;BUDAT&quot;),'no','yes')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_7">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivery_Completion_Indicator_Date" source="Delivery_Completion_Indicator_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDAT" source="BUDAT"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="actual_approval_date"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="actual_approval_date" source="actual_approval_date"/>
+      </input>
+      <filter>(&quot;actual_approval_date&quot; ='yes') or isnull(&quot;actual_approval_date&quot;)</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELN"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PO_Approval_Date">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>EBELN</partitionViewAttributeName>
+        <order byViewAttributeName="PO_Approval_Date" direction="ASC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PO_Type"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="Vendor_Type" transparentFilter="false"/>
+        <viewAttribute id="EKNAM" transparentFilter="false"/>
+        <viewAttribute id="Department" transparentFilter="false"/>
+        <viewAttribute id="Material_Service_1" transparentFilter="false"/>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute hidden="true" id="JOIN$EBELN$EBELN"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Rank_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$EBELN$EBELN" source="EBELN"/>
+      </input>
+      <input node="#Union_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service_1" source="Material_Service_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$EBELN$EBELN" source="EBELN"/>
+      </input>
+      <joinAttribute name="JOIN$EBELN$EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Delivery_Dates" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PO_Type"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="Vendor_Type" transparentFilter="false"/>
+        <viewAttribute id="EKNAM" transparentFilter="false"/>
+        <viewAttribute id="Department" transparentFilter="false"/>
+        <viewAttribute id="Material_Service_1" transparentFilter="false"/>
+        <viewAttribute id="BUDAT"/>
+        <viewAttribute id="BELNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="First_Delivery_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;BUDAT&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service_1" source="Material_Service_1"/>
+      </input>
+      <input node="#First_BELNR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDAT" source="BUDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+      </input>
+      <joinAttribute name="EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Normal_PO_GR">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="First_Delivery_Date"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PO_Type">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="Normal"/>
+        </viewAttribute>
+        <viewAttribute id="Vendor_Type" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Delivery_Dates">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="First_Delivery_Date" source="First_Delivery_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PR_PO_RF_TE_CE_NPO_GR" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="Tech_Eval_Date"/>
+        <viewAttribute id="RFQ_Number"/>
+        <viewAttribute id="Commer_Eval_Date"/>
+        <viewAttribute id="RFQ_Creation_Date"/>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="PO_Type"/>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="First_Delivery_Date"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="Material_Service"/>
+        <viewAttribute id="Vendor_Type" transparentFilter="false"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="NVARCHAR" id="PR_Combination" length="50" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;BANFN&quot;+&quot;BNFPO&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#PR_RF_TE_CM">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Tech_Eval_Date" source="Tech_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Number" source="RFQ_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Commer_Eval_Date" source="Commer_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Creation_Date" source="RFQ_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+      </input>
+      <input node="#Normal_PO_GR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="First_Delivery_Date" source="First_Delivery_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+      </input>
+      <joinAttribute name="BANFN"/>
+      <joinAttribute name="BNFPO"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Direct_PO_GR">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="First_Delivery_Date"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="PO_Type">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="true" value="Direct"/>
+        </viewAttribute>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="Vendor_Type" transparentFilter="false"/>
+        <viewAttribute id="EKNAM" transparentFilter="false"/>
+        <viewAttribute id="Department" transparentFilter="false"/>
+        <viewAttribute id="Material_Service_1" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Delivery_Dates">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="First_Delivery_Date" source="First_Delivery_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service_1" source="Material_Service_1"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="PR_PO_RF_TE_CE_DPO_GR">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PR_Created_On"/>
+        <viewAttribute id="RFQ_Creation_Date"/>
+        <viewAttribute id="Commer_Eval_Date"/>
+        <viewAttribute id="RFQ_Number"/>
+        <viewAttribute id="Tech_Eval_Date"/>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="BNFPO"/>
+        <viewAttribute id="BANFN"/>
+        <viewAttribute id="PO_Type"/>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="First_Delivery_Date"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="TXZ01" transparentFilter="false"/>
+        <viewAttribute id="Material_Service" transparentFilter="false"/>
+        <viewAttribute id="Vendor_Type" transparentFilter="false"/>
+        <viewAttribute id="EKNAM" transparentFilter="false"/>
+        <viewAttribute id="Department" transparentFilter="false"/>
+        <viewAttribute id="PR_Combination" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#PR_PO_RF_TE_CE_NPO_GR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Created_On" source="PR_Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Creation_Date" source="RFQ_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Commer_Eval_Date" source="Commer_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Number" source="RFQ_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Tech_Eval_Date" source="Tech_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="First_Delivery_Date" source="First_Delivery_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Combination" source="PR_Combination"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Direct_PO_GR">
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="PR_Created_On" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="RFQ_Creation_Date" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Commer_Eval_Date" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="RFQ_Number" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="Tech_Eval_Date" null="true" value=""/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="PR_Approved_Date" null="true" value=""/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="First_Delivery_Date" source="First_Delivery_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="TXZ01" null="true" value=""/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:ConstantAttributeMapping" target="PR_Combination" null="true" value=""/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Days_Calculation">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="RFQ_Creation_Date"/>
+        <viewAttribute id="Commer_Eval_Date"/>
+        <viewAttribute id="RFQ_Number"/>
+        <viewAttribute id="Tech_Eval_Date"/>
+        <viewAttribute id="PR_Approved_Date"/>
+        <viewAttribute id="BNFPO" keepFlag="false"/>
+        <viewAttribute id="BANFN" keepFlag="false"/>
+        <viewAttribute id="PO_Type"/>
+        <viewAttribute id="PO_Approval_Date"/>
+        <viewAttribute id="PO_Creation_Date"/>
+        <viewAttribute id="First_Delivery_Date"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="TXZ01" transparentFilter="false"/>
+        <viewAttribute id="Material_Service" transparentFilter="false"/>
+        <viewAttribute id="Vendor_Type" transparentFilter="false"/>
+        <viewAttribute id="EKNAM" transparentFilter="false"/>
+        <viewAttribute id="Department" transparentFilter="false"/>
+        <viewAttribute id="PR_Combination" keepFlag="true" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="PR_Apr_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;PR_Approved_Date&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Days_for_RFQ_Creation" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(not(isnull(&quot;RFQ_Creation_Date&quot;)),daysbetween(&quot;PR_Apr_Date&quot;,&quot;RFQ_Creation_Date&quot;),&#xD;
+if(isnull(&quot;RFQ_Creation_Date&quot;) and (not(isnull(&quot;Tech_Eval_Date&quot;))),0,&#xD;
+if(isnull(&quot;RFQ_Creation_Date&quot;) and (not(isnull(&quot;Commer_Eval_Date&quot;))),0,&#xD;
+if(isnull(&quot;RFQ_Creation_Date&quot;) and (not(isnull(&quot;PO_Creation_Date&quot;))),0,&#xD;
+daysbetween(&quot;PR_Apr_Date&quot;,now())))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Days_for_Tech_Eval" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(not(isnull(&quot;RFQ_Creation_Date&quot;)) and (not(isnull(&quot;Tech_Eval_Date&quot;))) ,daysbetween(&quot;RFQ_Creation_Date&quot;,&quot;Tech_Eval_Date&quot;),&#xD;
+if(isnull(&quot;RFQ_Creation_Date&quot;) and (not(isnull(&quot;Tech_Eval_Date&quot;))) ,daysbetween(&quot;PR_Apr_Date&quot;,&quot;Tech_Eval_Date&quot;),&#xD;
+if(not(isnull(&quot;RFQ_Creation_Date&quot;)) and isnull(&quot;Tech_Eval_Date&quot;) and (not(isnull(&quot;Commer_Eval_Date&quot;)) or (not(isnull(&quot;PO_Creation_Date&quot;)))),0,&#xD;
+if(not(isnull(&quot;RFQ_Creation_Date&quot;)) and isnull(&quot;Tech_Eval_Date&quot;) and isnull(&quot;Commer_Eval_Date&quot;) and isnull(&quot;PO_Creation_Date&quot;),daysbetween(&quot;RFQ_Creation_Date&quot;,now()),0))))&#xD;
+</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Days_for_Commer_Eval" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(not(isnull(&quot;Tech_Eval_Date&quot;)) and (not(isnull(&quot;Commer_Eval_Date&quot;))) ,daysbetween(&quot;Tech_Eval_Date&quot;,&quot;Commer_Eval_Date&quot;),&#xD;
+if(isnull(&quot;Tech_Eval_Date&quot;) and (not(isnull(&quot;Commer_Eval_Date&quot;))) and (not(isnull(&quot;RFQ_Creation_Date&quot;))),daysbetween(&quot;RFQ_Creation_Date&quot;,&quot;Commer_Eval_Date&quot;),&#xD;
+if(isnull(&quot;Tech_Eval_Date&quot;) and (not(isnull(&quot;Commer_Eval_Date&quot;))) and isnull(&quot;RFQ_Creation_Date&quot;),daysbetween(&quot;PR_Apr_Date&quot;,&quot;Commer_Eval_Date&quot;),&#xD;
+if(isnull(&quot;Commer_Eval_Date&quot;) and (not(isnull(&quot;PO_Creation_Date&quot;))),0,&#xD;
+if(isnull(&quot;Commer_Eval_Date&quot;) and isnull(&quot;PO_Creation_Date&quot;),daysbetween(&quot;Commer_Eval_Date&quot;,now()),0)))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Days_for_PO_Creation" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((not isnull(&quot;PO_Creation_Date&quot;)) and (not isnull(&quot;Commer_Eval_Date&quot;)),daysbetween(&quot;Commer_Eval_Date&quot;,&quot;PO_Creation_Date&quot;),&#xD;
+if((not isnull(&quot;PO_Creation_Date&quot;)) and  isnull(&quot;Commer_Eval_Date&quot;) and (not isnull(&quot;Tech_Eval_Date&quot;)),daysbetween(&quot;Tech_Eval_Date&quot;,&quot;PO_Creation_Date&quot;),&#xD;
+if((not isnull(&quot;PO_Creation_Date&quot;)) and  isnull(&quot;Commer_Eval_Date&quot;) and  isnull(&quot;Tech_Eval_Date&quot;)  and (not isnull(&quot;RFQ_Creation_Date&quot;)),daysbetween(&quot;RFQ_Creation_Date&quot;,&quot;PO_Creation_Date&quot;),&#xD;
+if((not isnull(&quot;PO_Creation_Date&quot;)) and  isnull(&quot;Commer_Eval_Date&quot;) and  isnull(&quot;Tech_Eval_Date&quot;)  and isnull(&quot;RFQ_Creation_Date&quot;) and (not isnull(&quot;PR_Apr_Date&quot;)),daysbetween(&quot;PR_Apr_Date&quot;,&quot;PO_Creation_Date&quot;),&#xD;
+if((not isnull(&quot;PO_Creation_Date&quot;)) and  isnull(&quot;PR_Apr_Date&quot;),0,&#xD;
+daysbetween(&quot;Commer_Eval_Date&quot;,now()))))))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Days_for_PO_Approval" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((not isnull(&quot;PO_Creation_Date&quot;)) and isnull(&quot;PO_Approval_Date&quot;) and (not isnull(&quot;First_Delivery_Date&quot;)),0 ,&#xD;
+if((not isnull(&quot;PO_Creation_Date&quot;)) and isnull(&quot;PO_Approval_Date&quot;) and isnull(&quot;First_Delivery_Date&quot;) ,daysbetween(&quot;PO_Creation_Date&quot;,now()),&#xD;
+daysbetween(&quot;PO_Creation_Date&quot;,&quot;PO_Approval_Date&quot;)))&#xD;
+</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Days_for_First_Delivery" expressionLanguage="COLUMN_ENGINE">
+          <formula>if((not isnull(&quot;PO_Approval_Date&quot;)) and isnull(&quot;First_Delivery_Date&quot;),daysbetween(&quot;PO_Approval_Date&quot;,now()),&#xD;
+if((not isnull(&quot;First_Delivery_Date&quot;)) and isnull(&quot;PO_Approval_Date&quot;),daysbetween(&quot;PO_Creation_Date&quot;,&quot;First_Delivery_Date&quot;),&#xD;
+daysbetween(&quot;PO_Approval_Date&quot;,&quot;First_Delivery_Date&quot;)))&#xD;
+</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="PO_Type_Filter" length="20" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(strlen(&quot;Material_Service&quot;)>1,'Material','Service')</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Line_count" length="50" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;PR_Combination&quot;+&quot;EBELN&quot;+&quot;EBELP&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#PR_PO_RF_TE_CE_DPO_GR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Creation_Date" source="RFQ_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Commer_Eval_Date" source="Commer_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="RFQ_Number" source="RFQ_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Tech_Eval_Date" source="Tech_Eval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Approved_Date" source="PR_Approved_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BNFPO" source="BNFPO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BANFN" source="BANFN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Type" source="PO_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Approval_Date" source="PO_Approval_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_Creation_Date" source="PO_Creation_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="First_Delivery_Date" source="First_Delivery_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Type" source="Vendor_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PR_Combination" source="PR_Combination"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="EKNAM"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#T024">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_4" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EKNAM" transparentFilter="false"/>
+        <viewAttribute id="Department" transparentFilter="false"/>
+        <viewAttribute id="Material_Service" transparentFilter="false"/>
+        <viewAttribute id="Days_for_RFQ_Creation"/>
+        <viewAttribute id="Days_for_Tech_Eval"/>
+        <viewAttribute id="Days_for_Commer_Eval"/>
+        <viewAttribute id="Days_for_PO_Creation"/>
+        <viewAttribute id="Days_for_PO_Approval"/>
+        <viewAttribute id="Days_for_First_Delivery"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="Line_count"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Days_Calculation">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_RFQ_Creation" source="Days_for_RFQ_Creation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_Tech_Eval" source="Days_for_Tech_Eval"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_Commer_Eval" source="Days_for_Commer_Eval"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_PO_Creation" source="Days_for_PO_Creation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_PO_Approval" source="Days_for_PO_Approval"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_First_Delivery" source="Days_for_First_Delivery"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Line_count" source="Line_count"/>
+      </input>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+      </input>
+      <joinAttribute name="EKNAM"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EKNAM" transparentFilter="false"/>
+        <viewAttribute id="Department" transparentFilter="false"/>
+        <viewAttribute id="Material_Service" transparentFilter="false"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="Days_for_RFQ_Creation"/>
+        <viewAttribute id="Days_for_Tech_Eval"/>
+        <viewAttribute id="Days_for_Commer_Eval"/>
+        <viewAttribute id="Days_for_PO_Creation"/>
+        <viewAttribute id="Days_for_PO_Approval"/>
+        <viewAttribute id="Days_for_First_Delivery"/>
+        <viewAttribute id="Line_count" keepFlag="true"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Line_counter" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Service" source="Material_Service"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_RFQ_Creation" source="Days_for_RFQ_Creation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_Tech_Eval" source="Days_for_Tech_Eval"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_Commer_Eval" source="Days_for_Commer_Eval"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_PO_Creation" source="Days_for_PO_Creation"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_PO_Approval" source="Days_for_PO_Approval"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Days_for_First_Delivery" source="Days_for_First_Delivery"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Line_count" source="Line_count"/>
+      </input>
+      <filter>in(&quot;Department&quot;,$$Dept_Filter$$) and &#xD;
+in(&quot;EKGRP&quot;,$$Pur_Grp_Filter$$) and &#xD;
+in(&quot;Material_Service&quot;,$$PO_Category_filter$$)</filter>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_3">
+    <descriptions/>
+    <attributes/>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Days_for_RFQ_Creation" order="1" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Days_for_RFQ_Creation"/>
+        <measureMapping columnObjectName="Projection_3" columnName="Days_for_RFQ_Creation"/>
+      </measure>
+      <measure id="Days_for_Tech_Eval" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Days_for_Tech_Eval"/>
+        <measureMapping columnObjectName="Projection_3" columnName="Days_for_Tech_Eval"/>
+      </measure>
+      <measure id="Days_for_Commer_Eval" order="3" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Days_for_Commer_Eval"/>
+        <measureMapping columnObjectName="Projection_3" columnName="Days_for_Commer_Eval"/>
+      </measure>
+      <measure id="Days_for_PO_Creation" order="4" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Days_for_PO_Creation"/>
+        <measureMapping columnObjectName="Projection_3" columnName="Days_for_PO_Creation"/>
+      </measure>
+      <measure id="Days_for_PO_Approval" order="5" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Days_for_PO_Approval"/>
+        <measureMapping columnObjectName="Projection_3" columnName="Days_for_PO_Approval"/>
+      </measure>
+      <measure id="Days_for_First_Delivery" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Days_for_First_Delivery"/>
+        <measureMapping columnObjectName="Projection_3" columnName="Days_for_First_Delivery"/>
+      </measure>
+      <measure id="Line_counter" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Line_counter"/>
+        <measureMapping columnObjectName="Projection_3" columnName="Line_counter"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="RFQ_Creation" hidden="false" order="8" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="RFQ_Creation"/>
+        <formula>&quot;Days_for_RFQ_Creation&quot;/&quot;Line_counter&quot;</formula>
+      </measure>
+      <measure id="Technical_Evaluation" hidden="false" order="9" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="Technical_Evaluation"/>
+        <formula>&quot;Days_for_Tech_Eval&quot;/&quot;Line_counter&quot;</formula>
+      </measure>
+      <measure id="Commercial_Evaluation" hidden="false" order="10" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="Commercial_Evaluation"/>
+        <formula>&quot;Days_for_Commer_Eval&quot;/&quot;Line_counter&quot;</formula>
+      </measure>
+      <measure id="PO_Creation" hidden="false" order="11" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="PO_Creation"/>
+        <formula>&quot;Days_for_PO_Creation&quot;/&quot;Line_counter&quot;</formula>
+      </measure>
+      <measure id="PO_Approval" hidden="false" order="12" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="PO_Approval"/>
+        <formula>&quot;Days_for_PO_Approval&quot;/&quot;Line_counter&quot;</formula>
+      </measure>
+      <measure id="First_Delivery" hidden="false" order="13" aggregationType="sum" measureType="simple" datatype="INTEGER" expressionLanguage="COLUMN_ENGINE">
+        <descriptions defaultDescription="First_Delivery"/>
+        <formula>&quot;Days_for_First_Delivery&quot;/&quot;Line_counter&quot;</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="658" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_Number" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="592" y="1957"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO_Line_Items" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="351" y="1687"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Tech_Commer_Date" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="1044" y="1013"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO_RFQ" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="780" y="1591"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Approval_Logs" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="2035"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_Approval_Logs" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="341" y="1957"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="505" y="1861"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_Approval_Log" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="505" y="1783"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Approval_Dates" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="264" y="1783"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="GR" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="264" y="917"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Approved_PRs" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="505" y="1687"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="RFQ_Number" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="934" y="1591"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_Line_Items" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="592" y="1591"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_RFQ" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="813" y="1495"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_RFQ_Date" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="813" y="1399"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="1st_Tech_Comm" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="1044" y="917"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Tech_Eval" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="967" y="821"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="813" y="821"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_RF_TE" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="851" y="725"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Commer_Eval" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="1121" y="821"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="MM03_vs_MM08" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="1005" y="725"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_RF_TE_CM" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="851" y="629"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="659" y="1495"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Direct_PO" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="505" y="1495"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Direct_PO_Items" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="607" y="1399"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO_Approval_Logs" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="1205"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Other_PO" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="351" y="1591"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO_for_Approved_PR" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="351" y="1495"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Other_PO_Creation_Date" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="453" y="1399"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="505" y="1283"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="351" y="1205"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="1109"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO_Approval_Date" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="245" y="1013"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Delivery_Completion" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1109"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="55" y="1013"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="89" y="917"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_6" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="821"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="First_BELNR" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="821"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_7" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="725"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="629"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="533"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="418" y="917"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="505" y="821"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Delivery_Dates" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="505" y="725"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Normal_PO_GR" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="593" y="629"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_PO_RF_TE_CE_NPO_GR" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="659" y="533"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Direct_PO_GR" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="505" y="533"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PR_PO_RF_TE_CE_DPO_GR" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="581" y="417"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Days_Calculation" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="581" y="339"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="735" y="339"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="658" y="243"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="658" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

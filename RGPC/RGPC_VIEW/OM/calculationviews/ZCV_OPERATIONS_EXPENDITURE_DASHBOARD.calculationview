@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" schemaVersion="2.3" id="ZCV_OPERATIONS_EXPENDITURE_DASHBOARD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_OPERATIONS_EXPENDITURE_DASHBOARD"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:44.92"/>
+  <localVariables>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'yyyy-mm-dd')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZCV_OPERATIONS_BUDGET_DASHBAORD">
+      <targetVariable name="To_Date" resourceUri="/RGPC_VIEW.OM/calculationviews/ZCV_OPERATIONS_BUDGET_DASHBAORD"/>
+      <localVariable>#To_Date</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZCV_OPERATIONS_ACTUALS_DASHBAORD">
+      <targetVariable name="To_Date" resourceUri="/RGPC_VIEW.OM/calculationviews/ZCV_OPERATIONS_ACTUALS_DASHBAORD"/>
+      <localVariable>#To_Date</localVariable>
+    </mapping>
+  </variableMappings>
+  <informationModelLayout relativeWidthScenario="59"/>
+  <dataSources>
+    <DataSource id="ZCV_OPERATIONS_BUDGET_DASHBAORD" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM/calculationviews/ZCV_OPERATIONS_BUDGET_DASHBAORD</resourceUri>
+    </DataSource>
+    <DataSource id="ZCV_OPERATIONS_ACTUALS_DASHBAORD" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM/calculationviews/ZCV_OPERATIONS_ACTUALS_DASHBAORD</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Final_Budget"/>
+        <viewAttribute id="Final_Month"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="FUNDSCTR"/>
+        <viewAttribute id="CMMTITEM"/>
+        <viewAttribute id="Year"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZCV_OPERATIONS_BUDGET_DASHBAORD">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Budget" source="Final_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Month" source="Final_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FUNDSCTR" source="FUNDSCTR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CMMTITEM" source="CMMTITEM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Final_Budget"/>
+        <viewAttribute id="Final_Month"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="Trim_GL"/>
+        <viewAttribute id="Trim_Cost"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZCV_OPERATIONS_ACTUALS_DASHBAORD">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Budget" source="Final_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Month" source="Final_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_GL" source="Trim_GL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Trim_Cost" source="Trim_Cost"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="FUNDSCTR"/>
+        <viewAttribute id="CMMTITEM"/>
+        <viewAttribute id="Year"/>
+        <viewAttribute id="MONTH"/>
+        <viewAttribute id="Final_Month"/>
+        <viewAttribute id="Final_Budget"/>
+        <viewAttribute id="Final_Budget_1"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="FUNDSCTR" source="FUNDSCTR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CMMTITEM" source="CMMTITEM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Year" source="Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Month" source="Final_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Budget" source="Final_Budget"/>
+      </input>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Final_Budget_1" source="Final_Budget"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MONTH" source="MONTH"/>
+      </input>
+      <joinAttribute name="MONTH"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="FUNDSCTR" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="FUNDSCTR"/>
+        <keyMapping columnObjectName="Join_1" columnName="FUNDSCTR"/>
+      </attribute>
+      <attribute id="CMMTITEM" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CMMTITEM"/>
+        <keyMapping columnObjectName="Join_1" columnName="CMMTITEM"/>
+      </attribute>
+      <attribute id="Year" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Year"/>
+        <keyMapping columnObjectName="Join_1" columnName="Year"/>
+      </attribute>
+      <attribute id="MONTH" order="4" attributeHierarchyActive="false" descriptionColumnName="Final_Month" displayAttribute="false">
+        <descriptions defaultDescription="MONTH"/>
+        <keyMapping columnObjectName="Join_1" columnName="MONTH"/>
+      </attribute>
+      <attribute id="Final_Month" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Final_Month"/>
+        <keyMapping columnObjectName="Join_1" columnName="Final_Month"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Final_Budget" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Budget"/>
+        <measureMapping columnObjectName="Join_1" columnName="Final_Budget"/>
+      </measure>
+      <measure id="Final_Budget_1" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Actual"/>
+        <measureMapping columnObjectName="Join_1" columnName="Final_Budget_1"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="99" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="165"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

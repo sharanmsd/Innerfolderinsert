@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" schemaVersion="2.3" id="ZCV_MTD_QTY_VALUE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_MTD_QTY_VALUE"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:11.402"/>
+  <localVariables>
+    <variable id="Material_Type_Filter" parameter="true">
+      <descriptions defaultDescription="Material_Type_Filter"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="*" length="25" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="true" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>date(leftstr(string(now()),8)+'01')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZAN_STOCK_QTY_MATERIAL">
+      <targetVariable name="To_Date" resourceUri="/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL"/>
+      <localVariable>#To_Date</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZAN_STOCK_QTY_MATERIAL">
+      <targetVariable name="From_Date" resourceUri="/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL"/>
+      <localVariable>#From_Date</localVariable>
+    </mapping>
+  </variableMappings>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="ZAN_STOCK_QTY_MATERIAL" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_STOCK_QTY_MATERIAL</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="MTD_QTY_VALUE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Issue_Value"/>
+        <viewAttribute id="Receipt_Value"/>
+        <viewAttribute id="Material_Type"/>
+        <viewAttribute id="Material_Type_Description"/>
+        <viewAttribute id="INV_EKGRP"/>
+        <viewAttribute id="INV_EKNAM"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_STOCK_QTY_MATERIAL">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Issue_Value" source="Issue_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Receipt_Value" source="Receipt_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type" source="Material_Type"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_Description" source="Material_Type_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKGRP" source="INV_EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INV_EKNAM" source="INV_EKNAM"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="MTD_QTY_VALUE">
+    <descriptions/>
+    <attributes>
+      <attribute id="Material_Type" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material Type"/>
+        <keyMapping columnObjectName="MTD_QTY_VALUE" columnName="Material_Type"/>
+      </attribute>
+      <attribute id="Material_Type_Description" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Type_Description"/>
+        <keyMapping columnObjectName="MTD_QTY_VALUE" columnName="Material_Type_Description"/>
+      </attribute>
+      <attribute id="INV_EKGRP" order="5" attributeHierarchyActive="false" descriptionColumnName="INV_EKNAM" displayAttribute="false">
+        <descriptions defaultDescription="INV_EKGRP"/>
+        <keyMapping columnObjectName="MTD_QTY_VALUE" columnName="INV_EKGRP"/>
+      </attribute>
+      <attribute id="INV_EKNAM" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="INV_EKNAM"/>
+        <keyMapping columnObjectName="MTD_QTY_VALUE" columnName="INV_EKNAM"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Issue_Value" order="1" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Issued Value"/>
+        <measureMapping columnObjectName="MTD_QTY_VALUE" columnName="Issue_Value"/>
+      </measure>
+      <measure id="Receipt_Value" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Received Value"/>
+        <measureMapping columnObjectName="MTD_QTY_VALUE" columnName="Receipt_Value"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="22" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="MTD_QTY_VALUE" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="165"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

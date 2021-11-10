@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" xmlns:Variable="http://www.sap.com/ndb/BiModelVariable.ecore" schemaVersion="2.3" id="ZCV_SPEND_ANALYSIS_KPIS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="Spend Analysis KPIs"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:16.519"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>leftstr(string(now()),4)+'-01-01'</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZCV_SPEND_ANALYSIS">
+      <targetVariable name="From_Date" resourceUri="/RGPC_VIEW.MM/calculationviews/ZCV_SPEND_ANALYSIS"/>
+      <localVariable>#From_Date</localVariable>
+    </mapping>
+    <mapping xsi:type="Variable:VariableMapping" dataSource="#ZCV_SPEND_ANALYSIS">
+      <targetVariable name="To_Date" resourceUri="/RGPC_VIEW.MM/calculationviews/ZCV_SPEND_ANALYSIS"/>
+      <localVariable>#To_Date</localVariable>
+    </mapping>
+  </variableMappings>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="ZCV_SPEND_ANALYSIS" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM/calculationviews/ZCV_SPEND_ANALYSIS</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:AggregationView" id="Spend">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="Country"/>
+        <viewAttribute aggregationType="sum" id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZCV_SPEND_ANALYSIS">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Country" source="Country"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Total_Spend">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute aggregationType="sum" id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="KPI_Title" length="30" expressionLanguage="COLUMN_ENGINE">
+          <formula>'Total Spend'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="KPI_Value" length="50" expressionLanguage="COLUMN_ENGINE">
+          <formula>'Total Spend'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Spend">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Purchase_Group">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute aggregationType="sum" id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Spend">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Purchase_Group">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>Dummy</partitionViewAttributeName>
+        <order byViewAttributeName="EFFWR_in_USD" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Country">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="Country"/>
+        <viewAttribute aggregationType="sum" id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Spend">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Country" source="Country"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="Country"/>
+        <viewAttribute id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Country">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Country" source="Country"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>Dummy</partitionViewAttributeName>
+        <order byViewAttributeName="EFFWR_in_USD" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Vendor">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute aggregationType="sum" id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Spend">
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:RankView" id="Rank_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Vendor">
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+      <windowFunction>
+        <partitionViewAttributeName>Dummy</partitionViewAttributeName>
+        <order byViewAttributeName="EFFWR_in_USD" direction="DESC"/>
+        <rankThreshold>
+          <value>1</value>
+        </rankThreshold>
+      </windowFunction>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute aggregationType="sum" id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="KPI_Title" length="30" expressionLanguage="COLUMN_ENGINE">
+          <formula>'High Spend Purchasing Group'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="KPI_Value" length="50" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;EKNAM&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Rank_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_2">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Country"/>
+        <viewAttribute aggregationType="sum" id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="KPI_Title" length="30" expressionLanguage="COLUMN_ENGINE">
+          <formula>'High Spent Country'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="KPI_Value" length="50" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;Country&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Rank_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Country" source="Country"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute aggregationType="sum" id="EFFWR_in_USD"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="KPI_Title" length="30" expressionLanguage="COLUMN_ENGINE">
+          <formula>'High Spent Vendor'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="KPI_Value" length="50" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;NAME1&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Rank_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:UnionView" id="Union_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="KPI_Title"/>
+        <viewAttribute id="KPI_Value"/>
+        <viewAttribute id="EFFWR_in_USD" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input emptyUnionBehavior="NO_ROW" node="#Total_Spend">
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Title" source="KPI_Title"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Value" source="KPI_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Aggregation_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Title" source="KPI_Title"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Value" source="KPI_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Aggregation_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Title" source="KPI_Title"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Value" source="KPI_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+      <input emptyUnionBehavior="NO_ROW" node="#Aggregation_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Title" source="KPI_Title"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Value" source="KPI_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="KPI_Title"/>
+        <viewAttribute id="KPI_Value" keepFlag="true"/>
+        <viewAttribute id="EFFWR_in_USD" transparentFilter="false"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Union_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Title" source="KPI_Title"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="KPI_Value" source="KPI_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EFFWR_in_USD" source="EFFWR_in_USD"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="KPI_Title" order="1" attributeHierarchyActive="false" descriptionColumnName="KPI_Value" displayAttribute="false">
+        <descriptions defaultDescription="KPI_Title"/>
+        <keyMapping columnObjectName="Projection_1" columnName="KPI_Title"/>
+      </attribute>
+      <attribute id="KPI_Value" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="KPI_Value"/>
+        <keyMapping columnObjectName="Projection_1" columnName="KPI_Value"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="EFFWR_in_USD" order="3" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="PO Valuation Price"/>
+        <measureMapping columnObjectName="Projection_1" columnName="EFFWR_in_USD"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="253" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Spend" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="629"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Total_Spend" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="395"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Purchase_Group" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="551"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="473"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Country" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="551"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="473"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Vendor" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="484" y="551"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Rank_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="484" y="473"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="395"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="395"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="484" y="395"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Union_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="243"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

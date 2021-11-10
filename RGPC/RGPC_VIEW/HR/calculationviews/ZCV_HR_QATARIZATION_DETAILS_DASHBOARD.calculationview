@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_HR_QATARIZATION_DETAILS_DASHBOARD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_HR_QATARIZATION_DETAILS_DASHBOARD"/>
+  <metadata activatedAt="2020-11-10 15:18:39.0" changedAt="2020-11-10 17:40:45.835"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="53"/>
+  <dataSources>
+    <DataSource id="ZAN_PA0000" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR.Base_Views/calculationviews/ZAN_PA0000</resourceUri>
+    </DataSource>
+    <DataSource id="ZCV_PA0002" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR.Base_Views/calculationviews/ZCV_PA0002</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_PA0041" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR.Base_Views/calculationviews/ZAN_PA0041</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Begin" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;BEGDA&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="End" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ENDDA&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_PA0000">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+      </input>
+      <filter>(&quot;Begin&quot;&lt;= now() and now() &lt;= &quot;End&quot;)  and &quot;STAT2&quot;='3'</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Begin" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;BEGDA&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="End" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ENDDA&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZCV_PA0002">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+      </input>
+      <filter>(now() >= &quot;Begin&quot; AND now() &lt;= &quot;End&quot;)</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO"/>
+        <viewAttribute id="Count_1"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_QA" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;NATIO&quot;='QA',1,0)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_1" source="Count"/>
+      </input>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+      <joinAttribute name="PERNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="DAR01"/>
+        <viewAttribute id="DAT01"/>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="BEGDA"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Begin" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;BEGDA&quot;</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DATE" id="End" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ENDDA&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_PA0041">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DAR01" source="DAR01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DAT01" source="DAT01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+      </input>
+      <filter>(now() >= &quot;Begin&quot; AND now() &lt;= &quot;End&quot;)</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Count_1"/>
+        <viewAttribute id="Count_QA"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO"/>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="DAT01"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_1" source="Count_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_QA" source="Count_QA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+      </input>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DAT01" source="DAT01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+      </input>
+      <joinAttribute name="PERNR"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="NATIO"/>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="DAT01"/>
+        <viewAttribute id="Count_1"/>
+        <viewAttribute id="Count_QA"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Service_Year" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;Count_QA&quot;=1,daysbetween(date(&quot;DAT01&quot;),now())/365.00,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Count_QA_Decimal" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;Count_QA&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NATIO" source="NATIO"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DAT01" source="DAT01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_1" source="Count_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count_QA" source="Count_QA"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_4">
+    <descriptions/>
+    <attributes>
+      <attribute id="PERNR" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PERNR"/>
+        <keyMapping columnObjectName="Projection_4" columnName="PERNR"/>
+      </attribute>
+      <attribute id="NATIO" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="NATIO"/>
+        <keyMapping columnObjectName="Projection_4" columnName="NATIO"/>
+      </attribute>
+      <attribute id="STAT2" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="STAT2"/>
+        <keyMapping columnObjectName="Projection_4" columnName="STAT2"/>
+      </attribute>
+      <attribute id="DAT01" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Joining Date"/>
+        <keyMapping columnObjectName="Projection_4" columnName="DAT01"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Count_1" order="6" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Projection_4" columnName="Count_1"/>
+      </measure>
+      <measure id="Count_QA" order="7" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count_QA"/>
+        <measureMapping columnObjectName="Projection_4" columnName="Count_QA"/>
+      </measure>
+      <measure id="Service_Year" order="8" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Service_Year"/>
+        <measureMapping columnObjectName="Projection_4" columnName="Service_Year"/>
+      </measure>
+      <measure id="Count_QA_Decimal" order="10" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count_QA_Decimal"/>
+        <measureMapping columnObjectName="Projection_4" columnName="Count_QA_Decimal"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="Percentage_Qatarians" hidden="false" order="1" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions/>
+        <formula>(&quot;Count_QA&quot;/ &quot;Count_1&quot;)*100</formula>
+      </measure>
+      <measure id="Avg_Service_Years" hidden="false" order="9" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="Avg_Service_Years"/>
+        <formula>if((isnull(&quot;Count_QA&quot;) or (&quot;Count_QA&quot;=0)),0,&quot;Service_Year&quot;/ &quot;Count_QA_Decimal&quot;)</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="176" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="513"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="513"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="417"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="417"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="321"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="243"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

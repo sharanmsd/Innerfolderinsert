@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_MAINTENANCE_MR_NR_DASHBOARD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_MAINTENANCE_MR_NR_DASHBOARD"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:32.972" createdAt="2020-09-09 21:02:44.737"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>date(leftstr(format(now(),'yyyymmdd'),6)+'01')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+    <variable id="Department" parameter="true">
+      <descriptions defaultDescription="Department"/>
+      <variableProperties datatype="NVARCHAR" defaultValue="*" length="20" mandatory="false">
+        <valueDomain type="empty"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="46"/>
+  <dataSources>
+    <DataSource id="ZAN_T001W" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_T001W</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_CRHD" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_CRHD</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_QMEL" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_QMEL</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_AFIH" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.OM.Base_Views/calculationviews/ZAN_AFIH</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="LET01"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_T001W">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LET01" source="LET01"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="PARV1"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_CRHD">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PARV1" source="PARV1"/>
+      </input>
+      <filter>(&quot;VERWE&quot; ='0005') AND  match(&quot;ARBPL&quot; ,'$$Department$$')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+      </input>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+      </input>
+      <joinAttribute name="WERKS"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="ARBPLWERK"/>
+        <viewAttribute id="ERDAT"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="PRIOK"/>
+        <viewAttribute id="HERKZ"/>
+        <viewAttribute id="PHASE"/>
+        <viewAttribute id="ESTIMATED_COSTS"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Created_On" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ERDAT&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_QMEL">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPLWERK" source="ARBPLWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ERDAT" source="ERDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRIOK" source="PRIOK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="HERKZ" source="HERKZ"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PHASE" source="PHASE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ESTIMATED_COSTS" source="ESTIMATED_COSTS"/>
+      </input>
+      <filter>(in (&quot;HERKZ&quot;,'01','02','03','04')) AND (in (&quot;PHASE&quot;,'1','3','4')) AND (&quot;Created_On&quot; >='$$From_Date$$' AND &quot;Created_On&quot;&lt;='$$To_Date$$')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_2" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="QMNUM"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+      </input>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="ARBPLWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="ARBPL"/>
+      </input>
+      <joinAttribute name="WERKS"/>
+      <joinAttribute name="OBJID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="AUFNR"/>
+        <viewAttribute id="QMNUM"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_AFIH">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_3" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="AUFNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Join_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+      </input>
+      <input node="#Projection_4">
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+      </input>
+      <joinAttribute name="QMNUM"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_5">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="QMNUM"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="VERWE"/>
+        <viewAttribute id="ARBPL"/>
+        <viewAttribute id="OBJID"/>
+        <viewAttribute id="NAME1"/>
+        <viewAttribute id="IWERK"/>
+        <viewAttribute id="WERKS"/>
+        <viewAttribute id="AUFNR"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count_Order" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(isnull(&quot;AUFNR&quot;) or &quot;AUFNR&quot;='',0,1)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="QMNUM" source="QMNUM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="VERWE" source="VERWE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ARBPL" source="ARBPL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJID" source="OBJID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="NAME1" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IWERK" source="IWERK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="WERKS" source="WERKS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUFNR" source="AUFNR"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_5">
+    <descriptions/>
+    <attributes>
+      <attribute id="QMNUM" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Notification"/>
+        <keyMapping columnObjectName="Projection_5" columnName="QMNUM"/>
+      </attribute>
+      <attribute id="VERWE" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Work Center Category"/>
+        <keyMapping columnObjectName="Projection_5" columnName="VERWE"/>
+      </attribute>
+      <attribute id="ARBPL" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Work Center"/>
+        <keyMapping columnObjectName="Projection_5" columnName="ARBPL"/>
+      </attribute>
+      <attribute id="OBJID" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="OBJID"/>
+        <keyMapping columnObjectName="Projection_5" columnName="OBJID"/>
+      </attribute>
+      <attribute id="NAME1" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Plant Description"/>
+        <keyMapping columnObjectName="Projection_5" columnName="NAME1"/>
+      </attribute>
+      <attribute id="IWERK" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Planning Plant"/>
+        <keyMapping columnObjectName="Projection_5" columnName="IWERK"/>
+      </attribute>
+      <attribute id="WERKS" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Plant"/>
+        <keyMapping columnObjectName="Projection_5" columnName="WERKS"/>
+      </attribute>
+      <attribute id="AUFNR" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Order"/>
+        <keyMapping columnObjectName="Projection_5" columnName="AUFNR"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Count" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Projection_5" columnName="Count"/>
+      </measure>
+      <measure id="Count_Order" order="10" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count_Order"/>
+        <measureMapping columnObjectName="Projection_5" columnName="Count_Order"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="MC_NR" hidden="false" order="11" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="MC_NR"/>
+        <formula>(&quot;Count_Order&quot;/ &quot;Count&quot;)*100</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="99" y="87"/>
+        <rectangleSize/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="531"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="531"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="435"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="253" y="435"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="339"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="339"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="243"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_HR_ATTRITION_DASHBOARD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_HR_ATTRITION_DASHBOARD"/>
+  <metadata activatedAt="2020-11-10 15:18:39.0" changedAt="2020-11-10 17:40:41.887" createdAt="2020-09-09 20:59:55.363"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="56"/>
+  <dataSources>
+    <DataSource id="M_TIME_DIMENSION" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="_SYS_BI" columnObjectName="M_TIME_DIMENSION"/>
+    </DataSource>
+    <DataSource id="ZAN_PA0000" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.HR.Base_Views/calculationviews/ZAN_PA0000</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_5" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="DATE_SAP"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#M_TIME_DIMENSION">
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATE_SAP" source="DATE_SAP"/>
+      </input>
+      <filter>date(&quot;DATE_SAP&quot;) >= date(string(component(now(),1)-4)+'0101') and (date(&quot;DATE_SAP&quot;)&lt;= now())</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="Dummy" length="1" expressionLanguage="COLUMN_ENGINE">
+          <formula>'A'</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Begda_Year" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(&quot;BEGDA&quot;,4)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Endda_Year" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(&quot;ENDDA&quot;,4)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Resigned_Dates" length="8" expressionLanguage="COLUMN_ENGINE">
+          <formula>(string(date(&quot;BEGDA&quot;)-1))</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Resigned_Year" length="4" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(&quot;Resigned_Dates&quot;,4)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_PA0000">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" dynamic="false" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="BEGDA"/>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="Begda_Year"/>
+        <viewAttribute id="Endda_Year"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="Resigned_Year"/>
+        <viewAttribute id="DATE_SAP"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Begda_Year" source="Begda_Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Endda_Year" source="Endda_Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Resigned_Year" source="Resigned_Year"/>
+      </input>
+      <input node="#Projection_5">
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATE_SAP" source="DATE_SAP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+      </input>
+      <joinAttribute name="Dummy"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_2" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="ENDDA"/>
+        <viewAttribute id="Begda_Year"/>
+        <viewAttribute id="Endda_Year"/>
+        <viewAttribute id="Dummy"/>
+        <viewAttribute id="Resigned_Year"/>
+        <viewAttribute id="DATE_SAP"/>
+        <viewAttribute id="BEGDA"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Count" expressionLanguage="COLUMN_ENGINE">
+          <formula>1</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Join_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENDDA" source="ENDDA"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Begda_Year" source="Begda_Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Endda_Year" source="Endda_Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Dummy" source="Dummy"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Resigned_Year" source="Resigned_Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DATE_SAP" source="DATE_SAP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEGDA" source="BEGDA"/>
+      </input>
+      <filter>date(&quot;DATE_SAP&quot;) >= date(&quot;BEGDA&quot;) and (date(&quot;ENDDA&quot;)&#xD;
+>= date(&quot;DATE_SAP&quot;))</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregation_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="YEAR" keepFlag="false"/>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR" keepFlag="false"/>
+        <viewAttribute id="Resigned_Year"/>
+        <viewAttribute aggregationType="sum" id="Count"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_2">
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Resigned_Year" source="Resigned_Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_3">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="Resigned_Year"/>
+        <viewAttribute id="Count"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="INTEGER" id="Active" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;STAT2&quot; = '3',1,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Resign" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;STAT2&quot; != '3' and &quot;Resigned_Year&quot;= &quot;YEAR&quot;,1 ,0)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="INTEGER" id="Actual_Active" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;STAT2&quot; != '3' and &quot;Resigned_Year&quot;= &quot;YEAR&quot;,&quot;Active&quot;-1,&quot;Active&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Aggregation_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Resigned_Year" source="Resigned_Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_4">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="YEAR"/>
+        <viewAttribute id="Count"/>
+        <viewAttribute id="Active"/>
+        <viewAttribute id="Resign"/>
+        <viewAttribute id="STAT2"/>
+        <viewAttribute id="PERNR"/>
+        <viewAttribute id="Resigned_Year"/>
+        <viewAttribute id="Actual_Active"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Projection_3">
+        <mapping xsi:type="Calculation:AttributeMapping" target="YEAR" source="YEAR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Count" source="Count"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Active" source="Active"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Resign" source="Resign"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="STAT2" source="STAT2"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PERNR" source="PERNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Resigned_Year" source="Resigned_Year"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Actual_Active" source="Actual_Active"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Projection_4">
+    <descriptions/>
+    <attributes>
+      <attribute id="YEAR" order="1" attributeHierarchyActive="false" displayAttribute="false" keepFlag="true">
+        <descriptions defaultDescription="Year"/>
+        <keyMapping columnObjectName="Projection_4" columnName="YEAR"/>
+      </attribute>
+      <attribute id="STAT2" order="4" attributeHierarchyActive="false" displayAttribute="false" keepFlag="true">
+        <descriptions defaultDescription="STAT2"/>
+        <keyMapping columnObjectName="Projection_4" columnName="STAT2"/>
+      </attribute>
+      <attribute id="PERNR" order="5" attributeHierarchyActive="false" displayAttribute="false" keepFlag="true">
+        <descriptions defaultDescription="PERNR"/>
+        <keyMapping columnObjectName="Projection_4" columnName="PERNR"/>
+      </attribute>
+      <attribute id="Resigned_Year" order="6" attributeHierarchyActive="false" displayAttribute="false" keepFlag="true">
+        <descriptions defaultDescription="Resigned_Year"/>
+        <keyMapping columnObjectName="Projection_4" columnName="Resigned_Year"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="Active" order="2" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Active"/>
+        <measureMapping columnObjectName="Projection_4" columnName="Active"/>
+      </measure>
+      <measure id="Resign" order="3" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Count"/>
+        <measureMapping columnObjectName="Projection_4" columnName="Resign"/>
+      </measure>
+      <measure id="Actual_Active" hidden="false" order="7" aggregationType="sum" measureType="simple">
+        <descriptions/>
+        <measureMapping columnObjectName="Projection_4" columnName="Actual_Active"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="Attrition_Rate" hidden="false" order="8" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="Attrition Rate"/>
+        <formula>if(&quot;Resign&quot;=0 or &quot;Actual_Active&quot;=0,0,(&quot;Resign&quot;/ &quot;Actual_Active&quot;)*100)</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="99" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_5" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="573"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="573"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="477"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_2" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="399"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregation_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="321"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_3" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="243"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_4" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="99" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

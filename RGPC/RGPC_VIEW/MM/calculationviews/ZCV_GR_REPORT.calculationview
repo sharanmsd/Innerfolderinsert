@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZCV_GR_REPORT" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Aggregation">
+  <origin/>
+  <descriptions defaultDescription="ZCV_GR_REPORT"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:08:07.195"/>
+  <localVariables>
+    <variable id="From_Date" parameter="true">
+      <descriptions defaultDescription="From_Date"/>
+      <variableProperties datatype="DATE" defaultValue="2011-06-01" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+    <variable id="To_Date" parameter="true">
+      <descriptions defaultDescription="To_Date"/>
+      <variableProperties datatype="DATE" defaultExpressionLanguage="COLUMN_ENGINE" mandatory="false">
+        <valueDomain type="Date"/>
+        <selection multiLine="false" type="SingleValue"/>
+        <defaultExpression>format(now(),'YYYY-MM-DD')</defaultExpression>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="51"/>
+  <dataSources>
+    <DataSource id="ZAN_EKBE" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_EKBE</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_EKPO" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_EKPO</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_EKKO" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_EKKO</resourceUri>
+    </DataSource>
+    <DataSource id="ZAN_RSEG" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAN_RSEG</resourceUri>
+    </DataSource>
+    <DataSource id="ZAT_MARA" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/RGPC_VIEW.MM.Base_Views/calculationviews/ZAT_MARA</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="GR" filterExpressionLanguage="COLUMN_ENGINE">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="BEWTP"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="BUDAT"/>
+        <viewAttribute id="BUZEI"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="Delivered"/>
+        <viewAttribute id="SHKZG"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="DMBTR"/>
+        <viewAttribute id="LFBNR"/>
+        <viewAttribute id="LFPOS"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Delivered_Quantity" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;SHKZG&quot;='S',&quot;Delivered&quot;,-1*&quot;Delivered&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="GR_Cal_Month" length="6" expressionLanguage="COLUMN_ENGINE">
+          <formula>leftstr(&quot;BUDAT&quot;,6)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Delivered_Value" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;SHKZG&quot;='S',&quot;DMBTR&quot;,-1*&quot;DMBTR&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Ref_doc_no" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;LFBNR&quot;='',&quot;EBELN&quot;,&quot;LFBNR&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Ref_doc_it" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;LFBNR&quot;='',&quot;EBELP&quot;,&quot;LFPOS&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_EKBE">
+        <mapping xsi:type="Calculation:AttributeMapping" target="BEWTP" source="BEWTP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUDAT" source="BUDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUZEI" source="BUZEI"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivered" source="MENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SHKZG" source="SHKZG"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="DMBTR" source="DMBTR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LFBNR" source="LFBNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LFPOS" source="LFPOS"/>
+      </input>
+      <filter>(&quot;BEWTP&quot; ='E') AND (&quot;Created_On&quot; >='$$From_Date$$' AND &quot;Created_On&quot;&lt;='$$To_Date$$')</filter>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="PO_Line_Item">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="MENGE"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="MATNR"/>
+        <viewAttribute id="MEINS"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_EKPO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MENGE" source="MENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="MATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MEINS" source="MEINS"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="PO_Header">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="LIFNR"/>
+        <viewAttribute id="Vendor_Name"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="LANDX50"/>
+        <viewAttribute id="FRGKE">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value="B"/>
+        </viewAttribute>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAN_EKKO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LIFNR" source="LIFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Name" source="NAME1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="FRGKE" source="FRGKE"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PO" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="PO_quantity"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="LIFNR"/>
+        <viewAttribute id="Vendor_Name"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="MATNR"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="LANDX50"/>
+        <viewAttribute id="MEINS"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#PO_Line_Item">
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_quantity" source="MENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="MATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MEINS" source="MEINS"/>
+      </input>
+      <input node="#PO_Header">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LIFNR" source="LIFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Name" source="Vendor_Name"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+      </input>
+      <joinAttribute name="EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Invoice_Line">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="MENGE"/>
+        <viewAttribute id="LFPOS"/>
+        <viewAttribute id="LFBNR"/>
+        <viewAttribute id="SHKZG">
+          <filter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="S"/>
+            <operands value="H"/>
+          </filter>
+        </viewAttribute>
+        <viewAttribute id="Invoice_Value_USD"/>
+        <viewAttribute id="EBELN">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value=""/>
+        </viewAttribute>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="Inv_Value_USD_Table"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Invoiced_Value" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;SHKZG&quot;='S',&quot;Inv_Value_USD_Table&quot;,-1*&quot;Inv_Value_USD_Table&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="DECIMAL" id="Invoiced_QTY" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;SHKZG&quot;='S',&quot;MENGE&quot;,-1*&quot;MENGE&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Ref_doc_no_copy_1" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;LFBNR&quot;='',&quot;EBELN&quot;,&quot;LFBNR&quot;)</formula>
+        </calculatedViewAttribute>
+        <calculatedViewAttribute datatype="NVARCHAR" id="Ref_doc_it_copy_1" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(&quot;LFBNR&quot;='',&quot;EBELP&quot;,&quot;LFPOS&quot;)</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#ZAN_RSEG">
+        <mapping xsi:type="Calculation:AttributeMapping" target="MENGE" source="MENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LFPOS" source="LFPOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LFBNR" source="LFBNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SHKZG" source="SHKZG"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoice_Value_USD" source="Invoice_Value_USD"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Inv_Value_USD_Table" source="Inv_Value_USD_Table"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:AggregationView" id="Aggregated_Invoice">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute aggregationType="sum" id="Invoiced_QTY"/>
+        <viewAttribute aggregationType="sum" id="Invoiced_Value"/>
+        <viewAttribute id="LFBNR"/>
+        <viewAttribute id="LFPOS"/>
+        <viewAttribute id="Ref_doc_no_copy_1"/>
+        <viewAttribute id="Ref_doc_it_copy_1"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#Invoice_Line">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoiced_QTY" source="Invoiced_QTY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoiced_Value" source="Invoiced_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LFBNR" source="LFBNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LFPOS" source="LFPOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Ref_doc_no_copy_1" source="Ref_doc_no_copy_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Ref_doc_it_copy_1" source="Ref_doc_it_copy_1"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Invoiced_Quantity" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="Delivered_Value"/>
+        <viewAttribute id="GR_Cal_Month"/>
+        <viewAttribute id="Delivered_Quantity"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="Invoiced_QTY"/>
+        <viewAttribute id="Invoiced_Value"/>
+        <viewAttribute id="LFBNR"/>
+        <viewAttribute id="LFPOS"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="BUZEI"/>
+        <viewAttribute hidden="true" id="JOIN$Ref_doc_it$Ref_doc_it_copy_1"/>
+        <viewAttribute hidden="true" id="JOIN$Ref_doc_no$Ref_doc_no_copy_1"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="GR_INV_Status" length="8" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(isnull(&quot;LFBNR&quot;) and isnull(&quot;LFPOS&quot;),'Open','Close')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#GR">
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivered_Value" source="Delivered_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GR_Cal_Month" source="GR_Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivered_Quantity" source="Delivered_Quantity"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUZEI" source="BUZEI"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$Ref_doc_no$Ref_doc_no_copy_1" source="Ref_doc_no"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$Ref_doc_it$Ref_doc_it_copy_1" source="Ref_doc_it"/>
+      </input>
+      <input node="#Aggregated_Invoice">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoiced_QTY" source="Invoiced_QTY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoiced_Value" source="Invoiced_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LFBNR" source="LFBNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LFPOS" source="LFPOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$Ref_doc_no$Ref_doc_no_copy_1" source="Ref_doc_no_copy_1"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$Ref_doc_it$Ref_doc_it_copy_1" source="Ref_doc_it_copy_1"/>
+      </input>
+      <joinAttribute name="JOIN$Ref_doc_no$Ref_doc_no_copy_1"/>
+      <joinAttribute name="JOIN$Ref_doc_it$Ref_doc_it_copy_1"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="PO_Quantity" joinOrder="OUTSIDE_IN" joinType="inner">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="LIFNR"/>
+        <viewAttribute id="Vendor_Name"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="PO_quantity"/>
+        <viewAttribute id="MATNR"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="LANDX50"/>
+        <viewAttribute id="MEINS"/>
+        <viewAttribute id="GR_INV_Status"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="Invoiced_QTY"/>
+        <viewAttribute id="Invoiced_Value"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Delivered_Quantity"/>
+        <viewAttribute id="Delivered_Value"/>
+        <viewAttribute id="GR_Cal_Month"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="BUZEI"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DECIMAL" id="Yet_To_Delivered" length="34" scale="2" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;PO_quantity&quot;-&quot;Delivered_Quantity&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#Invoiced_Quantity">
+        <mapping xsi:type="Calculation:AttributeMapping" target="GR_INV_Status" source="GR_INV_Status"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoiced_QTY" source="Invoiced_QTY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoiced_Value" source="Invoiced_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivered_Quantity" source="Delivered_Quantity"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivered_Value" source="Delivered_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GR_Cal_Month" source="GR_Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUZEI" source="BUZEI"/>
+      </input>
+      <input node="#PO">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LIFNR" source="LIFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Name" source="Vendor_Name"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_quantity" source="PO_quantity"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="MATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MEINS" source="MEINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+      </input>
+      <joinAttribute name="EBELP"/>
+      <joinAttribute name="EBELN"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Projection_1">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Material_Number"/>
+        <viewAttribute id="Material_Type_Description"/>
+        <viewAttribute id="Material_Number_Formated"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ZAT_MARA">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number" source="Material_Number"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_Description" source="Material_Type_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number_Formated" source="Material_Number_Formated"/>
+      </input>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="Join_1" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="Material_Type_Description"/>
+        <viewAttribute id="TXZ01"/>
+        <viewAttribute id="EKGRP"/>
+        <viewAttribute id="LIFNR"/>
+        <viewAttribute id="Vendor_Name"/>
+        <viewAttribute id="EKNAM"/>
+        <viewAttribute id="PO_quantity"/>
+        <viewAttribute id="MATNR"/>
+        <viewAttribute id="Department"/>
+        <viewAttribute id="LANDX50"/>
+        <viewAttribute id="MEINS"/>
+        <viewAttribute id="GR_INV_Status"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="Invoiced_QTY"/>
+        <viewAttribute id="Invoiced_Value"/>
+        <viewAttribute id="Created_On"/>
+        <viewAttribute id="Delivered_Quantity"/>
+        <viewAttribute id="Delivered_Value"/>
+        <viewAttribute id="GR_Cal_Month"/>
+        <viewAttribute id="Yet_To_Delivered"/>
+        <viewAttribute id="BELNR"/>
+        <viewAttribute id="BUZEI"/>
+        <viewAttribute id="Material_Number_Formated"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="VARCHAR" id="inv_filter" length="10" expressionLanguage="COLUMN_ENGINE">
+          <formula>if(strlen(&quot;MATNR&quot;)>1,'Mat','No Mat')</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#PO_Quantity">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TXZ01" source="TXZ01"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKGRP" source="EKGRP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LIFNR" source="LIFNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Vendor_Name" source="Vendor_Name"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EKNAM" source="EKNAM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PO_quantity" source="PO_quantity"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="MATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Department" source="Department"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LANDX50" source="LANDX50"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MEINS" source="MEINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GR_INV_Status" source="GR_INV_Status"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoiced_QTY" source="Invoiced_QTY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Invoiced_Value" source="Invoiced_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Created_On" source="Created_On"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivered_Quantity" source="Delivered_Quantity"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Delivered_Value" source="Delivered_Value"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="GR_Cal_Month" source="GR_Cal_Month"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Yet_To_Delivered" source="Yet_To_Delivered"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BELNR" source="BELNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="BUZEI" source="BUZEI"/>
+      </input>
+      <input node="#Projection_1">
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Type_Description" source="Material_Type_Description"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Material_Number_Formated" source="Material_Number_Formated"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MATNR" source="Material_Number"/>
+      </input>
+      <joinAttribute name="MATNR"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Join_1">
+    <descriptions/>
+    <attributes>
+      <attribute id="Material_Type_Description" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Type_Description"/>
+        <keyMapping columnObjectName="Join_1" columnName="Material_Type_Description"/>
+      </attribute>
+      <attribute id="inv_filter" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="inv_filter"/>
+        <keyMapping columnObjectName="Join_1" columnName="inv_filter"/>
+      </attribute>
+      <attribute id="TXZ01" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PO Line Item Description "/>
+        <keyMapping columnObjectName="Join_1" columnName="TXZ01"/>
+      </attribute>
+      <attribute id="EKGRP" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Purchasing Group"/>
+        <keyMapping columnObjectName="Join_1" columnName="EKGRP"/>
+      </attribute>
+      <attribute id="LIFNR" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Vendor"/>
+        <keyMapping columnObjectName="Join_1" columnName="LIFNR"/>
+      </attribute>
+      <attribute id="Vendor_Name" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Vendor_Name"/>
+        <keyMapping columnObjectName="Join_1" columnName="Vendor_Name"/>
+      </attribute>
+      <attribute id="EKNAM" order="10" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EKNAM"/>
+        <keyMapping columnObjectName="Join_1" columnName="EKNAM"/>
+      </attribute>
+      <attribute id="MATNR" order="12" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="MATNR"/>
+        <keyMapping columnObjectName="Join_1" columnName="MATNR"/>
+      </attribute>
+      <attribute id="Department" order="13" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Department"/>
+        <keyMapping columnObjectName="Join_1" columnName="Department"/>
+      </attribute>
+      <attribute id="LANDX50" order="14" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="LANDX50"/>
+        <keyMapping columnObjectName="Join_1" columnName="LANDX50"/>
+      </attribute>
+      <attribute id="MEINS" order="15" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="MEINS"/>
+        <keyMapping columnObjectName="Join_1" columnName="MEINS"/>
+      </attribute>
+      <attribute id="GR_INV_Status" order="16" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="GR_Invoice_Staus"/>
+        <keyMapping columnObjectName="Join_1" columnName="GR_INV_Status"/>
+      </attribute>
+      <attribute id="EBELN" order="17" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PO Number"/>
+        <keyMapping columnObjectName="Join_1" columnName="EBELN"/>
+      </attribute>
+      <attribute id="EBELP" order="18" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PO Line Item"/>
+        <keyMapping columnObjectName="Join_1" columnName="EBELP"/>
+      </attribute>
+      <attribute id="Created_On" order="21" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Created_On"/>
+        <keyMapping columnObjectName="Join_1" columnName="Created_On"/>
+      </attribute>
+      <attribute id="GR_Cal_Month" order="24" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions/>
+        <keyMapping columnObjectName="Join_1" columnName="GR_Cal_Month"/>
+      </attribute>
+      <attribute id="BELNR" order="26" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="BELNR"/>
+        <keyMapping columnObjectName="Join_1" columnName="BELNR"/>
+      </attribute>
+      <attribute id="BUZEI" order="27" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="BUZEI"/>
+        <keyMapping columnObjectName="Join_1" columnName="BUZEI"/>
+      </attribute>
+      <attribute id="Material_Number_Formated" order="28" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Material_Number_Formated"/>
+        <keyMapping columnObjectName="Join_1" columnName="Material_Number_Formated"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes>
+      <calculatedAttribute id="PO_Type" hidden="false" order="1" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PO_Type"/>
+        <keyCalculation datatype="VARCHAR" expressionLanguage="COLUMN_ENGINE" length="10">
+          <formula>if(strlen(&quot;MATNR&quot;)>2,'Material','Service')</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+      <calculatedAttribute id="Vendor_Type" hidden="false" order="2" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Vendor_Type"/>
+        <keyCalculation datatype="VARCHAR" expressionLanguage="COLUMN_ENGINE" length="10">
+          <formula>if(&quot;LANDX50&quot;='Qatar','Domestic','Import')</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+    </calculatedAttributes>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="PO_quantity" order="11" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="PO Quantity"/>
+        <measureMapping columnObjectName="Join_1" columnName="PO_quantity"/>
+      </measure>
+      <measure id="Invoiced_QTY" order="19" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Invoiced_QTY"/>
+        <measureMapping columnObjectName="Join_1" columnName="Invoiced_QTY"/>
+      </measure>
+      <measure id="Invoiced_Value" order="20" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Invoiced_Value"/>
+        <measureMapping columnObjectName="Join_1" columnName="Invoiced_Value"/>
+      </measure>
+      <measure id="Delivered_Quantity" order="22" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Delivered_Quantity"/>
+        <measureMapping columnObjectName="Join_1" columnName="Delivered_Quantity"/>
+      </measure>
+      <measure id="Delivered_Value" order="23" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Delivered Value"/>
+        <measureMapping columnObjectName="Join_1" columnName="Delivered_Value"/>
+      </measure>
+      <measure id="Yet_To_Delivered" order="25" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="Yet_To_Delivered"/>
+        <measureMapping columnObjectName="Join_1" columnName="Yet_To_Delivered"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures>
+      <measure id="Yet_to_be_invoiced_Value" hidden="false" order="3" aggregationType="sum" measureType="simple" datatype="DECIMAL" expressionLanguage="COLUMN_ENGINE" length="34" scale="2">
+        <descriptions defaultDescription="Yet_to_be_invoiced_Value"/>
+        <formula>&quot;Delivered_Value&quot;-&quot;Invoiced_Value&quot;</formula>
+      </measure>
+    </calculatedMeasures>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="175" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="GR" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="484" y="453"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO_Line_Item" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="453"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO_Header" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="453"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="176" y="357"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Invoice_Line" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="531"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Aggregated_Invoice" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="453"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Invoiced_Quantity" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="330" y="357"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="PO_Quantity" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="252" y="261"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Projection_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="98" y="261"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Join_1" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="175" y="165"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

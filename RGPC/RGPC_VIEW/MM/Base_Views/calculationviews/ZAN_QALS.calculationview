@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="ZAN_QALS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="TREE_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED">
+  <origin/>
+  <descriptions defaultDescription="ZAN_QALS"/>
+  <metadata activatedAt="2020-11-25 17:40:50.0" changedAt="2020-11-25 20:07:57.245" createdAt="2020-08-09 15:49:56.284"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources>
+    <DataSource id="QALS" type="DATA_BASE_TABLE">
+      <viewAttributes allViewAttributes="true"/>
+      <columnObject schemaName="SAPABAP1" columnObjectName="QALS"/>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:ProjectionView" id="Lot_Info">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="OBJNR"/>
+        <viewAttribute id="PRUEFLOS"/>
+        <viewAttribute id="MBLNR">
+          <filter xsi:type="AccessControl:SingleValueFilter" including="false" value=""/>
+        </viewAttribute>
+        <viewAttribute id="ZEILE"/>
+        <viewAttribute id="EBELN"/>
+        <viewAttribute id="EBELP"/>
+        <viewAttribute id="SELMATNR"/>
+        <viewAttribute id="LOSMENGE"/>
+        <viewAttribute id="ENSTEHDAT"/>
+        <viewAttribute id="PAENDTERM"/>
+        <viewAttribute id="PASTRTERM"/>
+      </viewAttributes>
+      <calculatedViewAttributes>
+        <calculatedViewAttribute datatype="DATE" id="Lot_Creation_Date" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;ENSTEHDAT&quot;</formula>
+        </calculatedViewAttribute>
+      </calculatedViewAttributes>
+      <input node="#QALS">
+        <mapping xsi:type="Calculation:AttributeMapping" target="OBJNR" source="OBJNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PRUEFLOS" source="PRUEFLOS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MBLNR" source="MBLNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ZEILE" source="ZEILE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELN" source="EBELN"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EBELP" source="EBELP"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SELMATNR" source="SELMATNR"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="LOSMENGE" source="LOSMENGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ENSTEHDAT" source="ENSTEHDAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PAENDTERM" source="PAENDTERM"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PASTRTERM" source="PASTRTERM"/>
+      </input>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Lot_Info">
+    <descriptions/>
+    <attributes>
+      <attribute id="OBJNR" order="1" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="OBJNR"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="OBJNR"/>
+      </attribute>
+      <attribute id="PRUEFLOS" order="2" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PRUEFLOS"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="PRUEFLOS"/>
+      </attribute>
+      <attribute id="MBLNR" order="3" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="MBLNR"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="MBLNR"/>
+      </attribute>
+      <attribute id="ZEILE" order="4" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ZEILE"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="ZEILE"/>
+      </attribute>
+      <attribute id="EBELN" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EBELN"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="EBELN"/>
+      </attribute>
+      <attribute id="EBELP" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EBELP"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="EBELP"/>
+      </attribute>
+      <attribute id="SELMATNR" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SELMATNR"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="SELMATNR"/>
+      </attribute>
+      <attribute id="ENSTEHDAT" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ENSTEHDAT"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="ENSTEHDAT"/>
+      </attribute>
+      <attribute id="PAENDTERM" order="10" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PAENDTERM"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="PAENDTERM"/>
+      </attribute>
+      <attribute id="PASTRTERM" order="11" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PASTRTERM"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="PASTRTERM"/>
+      </attribute>
+      <attribute id="Lot_Creation_Date" order="12" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Lot_Creation_Date"/>
+        <keyMapping columnObjectName="Lot_Info" columnName="Lot_Creation_Date"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="LOSMENGE" order="8" aggregationType="sum" measureType="simple">
+        <descriptions defaultDescription="LOSMENGE"/>
+        <measureMapping columnObjectName="Lot_Info" columnName="LOSMENGE"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+    <sharedDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="22" y="87"/>
+        <rectangleSize/>
+      </shape>
+      <shape modelObjectName="Lot_Info" modelObjectNameSpace="StarJoinViewNodeInput" modelObjectType="repository">
+        <upperLeftCorner x="250" y="250"/>
+      </shape>
+      <shape expanded="true" modelObjectName="Lot_Info" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="185"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>
